@@ -182,6 +182,7 @@ const MFG_MENU=[
   {icon:"📋",label:"Challans",screens:[{id:"G-01",label:"Challan List"},{id:"G-02",label:"Create Challan"},{id:"G-03",label:"Challan Tracking"},{id:"G-13",label:"Reprocess Challan"}]},
   {icon:"👷",label:"Contractors",screens:[{id:"G-04",label:"Contractor List"},{id:"G-05",label:"Contractor Detail"}]},
   {icon:"✔",label:"Production",screens:[{id:"G-06",label:"Ready Piece Count"},{id:"G-07",label:"Payment & Checking"},{id:"G-21",label:"SKU Outward"}]},
+  {icon:"☰",label:"Inventory",screens:[{id:"G-22",label:"Live Inventory"}]},
   {icon:"↩",label:"RF / Returns",screens:[{id:"G-08",label:"RF Management"},{id:"G-20",label:"Create RF Entry"}]},
   {icon:"🧵",label:"Fabric / Mill",screens:[{id:"G-09",label:"Mill / Fabric Management"}]},
   {icon:"₹",label:"Costing (Owner Only)",screens:[{id:"G-10",label:"Design Costing [OWNER ONLY]"}]},
@@ -4797,7 +4798,7 @@ const screens = {
   const [step, setStep] = useState(1);
   return (
   <WebLayout activeMenu="SKU Outward" mode="mfg">
-    <GTopBar title="SKU Outward" sub="GMMS creates SKUs from finished pieces · auto-stocks Sales ERP" actions={[{label:"Confirm & Stock",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
+    <GTopBar title="SKU Outward" sub="GMMS creates SKUs from finished pieces · auto-stocks GMMS + CMS inventories" actions={[{label:"Confirm & Stock",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:6,marginBottom:16}}>
         {["1. Select Challan","2. Map to SKU","3. Set Pricing","4. Confirm"].map((s,i)=>(
@@ -4868,7 +4869,7 @@ const screens = {
                 </div>
               </>}
               {step===4&&<>
-                {["240 pieces stocked in Sales ERP","6 SKU variants created / updated","Price ₹850 retail set for HT-001","W-04 SKU List refreshed","Audit trail logged"].map((a,i)=>(
+                {["240 pieces stocked in GMMS inventory","240 pieces stocked in CMS inventory","6 SKU variants created / updated","Price ₹850 retail set for HT-001","Audit trail logged"].map((a,i)=>(
                   <div key={i} style={{fontSize:11,color:C.text,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,display:"flex",alignItems:"center",gap:6}}>
                     <span style={{color:C.green,fontWeight:700}}>✔</span>{a}
                   </div>
@@ -4881,7 +4882,7 @@ const screens = {
         <div style={{flex:1}}>
           <Card>
             <SectionLabel>Outward Summary</SectionLabel>
-            {[["Challan","#3202"],["Design","D-710"],["Name","Floral Anarkali"],["Total Pieces","240"],["SKU Variants","6"],["Retail Price","₹ 850"],["Wholesale","₹ 720"],["Stock Target","W-04 Sales ERP"]].map(([l,v],i)=>(
+            {[["Challan","#3202"],["Design","D-710"],["Name","Floral Anarkali"],["Total Pieces","240"],["SKU Variants","6"],["Retail Price","₹ 850"],["Wholesale","₹ 720"],["Stock Target","GMMS + CMS Inventories"]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
               </div>
@@ -4893,6 +4894,70 @@ const screens = {
   </WebLayout>
   );
 },
+// G-22: Live Inventory (GMMS)
+"G-22": () => (
+  <WebLayout activeMenu="Inventory" mode="mfg">
+    <GTopBar title="Live Inventory" sub="GMMS manufacturing inventory from SKU Outward · sync with CMS inventory" actions={[{label:"+ Sync from CMS",primary:true},{label:"Export"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:8,marginBottom:10}}>
+        <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px",fontSize:12,color:C.textLight,background:C.white}}>Search by design code, challan, contractor...</div>
+        <Btn small>Search</Btn>
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+        <Btn small>All Stages ▾</Btn><Btn small>All Contractors ▾</Btn><Btn small>Colour ▾</Btn><Btn small>Size ▾</Btn>
+        <div style={{display:"flex",gap:5}}>
+          {["All","In Stock","Low Stock","Out of Stock"].map((s,i)=>(
+            <span key={i} style={{fontSize:11,padding:"4px 10px",borderRadius:3,border:`0.5px solid ${i===0?CO.accent:C.border}`,background:i===0?CO.accent:C.white,color:i===0?C.white:C.textMuted,cursor:"pointer"}}>{s}</span>
+          ))}
+        </div>
+      </div>
+      <Card>
+        <div style={{display:"flex",gap:12,marginBottom:12}}>
+          <div style={{flex:1,background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:6,padding:"12px",textAlign:"center"}}>
+            <div style={{fontSize:22,fontWeight:700,color:CO.accent}}>1,420</div>
+            <div style={{fontSize:10,color:C.textMuted}}>Total Pieces in GMMS</div>
+          </div>
+          <div style={{flex:1,background:"#e8f5e9",border:`0.5px solid #c8e6c9`,borderRadius:6,padding:"12px",textAlign:"center"}}>
+            <div style={{fontSize:22,fontWeight:700,color:C.green}}>940</div>
+            <div style={{fontSize:10,color:C.textMuted}}>Stocked in CMS</div>
+          </div>
+          <div style={{flex:1,background:"#fff3e0",border:`0.5px solid #ffe0b2`,borderRadius:6,padding:"12px",textAlign:"center"}}>
+            <div style={{fontSize:22,fontWeight:700,color:"#e65100"}}>480</div>
+            <div style={{fontSize:10,color:C.textMuted}}>Awaiting SKU Outward</div>
+          </div>
+        </div>
+        <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
+          <TH cols={[{v:"Design",w:1},{v:"SKU",w:1.2},{v:"Colour",w:0.8},{v:"Size",w:0.5},{v:"Pcs",w:0.5},{v:"Challan",w:0.7},{v:"Contractor",w:0.8},{v:"Status",w:0.8}]}/>
+          {[
+            {des:"D-710 Floral Anarkali",sku:"HT-001-PNK-M",col:"Pink",sz:"M",pcs:40,cno:"#3202",con:"Ramesh K.",status:"In Stock"},
+            {des:"D-710 Floral Anarkali",sku:"HT-001-PNK-L",col:"Pink",sz:"L",pcs:40,cno:"#3202",con:"Ramesh K.",status:"In Stock"},
+            {des:"D-710 Floral Anarkali",sku:"HT-001-BLU-M",col:"Blue",sz:"M",pcs:40,cno:"#3202",con:"Ramesh K.",status:"In Stock"},
+            {des:"D-710 Floral Anarkali",sku:"HT-001-BLU-L",col:"Blue",sz:"L",pcs:40,cno:"#3202",con:"Ramesh K.",status:"In Stock"},
+            {des:"D-710 Floral Anarkali",sku:"HT-001-CRM-M",col:"Cream",sz:"M",pcs:40,cno:"#3202",con:"Ramesh K.",status:"In Stock"},
+            {des:"D-710 Floral Anarkali",sku:"HT-001-CRM-L",col:"Cream",sz:"L",pcs:40,cno:"#3202",con:"Ramesh K.",status:"In Stock"},
+            {des:"D-688 Block Print Salwar",sku:"HT-002-BLU-M",col:"Blue",sz:"M",pcs:30,cno:"#3198",con:"Farid M.",status:"Low Stock"},
+            {des:"D-688 Block Print Salwar",sku:"HT-002-BLU-L",col:"Blue",sz:"L",pcs:30,cno:"#3198",con:"Farid M.",status:"Low Stock"},
+            {des:"D-715 Embr. Dupatta",sku:"HT-003-RED-M",col:"Red",sz:"M",pcs:0,cno:"#3195",con:"Suresh T.",status:"Out of Stock"},
+          ].map((r,i)=>(
+            <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,background:r.pcs===0?"#ffebee":r.status==="Low Stock"?"#fff8e1":C.white}}>
+              <div style={{flex:1,fontWeight:500}}>{r.des}</div>
+              <div style={{flex:1.2,fontFamily:"monospace",fontSize:10,color:CO.accent}}>{r.sku}</div>
+              <div style={{flex:0.8}}>{r.col}</div>
+              <div style={{flex:0.5}}>{r.sz}</div>
+              <div style={{flex:0.5,fontWeight:600,textAlign:"center"}}>{r.pcs}</div>
+              <div style={{flex:0.7,fontFamily:"monospace",fontSize:10}}>{r.cno}</div>
+              <div style={{flex:0.8,fontSize:10}}>{r.con}</div>
+              <div style={{flex:0.8}}><Tag color={r.status==="Out of Stock"||r.status==="Low Stock"?"red":"black"}>{r.status}</Tag></div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:8,padding:"7px 10px",background:C.bgSoft,borderRadius:4,border:`0.5px solid ${C.border}`,fontSize:11,color:C.textMuted}}>
+          GMMS inventory auto-populated from SKU Outward (G-21). Use "Sync from CMS" to pull latest stock data from CMS inventory (W-09).
+        </div>
+      </Card>
+    </div>
+  </WebLayout>
+),
 // M-G01: Contractor Mobile Login
 "M-G01": () => (
   <MobileFrame>
@@ -5110,6 +5175,7 @@ const screenGroups = [
     {label:"Contractors",screens:["G-04","G-05"]},
     {label:"Production",screens:["G-06","G-07","G-21"]},
     {label:"RF / Returns",screens:["G-08","G-20"]},
+    {label:"Inventory",screens:["G-22"]},
     {label:"Fabric / Mill",screens:["G-09"]},
     {label:"Costing (Owner Only)",screens:["G-10"]},
     {label:"Masters",screens:["G-11","G-14","G-15","G-16","G-17"]},
@@ -5165,12 +5231,12 @@ const screenLabels = {
   "G-11":"[MOVED] Content moved to G-14",
   "G-13":"Reprocess Challan","G-14":"Design Master","G-15":"Job Work Types","G-16":"Color Master",
   "G-17":"Contractor Registry","G-18":"Notifications Center","G-19":"GMMS Reports Hub",
-  "G-20":"Create RF Entry","G-21":"SKU Outward",
+  "G-20":"Create RF Entry","G-21":"SKU Outward","G-22":"Live Inventory",
   "M-G01":"Contractor Login","M-G02":"My Challans","M-G03":"Challan Detail",
   "M-G04":"Confirm Pieces Sent","M-G05":"My Payment Ledger","M-G06":"My Profile",
 };
 
-const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
+const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
 
 export default function App() {
   const [active, setActive] = useState("W-03");
