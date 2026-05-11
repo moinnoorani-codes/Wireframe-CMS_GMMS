@@ -110,8 +110,8 @@ const MNav = ({label,action}) => (
 );
 
 const MBottomNav = ({active,type}) => {
-  const gmmsItems=[{icon:"\u{1F4CB}",label:"Challans"},{icon:"\u{1F4B0}",label:"Payments"},{icon:"\u{1F464}",label:"Profile"}];
-  const items=type==="gmms"?gmmsItems:[{icon:"\u{1F3E0}",label:"Home"},{icon:"⛶",label:"Scan"},{icon:"\u{1F4E6}",label:"Orders"},{icon:"☰",label:"Menu"},{icon:"\u{1F464}",label:"Profile"}];
+  const gmmsItems=[{icon:"📋",label:"Challans"},{icon:"💰",label:"Payments"},{icon:"👤",label:"Profile"}];
+  const items=type==="gmms"?gmmsItems:[{icon:"🏠",label:"Home"},{icon:"⛶",label:"Scan"},{icon:"📦",label:"Orders"},{icon:"☰",label:"Menu"},{icon:"👤",label:"Profile"}];
   return(
     <div style={{display:"flex",borderTop:`0.5px solid ${C.border}`,background:C.white}}>
       {items.map((item,i)=>(
@@ -123,15 +123,15 @@ const MBottomNav = ({active,type}) => {
   );
 };
 
-// Sliding drawer menu shown when â˜° Menu is tapped
+// Sliding drawer menu shown when ☰ Menu is tapped
 const MSlideMenu = ({active}) => {
   const sections = [
-    {label:"Main",items:[{icon:"âŠž",label:"Home"},{icon:"⊙",label:"Scan"},{icon:"â—‰",label:"Orders"}]},
-    {label:"Create Order",items:[{icon:"\u{1F3EA}",label:"New Retail Order"},{icon:"\u{1F3ED}",label:"New Wholesale Order"}]},
-    {label:"Dispatch",items:[{icon:"⊏",label:"Picking List"},{icon:"\u2714",label:"Dispatch Confirm"},{icon:"\u{1F4C4}",label:"LR Upload"}]},
-    {label:"Inventory",items:[{icon:"â˜°",label:"Stock Lookup"},{icon:"+",label:"Stock In"}]},
-    {label:"CCTV",items:[{icon:"â—ˆ",label:"CCTV Recording"}]},
-    {label:"Other",items:[{icon:"\u{1F514}",label:"Notifications"},{icon:"\u{1F464}",label:"Profile & Settings"}]},
+    {label:"Main",items:[{icon:"⊞",label:"Home"},{icon:"⊙",label:"Scan"},{icon:"◉",label:"Orders"}]},
+    {label:"Create Order",items:[{icon:"🏪",label:"New Retail Order"},{icon:"🏭",label:"New Wholesale Order"}]},
+    {label:"Dispatch",items:[{icon:"⊏",label:"Picking List"},{icon:"✔",label:"Dispatch Confirm"},{icon:"📄",label:"LR Upload"}]},
+    {label:"Inventory",items:[{icon:"☰",label:"Stock Lookup"},{icon:"+",label:"Stock In"}]},
+    {label:"CCTV",items:[{icon:"●",label:"CCTV Recording"}]},
+    {label:"Other",items:[{icon:"🔔",label:"Notifications"},{icon:"👤",label:"Profile & Settings"}]},
   ];
   return(
     <div style={{position:"absolute",top:0,right:0,bottom:0,width:"75%",background:C.white,borderLeft:`0.5px solid ${C.border}`,zIndex:10,overflowY:"auto"}}>
@@ -160,34 +160,34 @@ const MSlideMenu = ({active}) => {
   );
 };
 
-// â”€â”€â”€ Sales ERP sidebar (CMS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Sales ERP sidebar (CMS) ───────────────────────────────────────────
 const SALES_MENU=[
-  {icon:"âŠž",label:"Dashboard",screens:[{id:"W-03",label:"Main Dashboard"}]},
-  {icon:"â—«",label:"Products",screens:[{id:"W-04",label:"SKU List"},{id:"W-05",label:"Create / Edit SKU"},{id:"W-06",label:"SKU Detail"},{id:"W-07",label:"Label & Barcode Print"}]},
-  {icon:"â˜°",label:"Inventory",screens:[{id:"W-09",label:"Live Inventory"},{id:"W-13",label:"Stock Alert Center"}]},
+  {icon:"⊞",label:"Dashboard",screens:[{id:"W-03",label:"Main Dashboard"}]},
+  {icon:"□",label:"Products",screens:[{id:"W-04",label:"SKU List"},{id:"W-05",label:"Create / Edit SKU"},{id:"W-06",label:"SKU Detail"},{id:"W-07",label:"Label & Barcode Print"}]},
+  {icon:"☰",label:"Inventory",screens:[{id:"W-09",label:"Live Inventory"},{id:"W-13",label:"Stock Alert Center"}]},
   {icon:"◉",label:"Orders",screens:[{id:"W-14",label:"Order List"},{id:"W-15",label:"Order Detail"},{id:"W-16R",label:"Create Order - Retail"},{id:"W-16W",label:"Create Order - Wholesale"},{id:"W-34",label:"Wholesale Queue"}]},
   {icon:"⊏",label:"Dispatch",screens:[{id:"W-17",label:"LR Console"},{id:"W-18",label:"LR Detail"}]},
   {icon:"₹",label:"Payments",screens:[{id:"W-20",label:"Payment Records"}]},
-  {icon:"â—ˆ",label:"CCTV",screens:[{id:"W-21",label:"CCTV Console"},{id:"W-22",label:"Video Playback"}]},
+  {icon:"●",label:"CCTV",screens:[{id:"W-21",label:"CCTV Console"},{id:"W-22",label:"Video Playback"}]},
   {icon:"⊡",label:"Reports",screens:[{id:"W-23",label:"Reports Hub"},{id:"W-24",label:"Sales Report"},{id:"W-25",label:"Ageing Report"},{id:"W-26",label:"Top Designs"},{id:"W-27",label:"Customer History"}]},
-  {icon:"âœ‰",label:"SMS",screens:[{id:"W-28",label:"SMS Log"},{id:"W-29",label:"SMS Templates"}]},
-  {icon:"\u{1F4CA}",label:"Daily Ops",screens:[{id:"W-36",label:"Daily Reconciliation"},{id:"W-39",label:"Challan Print Preview"}]},
+  {icon:"✉",label:"SMS",screens:[{id:"W-28",label:"SMS Log"},{id:"W-29",label:"SMS Templates"}]},
+  {icon:"📊",label:"Daily Ops",screens:[{id:"W-36",label:"Daily Reconciliation"},{id:"W-39",label:"Challan Print Preview"}]},
   {icon:"⚙",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-30A",label:"Role Permissions"},{id:"W-31",label:"Customer Master"},{id:"W-35",label:"Edit Customer"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
 ];
 
-// â”€â”€â”€ Manufacturing ERP sidebar (GMMS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Manufacturing ERP sidebar (GMMS) ───────────────────────────────────────
 const MFG_MENU=[
   {icon:"⊞",label:"Dashboard",screens:[{id:"G-12",label:"Production Dashboard"}]},
-  {icon:"\u{1F4CB}",label:"Challans",screens:[{id:"G-01",label:"Challan List"},{id:"G-02",label:"Create Challan"},{id:"G-03",label:"Challan Tracking"},{id:"G-13",label:"Reprocess Challan"}]},
-  {icon:"\u{1F477}",label:"Contractors",screens:[{id:"G-04",label:"Contractor List"},{id:"G-05",label:"Contractor Detail"}]},
+  {icon:"📋",label:"Challans",screens:[{id:"G-01",label:"Challan List"},{id:"G-02",label:"Create Challan"},{id:"G-03",label:"Challan Tracking"},{id:"G-13",label:"Reprocess Challan"}]},
+  {icon:"👷",label:"Contractors",screens:[{id:"G-04",label:"Contractor List"},{id:"G-05",label:"Contractor Detail"}]},
   {icon:"✔",label:"Production",screens:[{id:"G-06",label:"Ready Piece Count"},{id:"G-07",label:"Payment & Checking"},{id:"G-21",label:"SKU Outward"}]},
   {icon:"↩",label:"RF / Returns",screens:[{id:"G-08",label:"RF Management"},{id:"G-20",label:"Create RF Entry"}]},
-  {icon:"\u{1F9F5}",label:"Fabric / Mill",screens:[{id:"G-09",label:"Mill / Fabric Management"}]},
+  {icon:"🧵",label:"Fabric / Mill",screens:[{id:"G-09",label:"Mill / Fabric Management"}]},
   {icon:"₹",label:"Costing (Owner Only)",screens:[{id:"G-10",label:"Design Costing [OWNER ONLY]"}]},
-  {icon:"\u{1F3A8}",label:"Masters",screens:[{id:"G-14",label:"Design Master"},{id:"G-15",label:"Job Work Types"},{id:"G-16",label:"Color Master"},{id:"G-17",label:"Contractor Registry"}]},
-  {icon:"\u{1F514}",label:"Notifications",screens:[{id:"G-18",label:"Notifications Center"}]},
-  {icon:"\u{1F4CA}",label:"Reports",screens:[{id:"G-19",label:"GMMS Reports Hub"}]},
-  {icon:"\u{1F4F1}",label:"Contractor Mobile",screens:[{id:"M-G01",label:"Contractor Login"},{id:"M-G02",label:"My Challans"},{id:"M-G03",label:"Challan Detail"},{id:"M-G04",label:"Confirm Pieces Sent"},{id:"M-G05",label:"My Payment Ledger"},{id:"M-G06",label:"My Profile"}]},
+  {icon:"🎨",label:"Masters",screens:[{id:"G-14",label:"Design Master"},{id:"G-15",label:"Job Work Types"},{id:"G-16",label:"Color Master"},{id:"G-17",label:"Contractor Registry"}]},
+  {icon:"🔔",label:"Notifications",screens:[{id:"G-18",label:"Notifications Center"}]},
+  {icon:"📊",label:"Reports",screens:[{id:"G-19",label:"GMMS Reports Hub"}]},
+  {icon:"📱",label:"Contractor Mobile",screens:[{id:"M-G01",label:"Contractor Login"},{id:"M-G02",label:"My Challans"},{id:"M-G03",label:"Challan Detail"},{id:"M-G04",label:"Confirm Pieces Sent"},{id:"M-G05",label:"My Payment Ledger"},{id:"M-G06",label:"My Profile"}]},
   {icon:"⚙",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
 ];
 
@@ -210,7 +210,7 @@ const SidebarMenu = ({menu,activeMenu,accentColor,logo,subtitle,user}) => {
               </div>
               {isActive&&m.screens&&m.screens.map((s,si)=>(
                 <div key={si} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 10px 5px 28px",color:"#777",fontSize:10,cursor:"pointer"}}>
-                  <span style={{color:"#333",fontSize:8}}>â—‹</span>
+                  <span style={{color:"#333",fontSize:8}}>•</span>
                   <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.label}</span>
                 </div>
               ))}
@@ -287,9 +287,9 @@ const Modal = ({title,onClose,width,children}) => (
 
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // AUTH
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 const screens = {
 
@@ -336,9 +336,9 @@ const screens = {
   </div>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // DASHBOARD
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-03": () => {
   const [erpMode, setErpMode] = useState("Sales ERP");
@@ -373,18 +373,18 @@ const screens = {
       <>
       <div style={{display:"flex",gap:10,marginBottom:14}}>
         <Metric label="Pending Orders" value="24" sub="3 wholesale pending approval" alert/>
-        <Metric label="Today Dispatches" value="18" sub="\u2191 12% vs yesterday"/>
+        <Metric label="Today Dispatches" value="18" sub="↑ 12% vs yesterday"/>
         <Metric label="Low Stock SKUs" value="7" sub="Below threshold" alert/>
-        <Metric label="Unconfirmed Payments" value="\u20B91.2L" sub="6 orders unpaid" alert/>
-        <Metric label="Today Collections" value="\u20B984,200" sub="Cash \u20B932k \u00B7 UPI \u20B952k" green/>
+        <Metric label="Unconfirmed Payments" value="₹1.2L" sub="6 orders unpaid" alert/>
+        <Metric label="Today Collections" value="₹84,200" sub="Cash ₹32k · UPI ₹52k" green/>
       </div>
       <div style={{display:"flex",gap:12,marginBottom:12}}>
         <div style={{flex:2}}>
           <Card>
             <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Top-Selling Designs - April 2026</div>
-            {[["Floral Anarkali",340,"\u20B91.36L"],["Solid Kurti",280,"\u20B984k"],["Block Print Salwar",210,"\u20B963k"],["Embr. Dupatta",190,"\u20B995k"]].map(([name,units,rev],i)=>(
+            {[["Floral Anarkali",340,"₹1.36L"],["Solid Kurti",280,"₹84k"],["Block Print Salwar",210,"₹63k"],["Embr. Dupatta",190,"₹95k"]].map(([name,units,rev],i)=>(
               <div key={i} style={{marginBottom:8}}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {name}</span><span style={{color:C.textMuted}}>{units} pcs \u00B7 {rev}</span></div>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {name}</span><span style={{color:C.textMuted}}>{units} pcs · {rev}</span></div>
                 <div style={{height:6,background:C.bgSoft,borderRadius:3}}><div style={{height:6,background:C.black,borderRadius:3,width:`${(units/340)*100}%`,opacity:0.9-i*0.15}}/></div>
               </div>
             ))}
@@ -396,7 +396,7 @@ const screens = {
             {[
               {t:"Order #1042 dispatched - Suresh Fabrics",time:"2m ago"},
               {t:"LR uploaded - Challan CH-881",time:"15m ago"},
-              {t:"Payment \u20B97,800 confirmed #1039",time:"32m ago"},
+              {t:"Payment ₹7,800 confirmed #1039",time:"32m ago"},
               {t:"Low stock: HT-001-RED-M (4 pcs)",time:"1h ago",alert:true},
               {t:"Wholesale order #W-1008 pending approval",time:"1h ago",alert:true},
               {t:"New retail order #1043 created",time:"2h ago"},
@@ -410,7 +410,7 @@ const screens = {
       </div>
       <div style={{display:"flex",gap:10}}>
         <Card red style={{flex:1}}>
-          <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:6}}>{"\u26A0"} Stock Alerts</div>
+          <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:6}}>{"⚠"} Stock Alerts</div>
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             {["HT-002-BLU-L (4 pcs)","HT-005-GRN-M (2 pcs)","HT-007-PNK-XL (1 pc)"].map((s,i)=>(
               <span key={i} style={{fontSize:11,color:C.red,background:C.white,border:`0.5px solid ${C.redBorder}`,padding:"2px 8px",borderRadius:3}}>{s}</span>
@@ -418,13 +418,13 @@ const screens = {
           </div>
         </Card>
         <Card red style={{flex:1}}>
-          <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:6}}>{"\u26A0"} Credit Due - Outstanding Payments</div>
-          {[["Deepak Wholesale","\u20B932,800","Overdue 3 days - limit exceeded"],["Ramesh Traders","\u20B98,400","Due tomorrow"]].map(([name,amt,status],i)=>(
+          <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:6}}>{"⚠"} Credit Due - Outstanding Payments</div>
+          {[["Deepak Wholesale","₹32,800","Overdue 3 days - limit exceeded"],["Ramesh Traders","₹8,400","Due tomorrow"]].map(([name,amt,status],i)=>(
             <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,padding:"4px 0",borderBottom:`0.5px solid ${C.redBorder}`}}>
-              <span>{name}</span><span style={{color:C.red,fontWeight:600,fontSize:10}}>{amt} \u00B7 {status}</span>
+              <span>{name}</span><span style={{color:C.red,fontWeight:600,fontSize:10}}>{amt} · {status}</span>
             </div>
           ))}
-          <div style={{marginTop:6,fontSize:10,color:C.textMuted}}>Click to open Payment Records {"\u2192"}</div>
+          <div style={{marginTop:6,fontSize:10,color:C.textMuted}}>Click to open Payment Records {"→"}</div>
         </Card>
       </div>
       </>
@@ -434,7 +434,7 @@ const screens = {
         <Metric label="Active Challans" value="42" sub="12 started today"/>
         <Metric label="Overdue Challans" value="7" sub="Needs attention" alert/>
         <Metric label="Pieces in Production" value="3,840" sub="Across 42 challans"/>
-        <Metric label="Pending Payments" value={"\u20B918.5L"} sub="12 contractors" alert/>
+        <Metric label="Pending Payments" value={"₹18.5L"} sub="12 contractors" alert/>
         <Metric label="RF Alerts" value="3" sub="Challans in RF state" alert/>
       </div>
       <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
@@ -477,7 +477,7 @@ const screens = {
               {name:"Suresh Cut",rate:82,jobs:10},
             ].map((c,i)=>(
               <div key={i} style={{marginBottom:8}}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {c.name}</span><span style={{color:C.textMuted}}>{c.rate}% {"\u00B7"} {c.jobs} jobs</span></div>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {c.name}</span><span style={{color:C.textMuted}}>{c.rate}% {"·"} {c.jobs} jobs</span></div>
                 <div style={{height:6,background:C.bgSoft,borderRadius:3}}><div style={{height:6,background:"#e67e22",borderRadius:3,width:`${c.rate}%`,opacity:0.9-i*0.1}}/></div>
               </div>
             ))}
@@ -491,9 +491,9 @@ const screens = {
   );
 },
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // PRODUCTS & SKU
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-04": () => (
   <WebLayout activeMenu="Products">
@@ -501,7 +501,7 @@ const screens = {
     <Content>
       <div style={{display:"flex",gap:8,marginBottom:12}}>
         <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px",fontSize:12,color:C.textLight,background:C.white}}>Search by design name, SKU code...</div>
-        <Btn small>Category \u25BE</Btn><Btn small>Stock Status \u25BE</Btn><Btn small>Source \u25BE</Btn>
+        <Btn small>Category ▾</Btn><Btn small>Stock Status ▾</Btn><Btn small>Source ▾</Btn>
       </div>
       <div style={{display:"flex",gap:6,marginBottom:8}}>
         {["All","GMMS","External"].map((f,i)=>(
@@ -509,11 +509,11 @@ const screens = {
         ))}
       </div>
       <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
-        <TH cols={[{v:"Thumb",w:0.4},{v:"Design Name"},{v:"SKU Code"},{v:"Source",w:0.7},{v:"SKU Count"},{v:"Retail \u20B9"},{v:"Wholesale \u20B9"},{v:"Stock Qty"},{v:"Media"},{v:"Actions",w:1.4}]}/>
+        <TH cols={[{v:"Thumb",w:0.4},{v:"Design Name"},{v:"SKU Code"},{v:"Source",w:0.7},{v:"SKU Count"},{v:"Retail ₹"},{v:"Wholesale ₹"},{v:"Stock Qty"},{v:"Media"},{v:"Actions",w:1.4}]}/>
         {[
-          {name:"Floral Anarkali",sku:"HT-001",var:20,ret:"\u20B9850",ws:"\u20B9720",stock:184,imgs:3,vids:1,out:false,src:"GMMS",design:"D-710",challan:"3202"},
-          {name:"Solid Kurti",sku:"HT-002",var:12,ret:"\u20B9420",ws:"\u20B9350",stock:62,imgs:2,vids:0,out:false,src:"External"},
-          {name:"Block Print Salwar",sku:"HT-003",var:16,ret:"\u20B9680",ws:"\u20B9580",stock:0,imgs:4,vids:2,out:true,src:"GMMS",design:"D-688",challan:"3198"},
+          {name:"Floral Anarkali",sku:"HT-001",var:20,ret:"₹850",ws:"₹720",stock:184,imgs:3,vids:1,out:false,src:"GMMS",design:"D-710",challan:"3202"},
+          {name:"Solid Kurti",sku:"HT-002",var:12,ret:"₹420",ws:"₹350",stock:62,imgs:2,vids:0,out:false,src:"External"},
+          {name:"Block Print Salwar",sku:"HT-003",var:16,ret:"₹680",ws:"₹580",stock:0,imgs:4,vids:2,out:true,src:"GMMS",design:"D-688",challan:"3198"},
         ].map((r,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 10px",borderBottom:`0.5px solid ${C.border}`,background:r.out?C.redLight:C.white}}>
             <div style={{flex:0.4,width:32,height:32,background:C.bgSoft,borderRadius:3,border:`0.5px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:C.textLight}}>IMG</div>
@@ -526,7 +526,7 @@ const screens = {
             <div style={{flex:0.8,fontSize:12,fontWeight:500}}>{r.ret}</div>
             <div style={{flex:0.8,fontSize:12,fontWeight:500,color:C.textMuted}}>{r.ws}</div>
             <div style={{flex:0.8,fontSize:12,fontWeight:600,color:r.out?C.red:C.text}}>{r.out?"Out":r.stock+" pcs"}</div>
-            <div style={{flex:0.8,fontSize:11,color:C.textMuted}}>{"\uD83D\uDCF7"}{r.imgs} {"\uD83C\uDFA5"}{r.vids}</div>
+            <div style={{flex:0.8,fontSize:11,color:C.textMuted}}>{"📷"}{r.imgs} {"🎥"}{r.vids}</div>
             <div style={{flex:1.4,display:"flex",gap:5}}><Btn small>View</Btn><Btn small>Edit</Btn><Btn small>Print</Btn></div>
           </div>
         ))}
@@ -542,13 +542,13 @@ const screens = {
     <div style={{padding:"10px 16px",borderBottom:`0.5px solid ${C.border}`,background:C.white,display:"flex",alignItems:"center",gap:10}}>
       <div style={{fontSize:14,fontWeight:600,flex:1}}>Create / Price SKU</div>
       <div style={{display:"flex",gap:6}}>
-        <div onClick={()=>setMode("gmms")} style={{padding:"4px 12px",borderRadius:12,fontSize:10,fontWeight:700,cursor:"pointer",background:mode==="gmms"?"#e65100":"#f5f5f5",color:mode==="gmms"?"#fff":"#555",border:`0.5px solid ${mode==="gmms"?"#e65100":"#ddd"}`}}>GMMS \u2014 Price Tag Entry</div>
-        <div onClick={()=>setMode("ext")} style={{padding:"4px 12px",borderRadius:12,fontSize:10,fontWeight:700,cursor:"pointer",background:mode==="ext"?"#555":"#f5f5f5",color:mode==="ext"?"#fff":"#555",border:`0.5px solid ${mode==="ext"?"#555":"#ddd"}`}}>External Stock \u2014 Manual Entry</div>
+        <div onClick={()=>setMode("gmms")} style={{padding:"4px 12px",borderRadius:12,fontSize:10,fontWeight:700,cursor:"pointer",background:mode==="gmms"?"#e65100":"#f5f5f5",color:mode==="gmms"?"#fff":"#555",border:`0.5px solid ${mode==="gmms"?"#e65100":"#ddd"}`}}>GMMS — Price Tag Entry</div>
+        <div onClick={()=>setMode("ext")} style={{padding:"4px 12px",borderRadius:12,fontSize:10,fontWeight:700,cursor:"pointer",background:mode==="ext"?"#555":"#f5f5f5",color:mode==="ext"?"#fff":"#555",border:`0.5px solid ${mode==="ext"?"#555":"#ddd"}`}}>External Stock — Manual Entry</div>
       </div>
     </div>
     {mode==="gmms"&&(
       <div style={{padding:"8px 16px",background:"#fff3e0",borderBottom:`0.5px solid ${C.border}`,fontSize:11,color:"#e65100"}}>
-        This SKU was created by the manufacturing team. You can only set pricing \u2014 all other fields are locked.
+        This SKU was created by the manufacturing team. You can only set pricing — all other fields are locked.
       </div>
     )}
     <Content>
@@ -599,8 +599,8 @@ const screens = {
           <div style={{flex:1}}>
             <Card>
               <SectionLabel>Set Pricing</SectionLabel>
-              <Input label={"Retail Price (\u20B9)"} placeholder="850.00" required note="Required to activate SKU"/>
-              <Input label={"Wholesale Price (\u20B9)"} placeholder="720.00" required note="Shown on wholesale orders"/>
+              <Input label={"Retail Price (₹)"} placeholder="850.00" required note="Required to activate SKU"/>
+              <Input label={"Wholesale Price (₹)"} placeholder="720.00" required note="Shown on wholesale orders"/>
               <div style={{marginTop:10,display:"flex",flexDirection:"column",gap:6}}>
                 <Btn primary full>Save Pricing</Btn>
                 <Btn full>Save &amp; Print Labels</Btn>
@@ -620,15 +620,15 @@ const screens = {
             <Card>
               <SectionLabel>Pricing</SectionLabel>
               <div style={{display:"flex",gap:10}}>
-                <div style={{flex:1}}><Input label={"Retail Price (\u20B9)"} placeholder="850.00" required note="Shown on retail orders"/></div>
-                <div style={{flex:1}}><Input label={"Wholesale Price (\u20B9)"} placeholder="720.00" required note="Shown on wholesale orders"/></div>
+                <div style={{flex:1}}><Input label={"Retail Price (₹)"} placeholder="850.00" required note="Shown on retail orders"/></div>
+                <div style={{flex:1}}><Input label={"Wholesale Price (₹)"} placeholder="720.00" required note="Shown on wholesale orders"/></div>
               </div>
             </Card>
             <Card>
               <SectionLabel>Stock Entry</SectionLabel>
               <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
                 <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
-                  <div style={{flex:1.2}}>SKU</div><div style={{flex:0.8}}>Colour</div><div style={{flex:0.5}}>Size</div><div style={{flex:0.6}}>Qty</div><div style={{flex:0.9}}>Rate \u20B9</div>
+                  <div style={{flex:1.2}}>SKU</div><div style={{flex:0.8}}>Colour</div><div style={{flex:0.5}}>Size</div><div style={{flex:0.6}}>Qty</div><div style={{flex:0.9}}>Rate ₹</div>
                 </div>
                 {[{sku:"HT-001-RED-M",col:"Red",sz:"M",qty:24,rate:"850"},{sku:"HT-001-BLU-M",col:"Blue",sz:"M",qty:12,rate:"790"}].map((r,i)=>(
                   <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
@@ -646,7 +646,7 @@ const screens = {
             <Card>
               <SectionLabel>Design Images</SectionLabel>
               <div style={{height:90,border:`1.5px dashed ${C.border}`,borderRadius:6,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:C.textLight,fontSize:11,marginBottom:8}}>
-                <div style={{fontSize:20,marginBottom:4}}>{"\u2191"}</div>Upload images (multiple)
+                <div style={{fontSize:20,marginBottom:4}}>{"↑"}</div>Upload images (multiple)
               </div>
             </Card>
             <Card>
@@ -845,9 +845,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // INVENTORY
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-09": () => (
   <WebLayout activeMenu="Inventory">
@@ -986,9 +986,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // ORDERS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-14": () => (
   <WebLayout activeMenu="Orders">
@@ -1048,7 +1048,7 @@ const screens = {
             </div>
             {/* Edit lock notice after approval */}
             <div style={{padding:"7px 10px",background:C.bgSoft,borderRadius:4,border:`0.5px solid ${C.border}`,marginBottom:10,fontSize:11,color:C.textMuted}}>
-              {"\u{1F512}"} Order approved  -  editing is locked. Contact admin to modify if needed. You can still record payments and upload LR.
+              {"🔒"} Order approved  -  editing is locked. Contact admin to modify if needed. You can still record payments and upload LR.
             </div>
             <Divider label="Line Items"/>
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",marginBottom:10}}>
@@ -1162,7 +1162,7 @@ const screens = {
   </WebLayout>
 ),
 
-// â”€â”€ RETAIL ORDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RETAIL ORDER ──────────────────────────────
 "W-16R": () => (
   <WebLayout activeMenu="Orders" activeScreen="W-16R">
     <TopBar title="Create Retail Order" sub="Walk-in / counter sale  -  no approval needed" actions={[{label:"Save as Draft"},{label:"Submit + Print Challan",primary:true}]}/>
@@ -1191,7 +1191,7 @@ const screens = {
             </div>
             {/* Confirmed retail customer */}
             <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6}}>
-              <div style={{fontSize:12,fontWeight:600,color:C.green}}>\u2714 Ramesh Traders  -  +91 76543 21098</div>
+              <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Ramesh Traders  -  +91 76543 21098</div>
               <div style={{fontSize:11,color:C.textMuted}}>Retail Customer · Ahmedabad</div>
             </div>
           </Card>
@@ -1220,7 +1220,7 @@ const screens = {
                   <div style={{display:"flex",gap:4,marginTop:4}}>
                     {["S","M ●","L","XL"].map((s,i)=>(<span key={i} style={{fontSize:10,padding:"2px 7px",border:`0.5px solid ${i===1?C.black:C.border}`,borderRadius:3,background:i===1?C.black:C.white,color:i===1?C.white:C.textMuted}}>{s}</span>))}
                   </div>
-                  <div style={{fontSize:11,marginTop:4}}>Stock Red/M: <strong>24 pcs</strong> \u2714</div>
+                  <div style={{fontSize:11,marginTop:4}}>Stock Red/M: <strong>24 pcs</strong> ✔</div>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:6,alignItems:"flex-end"}}>
                   <Input label="Qty" placeholder="1"/>
@@ -1280,7 +1280,7 @@ const screens = {
                 {step:"Dispatched",note:"Staff dispatches & uploads LR",done:false},
               ].map((f,i)=>(
                 <div key={i} style={{display:"flex",gap:8,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`}}>
-                  <span style={{color:f.done?C.green:C.textMuted}}>{f.done?"\u2714":"◷"}</span>
+                  <span style={{color:f.done?C.green:C.textMuted}}>{f.done?"✔":"◷"}</span>
                   <div><div style={{fontWeight:500}}>{f.step}</div><div style={{fontSize:10,color:C.textMuted}}>{f.note}</div></div>
                 </div>
               ))}
@@ -1289,10 +1289,10 @@ const screens = {
           <Card style={{border:`0.5px solid ${C.border}`,background:C.bgSoft}}>
             <div style={{fontSize:10,fontWeight:700,color:C.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:"0.06em"}}>Fields unique to Retail</div>
             <div style={{fontSize:11,color:C.text}}>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Customer is optional (anonymous ok)</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Retail price applied automatically</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Per-item manual discount</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Payment expected at counter</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Customer is optional (anonymous ok)</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Retail price applied automatically</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Per-item manual discount</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Payment expected at counter</div>
               <div style={{padding:"3px 0"}}>✗ No credit terms / credit limit check</div>
             </div>
           </Card>
@@ -1302,7 +1302,7 @@ const screens = {
   </WebLayout>
 ),
 
-// â”€â”€ WHOLESALE ORDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── WHOLESALE ORDER ──────────────────────────────
 "W-16W": () => (
   <WebLayout activeMenu="Orders" activeScreen="W-16W">
     <TopBar title="Create Wholesale Order" sub="Registered dealer  -  goes to approval queue" actions={[{label:"Save as Draft"},{label:"Submit Order + Print Challan",primary:true}]}/>
@@ -1335,7 +1335,7 @@ const screens = {
             </div>
             {/* Selected  -  shows full account info including credit standing */}
             <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6}}>
-              <div style={{fontSize:12,fontWeight:600,color:C.green}}>\u2714 Neha Garments  -  Neha Shah</div>
+              <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Neha Garments  -  Neha Shah</div>
               <div style={{display:"flex",gap:14,marginTop:6,flexWrap:"wrap"}}>
                 <span style={{fontSize:11,color:C.textMuted}}>City: Ahmedabad</span>
                 <span style={{fontSize:11,color:C.textMuted}}>GST: 22XXXXX001</span>
@@ -1371,7 +1371,7 @@ const screens = {
                   <div style={{display:"flex",gap:4,marginTop:4}}>
                     {["S","M ●","L","XL"].map((s,i)=>(<span key={i} style={{fontSize:10,padding:"2px 7px",border:`0.5px solid ${i===1?C.black:C.border}`,borderRadius:3,background:i===1?C.black:C.white,color:i===1?C.white:C.textMuted}}>{s}</span>))}
                   </div>
-                  <div style={{fontSize:11,marginTop:4}}>Stock Red/M: <strong>24 pcs</strong> \u2714</div>
+                  <div style={{fontSize:11,marginTop:4}}>Stock Red/M: <strong>24 pcs</strong> ✔</div>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:6,alignItems:"flex-end"}}>
                   <Input label="Qty" placeholder="6"/>
@@ -1448,7 +1448,7 @@ const screens = {
                 {step:"LR Uploaded",note:"Auto SMS to customer with LR link",done:false},
               ].map((f,i)=>(
                 <div key={i} style={{display:"flex",gap:8,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`}}>
-                  <span style={{color:f.done?C.green:C.textMuted}}>{f.done?"\u2714":"◷"}</span>
+                  <span style={{color:f.done?C.green:C.textMuted}}>{f.done?"✔":"◷"}</span>
                   <div><div style={{fontWeight:500}}>{f.step}</div><div style={{fontSize:10,color:C.textMuted}}>{f.note}</div></div>
                 </div>
               ))}
@@ -1457,13 +1457,13 @@ const screens = {
           <Card style={{background:C.bgSoft}}>
             <div style={{fontSize:10,fontWeight:700,color:C.textMuted,marginBottom:6,textTransform:"uppercase",letterSpacing:"0.06em"}}>Fields unique to Wholesale</div>
             <div style={{fontSize:11,color:C.text}}>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Pre-registered customer mandatory</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Wholesale price + auto discount</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Credit terms, limit & balance check</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 GST visible on challan</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Broker & transport fields</div>
-              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>\u2714 Credit / partial payment option</div>
-              <div style={{padding:"3px 0"}}>\u2714 Requires admin approval before dispatch</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Pre-registered customer mandatory</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Wholesale price + auto discount</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Credit terms, limit & balance check</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ GST visible on challan</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Broker & transport fields</div>
+              <div style={{padding:"3px 0",borderBottom:`0.5px solid ${C.border}`}}>✔ Credit / partial payment option</div>
+              <div style={{padding:"3px 0"}}>✔ Requires admin approval before dispatch</div>
             </div>
           </Card>
         </div>
@@ -1499,7 +1499,7 @@ const screens = {
             <div style={{flex:1}}><Tag color={r.stock.includes("low")?"red":"black"}>{r.stock}</Tag></div>
             <div style={{flex:1.4,display:"flex",gap:5}}>
               <Btn small>View Items</Btn>
-              <Btn primary small>\u2714 Approve</Btn>
+              <Btn primary small>✔ Approve</Btn>
               <Btn danger small>✔</Btn>
             </div>
           </div>
@@ -1509,9 +1509,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // DISPATCH & LOGISTICS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-17": () => (
   <WebLayout activeMenu="Dispatch">
@@ -1554,7 +1554,7 @@ const screens = {
         <div style={{flex:1.4}}>
           <Card>
             <div style={{height:220,background:C.bgSoft,borderRadius:6,border:`0.5px solid ${C.border}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",marginBottom:8}}>
-              <div style={{fontSize:24}}>{"\u{1F4C4}"}</div>
+              <div style={{fontSize:24}}>{"📄"}</div>
               <div style={{fontSize:12,color:C.textMuted,marginTop:6}}>LR_CH-881_Suresh_Fabrics.jpg</div>
               <div style={{fontSize:10,color:C.textLight}}>Uploaded 04 Apr 09:45 · 2.3 MB</div>
             </div>
@@ -1598,9 +1598,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // PAYMENTS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-20": () => (
   <WebLayout activeMenu="Payments">
@@ -1652,9 +1652,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // CCTV
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-21": () => (
   <WebLayout activeMenu="CCTV">
@@ -1672,7 +1672,7 @@ const screens = {
               </div>
               {/* Order found state */}
               <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:8}}>
-                <div style={{fontSize:12,fontWeight:600,color:C.green}}>\u2714 Order Found  -  #1043</div>
+                <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Order Found  -  #1043</div>
                 <div style={{fontSize:12,marginTop:2}}>Ramesh Traders · 4 items · ₹3,400</div>
                 <div style={{fontSize:11,color:C.textMuted}}>Challan: CH-882 · Dispatching to Mumbai</div>
               </div>
@@ -1768,9 +1768,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // REPORTS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-23": () => (
   <WebLayout activeMenu="Reports">
@@ -1778,11 +1778,11 @@ const screens = {
     <Content>
       <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
         {[
-          {title:"Sales Report",desc:"By date, channel, customer & product",icon:"âŠž"},
+          {title:"Sales Report",desc:"By date, channel, customer & product",icon:"⊞"},
           {title:"Inventory Ageing",desc:"0 - 30, 31 - 60, 61 - 90, 90+ day brackets",icon:"◷"},
           {title:"Top-Selling Designs",desc:"Ranked by units & revenue",icon:"↑"},
-          {title:"Customer Order History",desc:"Per-customer view, PDF export",icon:"â—‰"},
-          {title:"Daily Statement",desc:"End-of-day reconciliation & collections",icon:"\u{1F4CA}"},
+          {title:"Customer Order History",desc:"Per-customer view, PDF export",icon:"◉"},
+          {title:"Daily Statement",desc:"End-of-day reconciliation & collections",icon:"📊"},
           {title:"Payment Status",desc:"By date, mode & status",icon:"₹"},
         ].map((r,i)=>(
           <div key={i} style={{width:"calc(33.3% - 8px)",border:`0.5px solid ${C.border}`,borderRadius:8,padding:"16px 14px",background:C.white,cursor:"pointer"}}>
@@ -1903,9 +1903,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // SMS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-28": () => (
   <WebLayout activeMenu="SMS">
@@ -1950,9 +1950,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // DAILY OPS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-36": () => (
   <WebLayout activeMenu="Daily Ops">
@@ -2028,9 +2028,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // ADMIN
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-30": () => (
   <WebLayout activeMenu="Admin" activeScreen="W-30">
@@ -2038,7 +2038,7 @@ const screens = {
     <Content>
       <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white,marginBottom:16}}>
         <TH cols={[{v:"Name"},{v:"Email",w:1.4},{v:"Role"},{v:"Mobile",w:0.9},{v:"Cross-ERP",w:0.7},{v:"Status",w:0.6},{v:"Last Login"},{v:"Actions",w:0.8}]}/>
-        <div style={{fontSize:10,color:C.textMuted,padding:"6px 10px",background:CO.accentLight,borderTop:`0.5px solid ${CO.accentBorder}`}}>{"\u{1F512}"} <strong style={{color:CO.accent}}>Super Admin</strong>: Full access to both Sales ERP and Manufacturing ERP. Reserved for owners (Kadir Bhai, Ali Bhai).</div>
+        <div style={{fontSize:10,color:C.textMuted,padding:"6px 10px",background:CO.accentLight,borderTop:`0.5px solid ${CO.accentBorder}`}}>{"🔒"} <strong style={{color:CO.accent}}>Super Admin</strong>: Full access to both Sales ERP and Manufacturing ERP. Reserved for owners (Kadir Bhai, Ali Bhai).</div>
         {[
           {name:"Abdul Kadir",email:"admin@cms.com",role:"Super Admin",mob:"+91 91046 70469",status:"Active",login:"04 Apr 09:00",crossErp:"Both"},
           {name:"Mohammad Ali",email:"ali@cms.com",role:"Super Admin",mob:"+91 79905 01710",status:"Active",login:"04 Apr 09:15",crossErp:"Both"},
@@ -2062,9 +2062,9 @@ const screens = {
         ))}
       </div>
 
-      {/* â”€â”€ DIALOG STATE 1: + Add User â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── DIALOG STATE 1: + Add User ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
-        â†“ Dialog shown when "+ Add User" is clicked
+        ↓ Dialog shown when "+ Add User" is clicked
       </div>
       <div style={{position:"relative",minHeight:460,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:16}}>
         {/* Dimmed background hint */}
@@ -2083,8 +2083,8 @@ const screens = {
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
               {[
                 {role:"Super Admin",desc:"Full access cross-ERP for owners (Kadir Bhai, Ali Bhai)",icon:"⚙"},
-                {role:"Manager",desc:"Orders, approvals, reports, payments  -  no admin settings",icon:"â—‰"},
-                {role:"Office Staff",desc:"Orders, inventory, customers  -  no approvals or admin",icon:"â—«"},
+                {role:"Manager",desc:"Orders, approvals, reports, payments  -  no admin settings",icon:"◉"},
+                {role:"Office Staff",desc:"Orders, inventory, customers  -  no approvals or admin",icon:"□"},
                 {role:"Godown Staff",desc:"Mobile app only  -  scanning, picking, dispatch, LR upload",icon:"⊏"},
               ].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:i===3?C.bgSoft:C.white,cursor:"pointer"}}>
@@ -2115,9 +2115,9 @@ const screens = {
         </Modal>
       </div>
 
-      {/* â”€â”€ DIALOG STATE 2: Edit User â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── DIALOG STATE 2: Edit User ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
-        â†“ Dialog shown when "Edit" is clicked on a user row
+        ↓ Dialog shown when "Edit" is clicked on a user row
       </div>
       <div style={{position:"relative",minHeight:440,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft}}>
         <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ User list in background ]</div>
@@ -2139,8 +2139,8 @@ const screens = {
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
               {[
                 {role:"Super Admin",desc:"Full cross-ERP access",icon:"⚙",sel:false},
-                {role:"Manager",desc:"Orders, approvals, reports",icon:"â—‰",sel:false},
-                {role:"Office Staff",desc:"Orders, inventory, customers",icon:"â—«",sel:false},
+                {role:"Manager",desc:"Orders, approvals, reports",icon:"◉",sel:false},
+                {role:"Office Staff",desc:"Orders, inventory, customers",icon:"□",sel:false},
                 {role:"Godown Staff",desc:"Mobile app  -  scan, pick, dispatch",icon:"⊏",sel:true},
               ].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
@@ -2220,7 +2220,7 @@ const screens = {
             {section.perms.map((perm,pi)=>(
               <div key={pi} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`}}>
                 <div style={{width:16,height:16,borderRadius:3,border:`0.5px solid ${perm.checked?C.black:C.border}`,background:perm.checked?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  {perm.checked&&<span style={{color:C.white,fontSize:10,lineHeight:1}}>\u2714</span>}
+                  {perm.checked&&<span style={{color:C.white,fontSize:10,lineHeight:1}}>✔</span>}
                 </div>
                 <span style={{fontSize:12,color:perm.checked?C.text:C.textMuted,flex:1}}>{perm.label}</span>
                 {!perm.checked&&<Tag color="red">Denied</Tag>}
@@ -2230,9 +2230,9 @@ const screens = {
         </Card>
       ))}
 
-      {/* â”€â”€ DIALOG STATE 1: + Add Role â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── DIALOG STATE 1: + Add Role ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",margin:"20px 0 10px"}}>
-        â†“ Dialog shown when "+ Add Role" is clicked
+        ↓ Dialog shown when "+ Add Role" is clicked
       </div>
       <div style={{position:"relative",minHeight:500,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:20}}>
         <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ Permission matrix in background ]</div>
@@ -2246,9 +2246,9 @@ const screens = {
             <div style={{fontSize:11,color:C.textMuted,marginBottom:6,fontWeight:500}}>Copy Permissions From (optional)</div>
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
               {[
-                {role:"Start with blank / no permissions",desc:"All permissions off by default",icon:"â—‹",sel:false},
-                {role:"Copy from: Manager",desc:"Orders, approvals, reports, payments",icon:"â—‰",sel:false},
-                {role:"Copy from: Office Staff",desc:"Orders, inventory, customers  -  no approvals",icon:"â—«",sel:true},
+                {role:"Start with blank / no permissions",desc:"All permissions off by default",icon:"•",sel:false},
+                {role:"Copy from: Manager",desc:"Orders, approvals, reports, payments",icon:"◉",sel:false},
+                {role:"Copy from: Office Staff",desc:"Orders, inventory, customers  -  no approvals",icon:"□",sel:true},
                 {role:"Copy from: Godown Staff",desc:"Mobile only  -  scan, pick, dispatch",icon:"⊏",sel:false},
               ].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
@@ -2264,7 +2264,7 @@ const screens = {
             </div>
           </div>
           <div style={{padding:"8px 10px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:4,fontSize:11,color:C.green,marginBottom:14}}>
-            \u2714 Copying from "Office Staff"  -  you can fine-tune individual permissions after creation on the main screen.
+            ✔ Copying from "Office Staff"  -  you can fine-tune individual permissions after creation on the main screen.
           </div>
           <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
             <Btn>Cancel</Btn>
@@ -2273,9 +2273,9 @@ const screens = {
         </Modal>
       </div>
 
-      {/* â”€â”€ DIALOG STATE 2: Delete Role confirmation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── DIALOG STATE 2: Delete Role confirmation ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
-        â†“ Dialog shown when "Delete Role" is clicked
+        ↓ Dialog shown when "Delete Role" is clicked
       </div>
       <div style={{position:"relative",minHeight:280,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:20}}>
         <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ Permission matrix in background ]</div>
@@ -2465,9 +2465,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // CHALLAN PRINT
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "W-39": () => (
   <WebLayout activeMenu="Orders">
@@ -2559,9 +2559,9 @@ const screens = {
   </WebLayout>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE SCREENS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-01": () => (
   <MobileFrame>
@@ -2597,7 +2597,7 @@ const screens = {
       </div>
       <div style={{display:"flex",gap:8,marginBottom:10}}>
         <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"12px 10px",textAlign:"center",background:C.white}}>
-          <div style={{fontSize:22,marginBottom:4}}>â—‰</div><div style={{fontSize:11,fontWeight:600}}>Orders</div>
+          <div style={{fontSize:22,marginBottom:4}}>◉</div><div style={{fontSize:11,fontWeight:600}}>Orders</div>
           <div style={{fontSize:9,color:C.red}}>3 pending</div>
         </div>
         <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"12px 10px",textAlign:"center",background:C.white}}>
@@ -2610,7 +2610,7 @@ const screens = {
         <div style={{fontSize:11,color:C.textMuted}}>HT-002-BLU-L  -  only 4 pcs left</div>
       </Card>
       <div style={{padding:"7px 10px",background:C.bgSoft,borderRadius:4,border:`0.5px solid ${C.border}`,fontSize:10,color:C.textMuted,textAlign:"center"}}>
-        Tap â˜° Menu in bottom nav for all sections
+        Tap ☰ Menu in bottom nav for all sections
       </div>
     </div>
     <MBottomNav active="Home"/>
@@ -2654,10 +2654,10 @@ const screens = {
         <div style={{fontSize:10,fontFamily:"monospace",color:C.textLight,marginTop:4}}>HT-001-RED-M</div>
       </div>
       <Card>
-        <FR label="Mode" value="Dispatch"/><FR label="Stock Updated" value="24 → 20 pcs"/><FR label="CCTV Trigger" value="Recording started \u2714"/><FR label="Order" value="#1042"/>
+        <FR label="Mode" value="Dispatch"/><FR label="Stock Updated" value="24 → 20 pcs"/><FR label="CCTV Trigger" value="Recording started ✔"/><FR label="Order" value="#1042"/>
       </Card>
       <div style={{display:"flex",gap:8,marginTop:10}}>
-        <Btn primary>Confirm \u2714</Btn><Btn>Scan Next</Btn>
+        <Btn primary>Confirm ✔</Btn><Btn>Scan Next</Btn>
       </div>
     </div>
   </MobileFrame>
@@ -2678,7 +2678,7 @@ const screens = {
       </div>
       <Input label="Quantity Received" placeholder="Enter pieces..." required/>
       <Input label="Received Date" placeholder="04 Apr 2026"/>
-      <Btn primary full>Confirm Stock In \u2714</Btn>
+      <Btn primary full>Confirm Stock In ✔</Btn>
     </div>
   </MobileFrame>
 ),
@@ -2786,7 +2786,7 @@ const screens = {
           <div style={{fontSize:10,color:C.textMuted,marginTop:3}}>e.g. waive ₹50 rounding, add charge</div>
         </div>
         <Input label="Remarks" placeholder="e.g. 2nd installment"/>
-        <Btn primary full>Save Payment \u2714</Btn>
+        <Btn primary full>Save Payment ✔</Btn>
       </div>
       <Btn primary full>Begin Picking →</Btn>
     </div>
@@ -2809,7 +2809,7 @@ const screens = {
         {[{name:"Floral Anarkali Red/M",done:true},{name:"Floral Anarkali Red/M",done:true},{name:"Solid Kurti Blue/L",done:false},{name:"Solid Kurti Blue/L",done:false}].map((item,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderBottom:`0.5px solid ${C.border}`,background:item.done?"#f0fff0":C.white}}>
             <div style={{width:18,height:18,borderRadius:"50%",background:item.done?C.green:C.bgSoft,border:`0.5px solid ${item.done?C.green:C.border}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-              {item.done&&<span style={{color:C.white,fontSize:10}}>\u2714</span>}
+              {item.done&&<span style={{color:C.white,fontSize:10}}>✔</span>}
             </div>
             <span style={{fontSize:11,color:item.done?C.textMuted:C.text}}>{item.name}</span>
           </div>
@@ -2825,7 +2825,7 @@ const screens = {
     <MNav label="Dispatch Confirmation"/>
     <div style={{padding:14}}>
       <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:12}}>
-        <div style={{fontSize:12,fontWeight:600,color:C.green}}>All 4 items picked \u2714</div>
+        <div style={{fontSize:12,fontWeight:600,color:C.green}}>All 4 items picked ✔</div>
         <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>All items verified  -  ready to dispatch</div>
       </div>
       <Card>
@@ -2838,7 +2838,7 @@ const screens = {
         <div>• Order status → Dispatched</div>
       </div>
       {/* Two buttons as per spec */}
-      <Btn primary full>Confirm Dispatch \u2714</Btn>
+      <Btn primary full>Confirm Dispatch ✔</Btn>
       <div style={{height:8}}/>
       <Btn success full>Confirm Dispatch + Print Challan 🖨</Btn>
       <div style={{marginTop:10,padding:"7px 10px",background:C.bgSoft,borderRadius:4,border:`0.5px solid ${C.border}`,fontSize:10,color:C.textMuted,textAlign:"center"}}>
@@ -2860,7 +2860,7 @@ const screens = {
       </div>
       {/* Found state */}
       <div style={{padding:"8px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:14}}>
-        <div style={{fontSize:12,fontWeight:600,color:C.green}}>\u2714 Order #1043 Found</div>
+        <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Order #1043 Found</div>
         <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>Ramesh Traders · 4 items · Dispatched</div>
         <div style={{fontSize:11,color:C.textMuted}}>Challan: CH-882</div>
       </div>
@@ -2868,15 +2868,15 @@ const screens = {
       <SectionLabel>Step 2  -  Upload LR Document</SectionLabel>
       <div style={{display:"flex",gap:8,marginBottom:8}}>
         <div style={{flex:1,border:`1.5px dashed ${C.border}`,borderRadius:6,padding:14,textAlign:"center",color:C.textMuted,background:C.white}}>
-          <div style={{fontSize:20,marginBottom:4}}>{"\u{1F4F7}"}</div><div style={{fontSize:11}}>Take Photo</div>
+          <div style={{fontSize:20,marginBottom:4}}>{"📷"}</div><div style={{fontSize:11}}>Take Photo</div>
         </div>
         <div style={{flex:1,border:`1.5px dashed ${C.border}`,borderRadius:6,padding:14,textAlign:"center",color:C.textMuted,background:C.white}}>
-          <div style={{fontSize:20,marginBottom:4}}>{"\u{1F4C4}"}</div><div style={{fontSize:11}}>Upload PDF</div>
+          <div style={{fontSize:20,marginBottom:4}}>{"📄"}</div><div style={{fontSize:11}}>Upload PDF</div>
         </div>
       </div>
       {/* Uploaded state */}
       <div style={{padding:"8px 12px",background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:6,marginBottom:12,display:"flex",gap:10,alignItems:"center"}}>
-        <div style={{fontSize:18}}>{"\u{1F4C4}"}</div>
+        <div style={{fontSize:18}}>{"📄"}</div>
         <div>
           <div style={{fontSize:11,fontWeight:600}}>LR_CH-882.jpg</div>
           <div style={{fontSize:10,color:C.textMuted}}>2.1 MB · Ready to upload</div>
@@ -2892,7 +2892,7 @@ const screens = {
       <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",background:C.white}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
           <div style={{fontSize:11,fontWeight:600}}>SMS Status</div>
-          <Tag color="black">Delivered \u2714</Tag>
+          <Tag color="black">Delivered ✔</Tag>
         </div>
         <div style={{fontSize:11,color:C.textMuted,marginBottom:8}}>Sent to +91 76543 21098 at 09:48</div>
         <Btn small>Resend SMS</Btn>
@@ -2905,29 +2905,29 @@ const screens = {
   <MobileFrame>
     <MNav label="LR Submitted"/>
     <div style={{padding:24,textAlign:"center"}}>
-      <div style={{width:60,height:60,background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",fontSize:24}}>\u2714</div>
+      <div style={{width:60,height:60,background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",fontSize:24}}>✔</div>
       <div style={{fontSize:15,fontWeight:700,marginBottom:4}}>LR Uploaded Successfully</div>
       <div style={{fontSize:11,color:C.textMuted,marginBottom:20}}>Order #1043 · Challan CH-882</div>
       <Card>
-        <FR label="LR Document" value="Uploaded \u2714"/><FR label="SMS to Customer" value="Delivered \u2714"/><FR label="Mobile" value="+91 76543 21098"/><FR label="Sent At" value="09:48:22"/>
+        <FR label="LR Document" value="Uploaded ✔"/><FR label="SMS to Customer" value="Delivered ✔"/><FR label="Mobile" value="+91 76543 21098"/><FR label="Sent At" value="09:48:22"/>
       </Card>
       <div style={{marginTop:14}}><Btn primary full>← Back to Orders</Btn></div>
     </div>
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  CREATE ORDER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
-// â”€â”€ RETAIL ORDER (MOBILE) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RETAIL ORDER (MOBILE) ──────────────────────
 "M-15R": () => (
   <MobileFrame>
     <MNav label="New Retail Order"/>
     <div style={{padding:14,paddingBottom:80}}>
       {/* Type indicator */}
       <div style={{display:"flex",gap:6,marginBottom:14}}>
-        <div style={{flex:1,textAlign:"center",padding:"8px",background:C.black,color:C.white,borderRadius:4,fontSize:12,fontWeight:600}}>Retail \u2714</div>
+        <div style={{flex:1,textAlign:"center",padding:"8px",background:C.black,color:C.white,borderRadius:4,fontSize:12,fontWeight:600}}>Retail ✔</div>
         <div style={{flex:1,textAlign:"center",padding:"8px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,color:C.textMuted}}>Wholesale</div>
       </div>
 
@@ -2943,7 +2943,7 @@ const screens = {
         <Input label="Phone *" placeholder="+91 98765 43210" note="For LR SMS"/>
       </div>
       <div style={{padding:"7px 10px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:12,fontSize:11}}>
-        <div style={{fontWeight:600,color:C.green}}>\u2714 Ramesh Traders</div>
+        <div style={{fontWeight:600,color:C.green}}>✔ Ramesh Traders</div>
         <div style={{color:C.textMuted}}>+91 76543 21098 · Retail</div>
       </div>
 
@@ -2998,14 +2998,14 @@ const screens = {
       </div>
       <Input label="Amount Received (₹)" placeholder="₹2,190" note="Full payment typical at counter"/>
       <div style={{padding:"6px 8px",background:"#edf7f1",border:`0.5px solid ${C.greenBorder}`,borderRadius:4,fontSize:10,color:C.green,marginBottom:12}}>
-        \u2714 Retail: No approval needed  -  submits directly to dispatch
+        ✔ Retail: No approval needed  -  submits directly to dispatch
       </div>
       <Btn primary full>Submit + Print Challan →</Btn>
     </div>
   </MobileFrame>
 ),
 
-// â”€â”€ WHOLESALE ORDER (MOBILE) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── WHOLESALE ORDER (MOBILE) ──────────────────────
 "M-15W": () => (
   <MobileFrame>
     <MNav label="New Wholesale Order"/>
@@ -3013,7 +3013,7 @@ const screens = {
       {/* Type indicator */}
       <div style={{display:"flex",gap:6,marginBottom:14}}>
         <div style={{flex:1,textAlign:"center",padding:"8px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,color:C.textMuted}}>Retail</div>
-        <div style={{flex:1,textAlign:"center",padding:"8px",background:C.black,color:C.white,borderRadius:4,fontSize:12,fontWeight:600}}>Wholesale \u2714</div>
+        <div style={{flex:1,textAlign:"center",padding:"8px",background:C.black,color:C.white,borderRadius:4,fontSize:12,fontWeight:600}}>Wholesale ✔</div>
       </div>
 
       {/* Customer  -  must be pre-registered */}
@@ -3030,14 +3030,14 @@ const screens = {
         ].map((c,i)=>(
           <div key={i} style={{padding:"8px 10px",borderBottom:`0.5px solid ${C.border}`,background:i===0?C.bgSoft:C.white}}>
             <div style={{fontSize:12,fontWeight:i===0?600:400}}>{c.name}</div>
-            <div style={{fontSize:10,color:C.textMuted}}>{"\u{1F4DE}"} {c.phone} · Bal: <span style={{color:c.bal!=="₹0"?C.red:C.text}}>{c.bal}</span> · Disc: {c.disc}</div>
+            <div style={{fontSize:10,color:C.textMuted}}>{"📞"} {c.phone} · Bal: <span style={{color:c.bal!=="₹0"?C.red:C.text}}>{c.bal}</span> · Disc: {c.disc}</div>
           </div>
         ))}
         <div style={{padding:"8px 10px",background:C.black,fontSize:11,color:C.white,fontWeight:600}}>+ Register New Wholesale Customer →</div>
       </div>
       {/* Selected  -  shows credit details */}
       <div style={{padding:"8px 10px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:12}}>
-        <div style={{fontSize:12,fontWeight:600,color:C.green}}>\u2714 Neha Garments</div>
+        <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Neha Garments</div>
         <div style={{display:"flex",gap:10,marginTop:4,flexWrap:"wrap"}}>
           <span style={{fontSize:10,color:C.textMuted}}>Credit: 30d</span>
           <span style={{fontSize:10,color:C.textMuted}}>Limit: ₹50,000</span>
@@ -3110,9 +3110,9 @@ const screens = {
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  WHOLESALE APPROVAL
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-16": () => (
   <MobileFrame>
@@ -3138,7 +3138,7 @@ const screens = {
             <div style={{marginLeft:"auto",display:"flex",alignItems:"center"}}><span style={{fontSize:11,color:C.red,cursor:"pointer"}}>View items →</span></div>
           </div>
           <div style={{display:"flex",gap:8}}>
-            <div style={{flex:1,background:C.black,color:C.white,borderRadius:4,padding:"8px",textAlign:"center",fontSize:12,fontWeight:600}}>\u2714 Approve</div>
+            <div style={{flex:1,background:C.black,color:C.white,borderRadius:4,padding:"8px",textAlign:"center",fontSize:12,fontWeight:600}}>✔ Approve</div>
             <div style={{flex:1,background:C.white,color:C.red,border:`0.5px solid ${C.redBorder}`,borderRadius:4,padding:"8px",textAlign:"center",fontSize:12,fontWeight:600}}>✔ Reject</div>
           </div>
         </div>
@@ -3148,9 +3148,9 @@ const screens = {
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  CUSTOMER CREATE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-17": () => (
   <MobileFrame>
@@ -3198,9 +3198,9 @@ const screens = {
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  CCTV RECORDING
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-19": () => (
   <MobileFrame>
@@ -3213,7 +3213,7 @@ const screens = {
       </div>
       {/* Found state */}
       <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:8}}>
-        <div style={{fontSize:12,fontWeight:600,color:C.green}}>\u2714 Order #1043 Found</div>
+        <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Order #1043 Found</div>
         <div style={{fontSize:11,marginTop:2}}>Ramesh Traders · 4 items</div>
         <div style={{fontSize:11,color:C.textMuted}}>Challan: CH-882</div>
       </div>
@@ -3249,9 +3249,9 @@ const screens = {
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  CHALLAN PRINT
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-18": () => (
   <MobileFrame>
@@ -3300,9 +3300,9 @@ const screens = {
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  GENERAL
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-13": () => (
   <MobileFrame>
@@ -3358,23 +3358,23 @@ const screens = {
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // MOBILE  -  SLIDE MENU
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "M-20": () => (
   <MobileFrame menuOpen={true}>
     <MNav label="Home Dashboard"/>
     <div style={{padding:14}}>
-      <div style={{padding:"20px",textAlign:"center",color:C.textMuted,fontSize:12}}>← Tap â˜° Menu to open drawer</div>
+      <div style={{padding:"20px",textAlign:"center",color:C.textMuted,fontSize:12}}>← Tap ☰ Menu to open drawer</div>
     </div>
     <MBottomNav active="Menu"/>
   </MobileFrame>
 ),
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // PUBLIC
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 "P-01": () => (
   <div style={{maxWidth:420,margin:"0 auto",background:C.white,borderRadius:8,border:`0.5px solid ${C.border}`,overflow:"hidden"}}>
@@ -3391,7 +3391,7 @@ const screens = {
         <FR label="LR Number" value="BD-2026-4458812"/><FR label="Dispatched" value="04 Apr 2026, 09:45"/>
       </Card>
       <div style={{height:180,background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:6,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",marginBottom:14}}>
-        <div style={{fontSize:24,marginBottom:6}}>{"\u{1F4C4}"}</div>
+        <div style={{fontSize:24,marginBottom:6}}>{"📄"}</div>
         <div style={{fontSize:12,color:C.textMuted}}>LR Document</div>
         <div style={{fontSize:10,color:C.textLight}}>Tap to view full size</div>
       </div>
@@ -3401,9 +3401,9 @@ const screens = {
     </div>
   </div>
 ),
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 // GMMS  -  MANUFACTURING ERP SCREENS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ------------------------------------------------------------------------
 
 // G-12: Production Dashboard
 "G-12": () => {
@@ -3859,14 +3859,14 @@ const screens = {
   const [showDesignHistory, setShowDesignHistory] = useState(false);
   return (
   <WebLayout activeMenu="Challans" mode="mfg">
-    <GTopBar title="Create New Challan" sub="Define job work flow, assign contractors, set timelines" actions={[{label:"Confirm \u0026 Notify",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
+    <GTopBar title="Create New Challan" sub="Define job work flow, assign contractors, set timelines" actions={[{label:"Confirm & Notify",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       {showDesignHistory&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowDesignHistory(false)}>
           <div style={{background:C.white,borderRadius:8,padding:20,width:420,maxHeight:"70vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
               <div style={{fontSize:13,fontWeight:700}}>Design History - D-730</div>
-              <span onClick={()=>setShowDesignHistory(false)} style={{cursor:"pointer",fontSize:16,color:C.textMuted}}>\u00D7</span>
+              <span onClick={()=>setShowDesignHistory(false)} style={{cursor:"pointer",fontSize:16,color:C.textMuted}}>×</span>
             </div>
             {[
               {challan:"3209",date:"06 May",pcs:600,note:"2 dupattas missing lace. Lace contractor 3 days late."},
@@ -3876,7 +3876,7 @@ const screens = {
               <div key={i} style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",marginBottom:8}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
                   <span style={{fontSize:11,fontWeight:700,fontFamily:"monospace"}}>#{r.challan}</span>
-                  <span style={{fontSize:10,color:C.textMuted}}>{r.date} \u00B7 {r.pcs} pcs</span>
+                  <span style={{fontSize:10,color:C.textMuted}}>{r.date} · {r.pcs} pcs</span>
                 </div>
                 <div style={{fontSize:11,color:C.text}}>{r.note}</div>
                 <button style={{marginTop:6,fontSize:10,padding:"3px 8px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,color:CO.accent,cursor:"pointer"}}>Prefill from this run</button>
@@ -3895,7 +3895,7 @@ const screens = {
             </div>
             <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
               <div style={{flex:1}}><Input label="Design Number (D.No)" placeholder="D-730" required note="Auto-fills from last run"/></div>
-              <button onClick={()=>setShowDesignHistory(true)} style={{padding:"6px 12px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,color:C.text,cursor:"pointer",marginBottom:10,whiteSpace:"nowrap"}}>History \u25BE</button>
+              <button onClick={()=>setShowDesignHistory(true)} style={{padding:"6px 12px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,color:C.text,cursor:"pointer",marginBottom:10,whiteSpace:"nowrap"}}>History ▾</button>
             </div>
             <div style={{border:`1px solid ${C.redBorder}`,borderRadius:6,padding:"10px 12px",background:C.redLight,marginTop:4}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
@@ -3914,9 +3914,9 @@ const screens = {
                 <div style={{flex:1.2}}>Fabric Type</div><div style={{flex:0.7}}>Width</div><div style={{flex:0.8}}>Colour</div><div style={{flex:0.5}}>GSM</div><div style={{flex:0.6}}>Qty (m)</div><div style={{flex:0.6}}>Rate</div><div style={{flex:0.7}}>Total</div><div style={{flex:0.8}}>Contractor</div><div style={{flex:0.5,textAlign:"center"}}>Sample</div><div style={{flex:0.3}}/>
               </div>
               {[
-                {type:"Georgette",width:'44"',colour:"Pink",gsm:60,qty:"300m",rate:"85",total:"\u20B925,500",cont:"Ramesh",sample:true},
-                {type:"Net Fabric",width:'54"',colour:"Blue",gsm:40,qty:"180m",rate:"120",total:"\u20B921,600",cont:"Suresh",sample:false},
-                {type:"Cotton Lawn",width:'44"',colour:"Cream",gsm:80,qty:"240m",rate:"95",total:"\u20B922,800",cont:"Mohan",sample:true},
+                {type:"Georgette",width:'44"',colour:"Pink",gsm:60,qty:"300m",rate:"85",total:"₹25,500",cont:"Ramesh",sample:true},
+                {type:"Net Fabric",width:'54"',colour:"Blue",gsm:40,qty:"180m",rate:"120",total:"₹21,600",cont:"Suresh",sample:false},
+                {type:"Cotton Lawn",width:'44"',colour:"Cream",gsm:80,qty:"240m",rate:"95",total:"₹22,800",cont:"Mohan",sample:true},
               ].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"5px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10}}>
                   <div style={{flex:1.2,fontWeight:500}}>{r.type}</div>
@@ -3928,7 +3928,7 @@ const screens = {
                   <div style={{flex:0.7,fontWeight:600}}>{r.total}</div>
                   <div style={{flex:0.8,fontSize:9,color:CO.accent}}>{r.cont}</div>
                   <div style={{flex:0.5,textAlign:"center"}}><input type="checkbox" defaultChecked={r.sample} style={{cursor:"pointer"}}/></div>
-                  <div style={{flex:0.3,color:C.red,cursor:"pointer",textAlign:"center",fontSize:12}}>\u00D7</div>
+                  <div style={{flex:0.3,color:C.red,cursor:"pointer",textAlign:"center",fontSize:12}}>×</div>
                 </div>
               ))}
             </div>
@@ -3948,7 +3948,7 @@ const screens = {
                 <div key={i} style={{display:"flex",gap:8,padding:"5px 8px",borderTop:`0.5px solid ${C.border}`,fontSize:11,alignItems:"center"}}>
                   <div style={{flex:2}}>{r.col}</div>
                   <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"3px 6px",background:C.white,fontWeight:600}}>{r.pcs}</div>
-                  <div style={{flex:0.5,color:C.red,cursor:"pointer",textAlign:"center"}}>\u00D7</div>
+                  <div style={{flex:0.5,color:C.red,cursor:"pointer",textAlign:"center"}}>×</div>
                 </div>
               ))}
             </div>
@@ -3957,7 +3957,7 @@ const screens = {
           <Card>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <SectionLabel>Job Work Flow</SectionLabel>
-              <div style={{fontSize:10,color:C.textMuted}}>Min 3 \u00B7 Max 13 \u00B7 drag to reorder</div>
+              <div style={{fontSize:10,color:C.textMuted}}>Min 3 · Max 13 · drag to reorder</div>
             </div>
             {[
               {step:1,type:"Embroidery",code:"EMB",cont:"Ramesh Kadkiya",days:10,ok:true},
@@ -3966,14 +3966,14 @@ const screens = {
               {step:4,type:"Lace Work",code:"LAC",cont:"Mohan Das",days:2,ok:true},
             ].map((s,i)=>(
               <div key={i} style={{border:`0.5px solid ${s.ok?CO.accentBorder:C.border}`,borderRadius:4,padding:"8px 10px",marginBottom:6,background:s.ok?CO.accentLight:C.bgSoft,display:"flex",alignItems:"center",gap:8}}>
-                <span style={{color:C.textMuted,cursor:"grab",fontSize:12,flexShrink:0}}>\u22EE\u22EE</span>
+                <span style={{color:C.textMuted,cursor:"grab",fontSize:12,flexShrink:0}}>⋮⋮</span>
                 <div style={{width:20,height:20,borderRadius:"50%",background:s.ok?CO.accent:C.border,color:C.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,flexShrink:0}}>{s.step}</div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:11,fontWeight:600}}>{s.type} <span style={{fontFamily:"monospace",fontSize:9,color:CO.accent}}>/{s.code}</span></div>
                   <div style={{fontSize:10,color:s.ok?C.textMuted:C.textLight}}>{s.cont}</div>
                 </div>
                 <div style={{fontSize:11,color:C.textMuted,flexShrink:0}}>{s.days}d</div>
-                <span style={{fontSize:14,color:C.red,cursor:"pointer"}}>\u00D7</span>
+                <span style={{fontSize:14,color:C.red,cursor:"pointer"}}>×</span>
               </div>
             ))}
             <div style={{display:"flex",gap:6}}>
@@ -3989,11 +3989,11 @@ const screens = {
             <Input label="Contractor Name" placeholder="e.g. Ahmed Embroidery Works"/>
             <Input label="Job Type" placeholder="EMB / STH / DIA..."/>
             <Input label="Mobile" placeholder="+91 98765 XXXXX"/>
-            <button style={{width:"100%",padding:"6px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>Save \u0026 Use in Flow</button>
+            <button style={{width:"100%",padding:"6px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>Save & Use in Flow</button>
           </Card>
           <Card>
             <SectionLabel>Sample Provided</SectionLabel>
-            {["Top (with sleeves \u0026 daman)","Bottom","Dupatta"].map((s,i)=>(
+            {["Top (with sleeves & daman)","Bottom","Dupatta"].map((s,i)=>(
               <label key={i} style={{display:"flex",alignItems:"center",gap:8,fontSize:12,marginBottom:6,cursor:"pointer"}}>
                 <input type="checkbox" defaultChecked={i<2}/>{s}
               </label>
@@ -4016,7 +4016,7 @@ const screens = {
             <SectionLabel>On Confirm</SectionLabel>
             {["Generate Challan No 3211","SMS + push to Ramesh Kadkiya (EMB)","Challan print-ready","Logged in audit trail"].map((a,i)=>(
               <div key={i} style={{fontSize:11,color:C.text,padding:"3px 0",display:"flex",alignItems:"center",gap:6}}>
-                <span style={{color:C.green,fontWeight:700}}>\u2714</span>{a}
+                <span style={{color:C.green,fontWeight:700}}>✔</span>{a}
               </div>
             ))}
           </Card>
@@ -4028,7 +4028,7 @@ const screens = {
 },
 "G-03": () => (
   <WebLayout activeMenu="Challans" mode="mfg">
-    <GTopBar title="Challan Tracking - #3210" sub="D-730 \u00B7 Floral Embroidery Set \u00B7 600 pcs \u00B7 Started 07 May 2026" actions={[{label:"Add Note"},{label:"Reprocess \u2192 G-13"},{label:"Print Challan",primary:true}]}/>
+    <GTopBar title="Challan Tracking - #3210" sub="D-730 · Floral Embroidery Set · 600 pcs · Started 07 May 2026" actions={[{label:"Add Note"},{label:"Reprocess → G-13"},{label:"Print Challan",primary:true}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
@@ -4044,7 +4044,7 @@ const screens = {
               <div key={i} style={{display:"flex",gap:0,marginBottom:0}}>
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",width:28,flexShrink:0}}>
                   <div style={{width:18,height:18,borderRadius:"50%",background:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.border,display:"flex",alignItems:"center",justifyContent:"center",zIndex:1,flexShrink:0}}>
-                    {s.status==="completed"&&<span style={{color:C.white,fontSize:9,fontWeight:700}}>\u2714</span>}
+                    {s.status==="completed"&&<span style={{color:C.white,fontSize:9,fontWeight:700}}>✔</span>}
                     {s.status==="inprogress"&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
                   </div>
                   {i<4&&<div style={{width:1.5,flex:1,minHeight:20,background:s.status==="completed"?C.green:C.border,margin:"2px 0"}}/>}
@@ -4071,7 +4071,7 @@ const screens = {
         <div style={{flex:1}}>
           <Card>
             <SectionLabel>Challan Summary</SectionLabel>
-            {[["Challan No","3210"],["Design No","D-730"],["Total Pieces","600"],["Colours","Pink/Blue/Cream \u00D7 200 each"],["Flow","4 stages + Ready Count"],["Started","07 May 2026"],["Expected Completion","01 Jun 2026"]].map(([l,v],i)=>(
+            {[["Challan No","3210"],["Design No","D-730"],["Total Pieces","600"],["Colours","Pink/Blue/Cream × 200 each"],["Flow","4 stages + Ready Count"],["Started","07 May 2026"],["Expected Completion","01 Jun 2026"]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500,textAlign:"right",maxWidth:"55%"}}>{v}</span>
               </div>
@@ -4085,7 +4085,7 @@ const screens = {
             ].map((n,i)=>(
               <div key={i} style={{padding:"6px 0",borderBottom:`0.5px solid ${C.border}`}}>
                 <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:C.textMuted,marginBottom:2}}>
-                  <span>{n.author} \u00B7 {n.stage}</span><span>{n.time}</span>
+                  <span>{n.author} · {n.stage}</span><span>{n.time}</span>
                 </div>
                 <div style={{fontSize:10,color:CO.accent,marginBottom:2}}>[{n.cat}]</div>
                 <div style={{fontSize:11}}>{n.note}</div>
@@ -4102,13 +4102,13 @@ const screens = {
   const [showAdd, setShowAdd] = useState(false);
   return (
   <WebLayout activeMenu="Contractors" mode="mfg">
-    <GTopBar title="Contractor List" sub="~1,300 registered \u00B7 sorted by workload" actions={[{label:"+ Add Contractor",primary:true},{label:"Export"}]}/>
+    <GTopBar title="Contractor List" sub="~1,300 registered · sorted by workload" actions={[{label:"+ Add Contractor",primary:true},{label:"Export"}]}/>
     {showAdd&&(
       <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowAdd(false)}>
         <div style={{background:C.white,borderRadius:8,padding:24,width:420,maxHeight:"80vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
             <div style={{fontSize:14,fontWeight:700}}>Add New Contractor</div>
-            <span onClick={()=>setShowAdd(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>\u00D7</span>
+            <span onClick={()=>setShowAdd(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>×</span>
           </div>
           <Input label="Full Name" placeholder="e.g. Ahmed Embroidery Works" required/>
           <div style={{display:"flex",gap:10}}>
@@ -4146,8 +4146,8 @@ const screens = {
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:8,marginBottom:12}}>
         <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px",fontSize:12,color:C.textLight,background:C.white}}>Search by name, code, job work type...</div>
-        <button style={{padding:"6px 12px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer"}}>Job Work Type \u25BE</button>
-        <button style={{padding:"6px 12px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer"}}>Status \u25BE</button>
+        <button style={{padding:"6px 12px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer"}}>Job Work Type ▾</button>
+        <button style={{padding:"6px 12px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer"}}>Status ▾</button>
         <button onClick={()=>setShowAdd(true)} style={{padding:"6px 14px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,fontSize:11,background:CO.accent,color:C.white,fontWeight:600,cursor:"pointer"}}>+ Add Contractor</button>
       </div>
       <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
@@ -4187,17 +4187,17 @@ const screens = {
   const [jobType, setJobType] = useState("Embroidery");
   return (
   <WebLayout activeMenu="Challans" mode="mfg">
-    <GTopBar title="Reprocess Challan" sub="Same design, same items \u00B7 change job type, party, and date" actions={[{label:"Confirm Reprocess",primary:true},{label:"Cancel"}]}/>
+    <GTopBar title="Reprocess Challan" sub="Same design, same items · change job type, party, and date" actions={[{label:"Confirm Reprocess",primary:true},{label:"Cancel"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{padding:"8px 12px",background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:4,marginBottom:12,fontSize:11,color:"#e65100"}}>
-        Reprocessing Challan #3202 \u00B7 Design D-710 \u00B7 Same pieces and quantities will be carried over.
+        Reprocessing Challan #3202 · Design D-710 · Same pieces and quantities will be carried over.
       </div>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
           <Card>
             <SectionLabel>Carry-Over Details (Locked)</SectionLabel>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-              {[["Original Challan","#3202"],["Design No.","D-710"],["Design Name","Floral Anarkali"],["Total Pieces","240 pcs"],["Colours","Pink \u00D7 80, Blue \u00D7 80, Cream \u00D7 80"],["Original Job Type","Stitching (STH)"]].map(([l,v],i)=>(
+              {[["Original Challan","#3202"],["Design No.","D-710"],["Design Name","Floral Anarkali"],["Total Pieces","240 pcs"],["Colours","Pink × 80, Blue × 80, Cream × 80"],["Original Job Type","Stitching (STH)"]].map(([l,v],i)=>(
                 <div key={i} style={{background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px"}}>
                   <div style={{fontSize:9,color:C.textMuted,marginBottom:2}}>{l}</div>
                   <div style={{fontSize:12,fontWeight:600,color:C.text}}>{v}</div>
@@ -4239,7 +4239,7 @@ const screens = {
             <SectionLabel>On Confirm</SectionLabel>
             {["New Challan #3211 created","Linked to original #3202","SMS to new contractor","Audit trail updated","G-12 dashboard refreshed"].map((a,i)=>(
               <div key={i} style={{fontSize:11,color:C.text,padding:"3px 0",display:"flex",alignItems:"center",gap:6}}>
-                <span style={{color:C.green,fontWeight:700}}>\u2714</span>{a}
+                <span style={{color:C.green,fontWeight:700}}>✔</span>{a}
               </div>
             ))}
           </Card>
@@ -4254,20 +4254,20 @@ const screens = {
   const [showUpload, setShowUpload] = useState(false);
   return (
   <WebLayout activeMenu="Designs" mode="mfg">
-    <GTopBar title="Design Master" sub="DST upload \u00B7 IP-restricted \u00B7 Stitch lock \u00B7 Owner approval" ownerOnly actions={[{label:"Upload Design",primary:true}]}/>
+    <GTopBar title="Design Master" sub="DST upload · IP-restricted · Stitch lock · Owner approval" ownerOnly actions={[{label:"Upload Design",primary:true}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{padding:"8px 12px",background:"#111",borderRadius:4,marginBottom:12,display:"flex",alignItems:"center",gap:10}}>
-        <span style={{fontSize:11,color:"#888"}}>\uD83D\uDD12 Designer workstations have internet blocked at IP level. Only this portal URL is whitelisted. Telegram disabled on all designer machines.</span>
+        <span style={{fontSize:11,color:"#888"}}>🔒 Designer workstations have internet blocked at IP level. Only this portal URL is whitelisted. Telegram disabled on all designer machines.</span>
       </div>
       {showUpload&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowUpload(false)}>
           <div style={{background:C.white,borderRadius:8,padding:24,width:400}} onClick={e=>e.stopPropagation()}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
               <div style={{fontSize:14,fontWeight:700}}>Upload New Design</div>
-              <span onClick={()=>setShowUpload(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted}}>\u00D7</span>
+              <span onClick={()=>setShowUpload(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted}}>×</span>
             </div>
             <div style={{border:`1.5px dashed ${CO.accentBorder}`,borderRadius:6,padding:16,textAlign:"center",background:CO.accentLight,marginBottom:12,cursor:"pointer"}}>
-              <div style={{fontSize:24,marginBottom:4}}>\u2191</div>
+              <div style={{fontSize:24,marginBottom:4}}>↑</div>
               <div style={{fontSize:12,fontWeight:600}}>Upload DST File Only</div>
               <div style={{fontSize:10,color:C.textMuted,marginTop:4}}>EMB files are rejected. Only machine-compatible DST.</div>
             </div>
@@ -4303,7 +4303,7 @@ const screens = {
                 <div style={{flex:1,color:C.textMuted}}>{r.by}</div>
                 <div style={{flex:1,fontFamily:"monospace",fontWeight:r.locked?600:400}}>{r.stitch}</div>
                 <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.status==="Approved"?C.green:r.pending?CO.accent:C.red,background:r.status==="Approved"?C.greenLight:r.pending?CO.accentLight:C.redLight,padding:"2px 5px",borderRadius:3}}>{r.status}</span></div>
-                <div style={{flex:1}}>{r.locked?<span style={{fontSize:10,color:C.green,fontWeight:600}}>\u2714 Locked</span>:r.pending?<button style={{padding:"3px 8px",fontSize:10,background:CO.accent,color:C.white,border:"none",borderRadius:3,cursor:"pointer"}}>Lock Now</button>:<span style={{fontSize:10,color:C.textMuted}}>N/A</span>}</div>
+                <div style={{flex:1}}>{r.locked?<span style={{fontSize:10,color:C.green,fontWeight:600}}>✔ Locked</span>:r.pending?<button style={{padding:"3px 8px",fontSize:10,background:CO.accent,color:C.white,border:"none",borderRadius:3,cursor:"pointer"}}>Lock Now</button>:<span style={{fontSize:10,color:C.textMuted}}>N/A</span>}</div>
                 <div style={{flex:1,display:"flex",gap:4}}>
                   <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>View</button>
                   {r.rejected&&<button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Re-upload</button>}
@@ -4316,15 +4316,15 @@ const screens = {
           <Card>
             <SectionLabel>Upload New Design</SectionLabel>
             <button onClick={()=>setShowUpload(true)} style={{width:"100%",padding:"40px 16px",border:`1.5px dashed ${CO.accentBorder}`,borderRadius:6,background:CO.accentLight,color:CO.accent,fontSize:12,fontWeight:600,cursor:"pointer",textAlign:"center"}}>
-              \u2191 Upload DST File
+              ↑ Upload DST File
             </button>
           </Card>
           <Card>
             <SectionLabel>IP Restriction Log</SectionLabel>
             {[["Designer 1","D-730","View","07 May 09:12",true],["Designer 2","D-731","Upload","07 May 10:44",true],["Unknown IP","D-728","Attempt","06 May 22:10",false]].map(([u,d,act,t,ok],i)=>(
               <div key={i} style={{fontSize:10,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`,display:"flex",justifyContent:"space-between"}}>
-                <span style={{color:ok?C.text:C.red}}>{u} \u00B7 {d} \u00B7 {act}</span>
-                <span style={{color:ok?C.textMuted:C.red,fontWeight:ok?400:700}}>{ok?t:"\u26A0 Flagged"}</span>
+                <span style={{color:ok?C.text:C.red}}>{u} · {d} · {act}</span>
+                <span style={{color:ok?C.textMuted:C.red,fontWeight:ok?400:700}}>{ok?t:"⚠ Flagged"}</span>
               </div>
             ))}
           </Card>
@@ -4354,13 +4354,13 @@ const screens = {
   ];
   return (
   <WebLayout activeMenu="Masters" mode="mfg">
-    <GTopBar title="Job Work Types" sub="13 types configured \u00B7 manage rates and availability" actions={[{label:"+ Add Type",primary:true}]}/>
+    <GTopBar title="Job Work Types" sub="13 types configured · manage rates and availability" actions={[{label:"+ Add Type",primary:true}]}/>
     {showAdd&&(
       <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowAdd(false)}>
         <div style={{background:C.white,borderRadius:8,padding:24,width:380}} onClick={e=>e.stopPropagation()}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
             <div style={{fontSize:14,fontWeight:700}}>Add Job Work Type</div>
-            <span onClick={()=>setShowAdd(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted}}>\u00D7</span>
+            <span onClick={()=>setShowAdd(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted}}>×</span>
           </div>
           <Input label="Type Code (e.g. EMB)" placeholder="3-5 chars" required mono/>
           <Input label="Type Name" placeholder="e.g. Embroidery" required/>
@@ -4371,7 +4371,7 @@ const screens = {
                 <option>Per Piece</option><option>Per Meter</option><option>Per Stitch</option>
               </select>
             </div>
-            <div style={{flex:1}}><Input label="Default Rate (\u20B9)" placeholder="0.00" required/></div>
+            <div style={{flex:1}}><Input label="Default Rate (₹)" placeholder="0.00" required/></div>
           </div>
           <div style={{display:"flex",gap:8,marginTop:16}}>
             <button style={{flex:1,padding:"8px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Save</button>
@@ -4390,7 +4390,7 @@ const screens = {
             <div style={{flex:1,fontFamily:"monospace",fontWeight:700,color:CO.accent}}>{r.code}</div>
             <div style={{flex:1,fontWeight:500}}>{r.name}</div>
             <div style={{flex:1,color:C.textMuted}}>{r.unit}</div>
-            <div style={{flex:1,fontFamily:"monospace",fontWeight:600}}>\u20B9{r.rate}</div>
+            <div style={{flex:1,fontFamily:"monospace",fontWeight:600}}>₹{r.rate}</div>
             <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.active?C.green:C.textMuted,background:r.active?C.greenLight:"#f5f5f5",padding:"2px 6px",borderRadius:3}}>{r.active?"Active":"Inactive"}</span></div>
             <div style={{flex:1.5,display:"flex",gap:4}}>
               <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
@@ -4409,7 +4409,7 @@ const screens = {
   const [selectedDesign, setSelectedDesign] = useState("D-730");
   return (
   <WebLayout activeMenu="Masters" mode="mfg">
-    <GTopBar title="Colour Master" sub="Colours per design \u00B7 used across challans and SKU creation" actions={[{label:"+ Add Colour",primary:true}]}/>
+    <GTopBar title="Colour Master" sub="Colours per design · used across challans and SKU creation" actions={[{label:"+ Add Colour",primary:true}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:12}}>
         <div style={{width:200,flexShrink:0}}>
@@ -4432,7 +4432,7 @@ const screens = {
         <div style={{flex:1}}>
           <Card>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-              <div style={{fontSize:12,fontWeight:700}}>{selectedDesign} \u00B7 Colour List</div>
+              <div style={{fontSize:12,fontWeight:700}}>{selectedDesign} · Colour List</div>
               <button style={{padding:"5px 12px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>+ Add</button>
             </div>
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
@@ -4471,7 +4471,7 @@ const screens = {
   const [tab, setTab] = useState("list");
   return (
   <WebLayout activeMenu="Contractors" mode="mfg">
-    <GTopBar title="Contractor Registry" sub="Full registration \u00B7 GSTIN \u00B7 bank details \u00B7 mobile login" actions={[{label:"Register Contractor",primary:true},{label:"Export"}]}/>
+    <GTopBar title="Contractor Registry" sub="Full registration · GSTIN · bank details · mobile login" actions={[{label:"Register Contractor",primary:true},{label:"Export"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:6,marginBottom:12}}>
         {[["list","All Contractors"],["pending","Pending Verification"],["inactive","Inactive"]].map(([v,l],i)=>(
@@ -4485,10 +4485,10 @@ const screens = {
               {["CODE","NAME","TYPE","MOBILE","GSTIN","BANK","LOGIN","STATUS","ACTION"].map((h,i)=><div key={i} style={{flex:1}}>{h}</div>)}
             </div>
             {[
-              {code:"C-006",name:"Ramesh Kadkiya",type:"EMB",mobile:"98250-XXXXX",gstin:"27ABCDE",bank:"HDFC \u2022\u2022\u2022\u22124521",login:true,status:"Active"},
-              {code:"C-011",name:"Suresh Bhai",type:"STH",mobile:"94260-XXXXX",gstin:" - ",bank:"SBI \u2022\u2022\u2022\u22128832",login:true,status:"Active"},
-              {code:"C-023",name:"Anil Thakkar",type:"DIA",mobile:"99250-XXXXX",gstin:"27XYZAA",bank:"ICICI \u2022\u2022\u2022\u22123310",login:false,status:"Pending"},
-              {code:"C-045",name:"Mohan Das",type:"HND",mobile:"98250-XXXXX",gstin:" - ",bank:"BOI \u2022\u2022\u2022\u22126640",login:true,status:"Active"},
+              {code:"C-006",name:"Ramesh Kadkiya",type:"EMB",mobile:"98250-XXXXX",gstin:"27ABCDE",bank:"HDFC •••−4521",login:true,status:"Active"},
+              {code:"C-011",name:"Suresh Bhai",type:"STH",mobile:"94260-XXXXX",gstin:" - ",bank:"SBI •••−8832",login:true,status:"Active"},
+              {code:"C-023",name:"Anil Thakkar",type:"DIA",mobile:"99250-XXXXX",gstin:"27XYZAA",bank:"ICICI •••−3310",login:false,status:"Pending"},
+              {code:"C-045",name:"Mohan Das",type:"HND",mobile:"98250-XXXXX",gstin:" - ",bank:"BOI •••−6640",login:true,status:"Active"},
             ].map((r,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
                 <div style={{flex:1,fontFamily:"monospace",fontSize:10,color:CO.accent,fontWeight:600}}>{r.code}</div>
@@ -4497,7 +4497,7 @@ const screens = {
                 <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.mobile}</div>
                 <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.gstin}</div>
                 <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.bank}</div>
-                <div style={{flex:1}}><span style={{fontSize:9,fontWeight:600,color:r.login?C.green:C.textMuted}}>{r.login?"\u2714 Active":"No login"}</span></div>
+                <div style={{flex:1}}><span style={{fontSize:9,fontWeight:600,color:r.login?C.green:C.textMuted}}>{r.login?"✔ Active":"No login"}</span></div>
                 <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.status==="Active"?C.green:CO.accent}}>{r.status}</span></div>
                 <div style={{flex:1,display:"flex",gap:3}}>
                   <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
@@ -4549,7 +4549,7 @@ const screens = {
   const typeBg = {accepted:C.greenLight,rejected:C.redLight,sent:CO.accentLight};
   return (
   <WebLayout activeMenu="Notifications" mode="mfg">
-    <GTopBar title="Notifications Centre" sub="Challan events \u00B7 accept / reject / sent tracking" actions={[{label:"Mark All Read"},{label:"Settings"}]}/>
+    <GTopBar title="Notifications Centre" sub="Challan events · accept / reject / sent tracking" actions={[{label:"Mark All Read"},{label:"Settings"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:6,marginBottom:12}}>
         {[["all","All Events"],["accepted","Accepted"],["rejected","Rejected"],["sent","Sent"]].map(([v,l],i)=>(
@@ -4564,7 +4564,7 @@ const screens = {
               <div style={{display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:3,background:typeBg[ev.type],color:typeColor[ev.type],textTransform:"uppercase"}}>{ev.type}</span>
                 <span style={{fontSize:11,fontWeight:600,fontFamily:"monospace"}}>#{ev.challan}</span>
-                <span style={{fontSize:10,color:C.textMuted}}>{ev.design} \u00B7 {ev.stage}</span>
+                <span style={{fontSize:10,color:C.textMuted}}>{ev.design} · {ev.stage}</span>
               </div>
               <span style={{fontSize:10,color:C.textMuted}}>{ev.time}</span>
             </div>
@@ -4583,7 +4583,7 @@ const screens = {
   const [report, setReport] = useState("challan");
   return (
   <WebLayout activeMenu="Reports" mode="mfg">
-    <GTopBar title="GMMS Reports Hub" sub="Challan status \u00B7 contractor performance \u00B7 design cost history" actions={[{label:"Export PDF"},{label:"Export CSV",primary:true}]}/>
+    <GTopBar title="GMMS Reports Hub" sub="Challan status · contractor performance · design cost history" actions={[{label:"Export PDF"},{label:"Export CSV",primary:true}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:6,marginBottom:16}}>
         {[["challan","Challan Status"],["contractor","Contractor Performance"],["design","Design Cost History"]].map(([v,l],i)=>(
@@ -4594,7 +4594,7 @@ const screens = {
         <div style={{display:"flex",gap:12}}>
           <div style={{flex:2}}>
             <Card>
-              <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Challan Status Overview \u00B7 May 2026</div>
+              <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Challan Status Overview · May 2026</div>
               <div style={{display:"flex",gap:8,marginBottom:14}}>
                 {[["Total Issued","127",""],["Completed","98",C.green],["In Progress","22",CO.accent],["Overdue","7",C.red]].map(([l,v,c],i)=>(
                   <div key={i} style={{flex:1,textAlign:"center",padding:"10px 6px",background:C.bgSoft,borderRadius:4,border:`0.5px solid ${C.border}`}}>
@@ -4633,7 +4633,7 @@ const screens = {
       )}
       {report==="contractor"&&(
         <Card>
-          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Contractor Performance \u00B7 May 2026</div>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Contractor Performance · May 2026</div>
           <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
             <TH cols={[{v:"Contractor"},{v:"Type"},{v:"Challans"},{v:"Completed"},{v:"Avg Days"},{v:"Rejection %"},{v:"Score"}]}/>
             {[["Ramesh Kadkiya","EMB","24","24","9.1d","1.2%","98"],["Suresh Bhai","STH","18","16","5.8d","2.1%","92"],["Anil Thakkar","DIA","15","14","3.9d","0.8%","94"],["Priya Sharma","LAC","12","11","2.1d","1.5%","88"],["Deepak Bhai","STH","10","7","6.1d","4.2%","71"]].map((r,i)=>(
@@ -4649,7 +4649,7 @@ const screens = {
           <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Design Cost History</div>
           <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
             <TH cols={[{v:"Design"},{v:"Name"},{v:"Runs"},{v:"Avg Cost/Pc"},{v:"Total Spend"},{v:"Last Run"}]}/>
-            {[["D-730","Floral Anarkali","3","\u20B9 142","\u20B9 2.56L","07 May"],["D-710","Georgette Set","5","\u20B9 98","\u20B9 1.88L","02 May"],["D-688","Block Print","2","\u20B9 76","\u20B9 0.91L","28 Apr"],["D-715","Embr. Dupatta","4","\u20B9 55","\u20B9 1.32L","05 May"]].map((r,i)=>(
+            {[["D-730","Floral Anarkali","3","₹ 142","₹ 2.56L","07 May"],["D-710","Georgette Set","5","₹ 98","₹ 1.88L","02 May"],["D-688","Block Print","2","₹ 76","₹ 0.91L","28 Apr"],["D-715","Embr. Dupatta","4","₹ 55","₹ 1.32L","05 May"]].map((r,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
                 {r.map((v,j)=><div key={j} style={{flex:1,fontFamily:j===0?"monospace":"inherit",color:j===0?CO.accent:j===4?"#b45309":C.text,fontWeight:j===0||j===4?600:400}}>{v}</div>)}
               </div>
@@ -4667,7 +4667,7 @@ const screens = {
   const [found, setFound] = useState(true);
   return (
   <WebLayout activeMenu="RF" mode="mfg">
-    <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. \u00B7 raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
+    <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. · raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
@@ -4685,11 +4685,11 @@ const screens = {
             {found&&(
               <div style={{border:`0.5px solid ${CO.accentBorder}`,borderRadius:6,padding:"10px 14px",background:CO.accentLight,marginTop:4}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
-                  <div style={{fontSize:12,fontWeight:700}}>Challan #3202 \u00B7 D-710 Floral Anarkali</div>
+                  <div style={{fontSize:12,fontWeight:700}}>Challan #3202 · D-710 Floral Anarkali</div>
                   <span style={{fontSize:10,padding:"2px 8px",background:C.greenLight,color:C.green,borderRadius:3,fontWeight:600}}>Found</span>
                 </div>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                  {[["Design","D-710"],["Pieces","240 pcs"],["Contractor","Ramesh Kadkiya"],["Stage","STH \u00B7 Completed"],["Invoice","INV-2024-1042"],["Date","03 May 2026"]].map(([l,v],i)=>(
+                  {[["Design","D-710"],["Pieces","240 pcs"],["Contractor","Ramesh Kadkiya"],["Stage","STH · Completed"],["Invoice","INV-2024-1042"],["Date","03 May 2026"]].map(([l,v],i)=>(
                     <div key={i} style={{fontSize:11}}>
                       <span style={{color:C.textMuted}}>{l}: </span><span style={{fontWeight:600}}>{v}</span>
                     </div>
@@ -4713,7 +4713,7 @@ const screens = {
             <div style={{marginBottom:8}}>
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Assign to Contractor?</div>
               <div style={{display:"flex",gap:6}}>
-                {["Yes \u2014 Raise against Ramesh","No \u2014 Internal only"].map((opt,i)=>(
+                {["Yes — Raise against Ramesh","No — Internal only"].map((opt,i)=>(
                   <div key={i} style={{padding:"4px 12px",border:`0.5px solid ${i===0?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===0?C.redLight:"#fafafa",color:i===0?C.red:C.textMuted,fontWeight:i===0?600:400}}>{opt}</div>
                 ))}
               </div>
@@ -4740,7 +4740,7 @@ const screens = {
                   <span style={{fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{id}</span>
                   <span style={{fontSize:10,color:st==="Open"?C.red:st==="Resolved"?C.green:C.textMuted,fontWeight:600}}>{st}</span>
                 </div>
-                <div style={{fontSize:10,color:C.textMuted}}>{d} \u00B7 {t}</div>
+                <div style={{fontSize:10,color:C.textMuted}}>{d} · {t}</div>
               </div>
             ))}
           </Card>
@@ -4755,7 +4755,7 @@ const screens = {
   const [step, setStep] = useState(1);
   return (
   <WebLayout activeMenu="SKU Outward" mode="mfg">
-    <GTopBar title="SKU Outward" sub="GMMS creates SKUs from finished pieces \u00B7 auto-stocks Sales ERP" actions={[{label:"Confirm \u0026 Stock",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
+    <GTopBar title="SKU Outward" sub="GMMS creates SKUs from finished pieces · auto-stocks Sales ERP" actions={[{label:"Confirm & Stock",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:6,marginBottom:16}}>
         {["1. Select Challan","2. Map to SKU","3. Set Pricing","4. Confirm"].map((s,i)=>(
@@ -4787,7 +4787,7 @@ const screens = {
             <Card>
               <SectionLabel>Map Pieces to SKU Variants</SectionLabel>
               <div style={{padding:"8px 10px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,marginBottom:10,fontSize:11}}>
-                Challan #3202 \u00B7 D-710 Floral Anarkali \u00B7 240 pcs ready
+                Challan #3202 · D-710 Floral Anarkali · 240 pcs ready
               </div>
               <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
                 <div style={{display:"flex",background:C.bgSoft,padding:"5px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
@@ -4811,14 +4811,14 @@ const screens = {
           )}
           {(step===3||step===4)&&(
             <Card>
-              <SectionLabel>{step===3?"Set Pricing":"Confirm \u0026 Stock"}</SectionLabel>
+              <SectionLabel>{step===3?"Set Pricing":"Confirm & Stock"}</SectionLabel>
               {step===3&&<>
                 <div style={{display:"flex",gap:10}}>
-                  <div style={{flex:1}}><Input label={"Retail Price (\u20B9)"} placeholder="850.00" required note="Applied to all variants"/></div>
-                  <div style={{flex:1}}><Input label={"Wholesale Price (\u20B9)"} placeholder="720.00" required/></div>
+                  <div style={{flex:1}}><Input label={"Retail Price (₹)"} placeholder="850.00" required note="Applied to all variants"/></div>
+                  <div style={{flex:1}}><Input label={"Wholesale Price (₹)"} placeholder="720.00" required/></div>
                 </div>
                 <div style={{padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted,marginBottom:8}}>
-                  240 pieces \u00D7 \u20B9850 retail = <strong style={{color:C.text}}>\u20B9 2,04,000 retail value</strong>
+                  240 pieces × ₹850 retail = <strong style={{color:C.text}}>₹ 2,04,000 retail value</strong>
                 </div>
                 <div style={{display:"flex",gap:6}}>
                   <Btn full>Back</Btn>
@@ -4826,12 +4826,12 @@ const screens = {
                 </div>
               </>}
               {step===4&&<>
-                {["240 pieces stocked in Sales ERP","6 SKU variants created / updated","Price \u20B9850 retail set for HT-001","W-04 SKU List refreshed","Audit trail logged"].map((a,i)=>(
+                {["240 pieces stocked in Sales ERP","6 SKU variants created / updated","Price ₹850 retail set for HT-001","W-04 SKU List refreshed","Audit trail logged"].map((a,i)=>(
                   <div key={i} style={{fontSize:11,color:C.text,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{color:C.green,fontWeight:700}}>\u2714</span>{a}
+                    <span style={{color:C.green,fontWeight:700}}>✔</span>{a}
                   </div>
                 ))}
-                <div style={{marginTop:12}}><Btn primary full>Confirm \u0026 Stock Now</Btn></div>
+                <div style={{marginTop:12}}><Btn primary full>Confirm & Stock Now</Btn></div>
               </>}
             </Card>
           )}
@@ -4839,7 +4839,7 @@ const screens = {
         <div style={{flex:1}}>
           <Card>
             <SectionLabel>Outward Summary</SectionLabel>
-            {[["Challan","#3202"],["Design","D-710"],["Name","Floral Anarkali"],["Total Pieces","240"],["SKU Variants","6"],["Retail Price","\u20B9 850"],["Wholesale","\u20B9 720"],["Stock Target","W-04 Sales ERP"]].map(([l,v],i)=>(
+            {[["Challan","#3202"],["Design","D-710"],["Name","Floral Anarkali"],["Total Pieces","240"],["SKU Variants","6"],["Retail Price","₹ 850"],["Wholesale","₹ 720"],["Stock Target","W-04 Sales ERP"]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
               </div>
@@ -4860,7 +4860,7 @@ const screens = {
     </div>
     <div style={{padding:20}}>
       <Input label="Mobile Number" placeholder="+91 98250 XXXXX" required/>
-      <Input label="PIN" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022" required/>
+      <Input label="PIN" placeholder="••••••" required/>
       <div style={{marginTop:8}}><Btn primary full>Sign In</Btn></div>
       <div style={{textAlign:"center",marginTop:12,fontSize:11,color:C.textMuted}}>PIN sent by CMS admin via SMS</div>
       <div style={{marginTop:16,padding:"10px 12px",background:C.bgSoft,borderRadius:6,border:`0.5px solid ${C.border}`}}>
@@ -4890,7 +4890,7 @@ const screens = {
             {r.urgent&&<span style={{fontSize:9,fontWeight:700,background:C.redLight,color:C.red,padding:"2px 6px",borderRadius:3}}>OVERDUE</span>}
           </div>
           <div style={{fontSize:11,fontWeight:600,marginBottom:2}}>{r.name}</div>
-          <div style={{fontSize:10,color:C.textMuted}}>{r.design} \u00B7 {r.pcs} pcs \u00B7 {r.stage}</div>
+          <div style={{fontSize:10,color:C.textMuted}}>{r.design} · {r.pcs} pcs · {r.stage}</div>
           <div style={{fontSize:10,color:r.urgent?C.red:C.textMuted,marginTop:4}}>Due: {r.due}</div>
           <div style={{marginTop:8,display:"flex",gap:6}}>
             <button style={{flex:1,padding:"6px",background:"#e65100",color:"#fff",border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>View Details</button>
@@ -4906,16 +4906,16 @@ const screens = {
   <MobileFrame>
     <MNav label="Challan #3210"/>
     <div style={{background:"#e65100",padding:"10px 14px"}}>
-      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>D-730 \u00B7 Floral Anarkali</div>
-      <div style={{fontSize:10,color:"#ffcc80"}}>600 pcs \u00B7 Stitching \u00B7 Due 24 May</div>
+      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>D-730 · Floral Anarkali</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>600 pcs · Stitching · Due 24 May</div>
     </div>
     <div style={{padding:14}}>
       <div style={{background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:6,padding:"8px 12px",marginBottom:10,fontSize:11,color:"#e65100",fontWeight:600}}>
-        \u26A0 New challan awaiting your acceptance
+        ⚠ New challan awaiting your acceptance
       </div>
       <Card>
         <SectionLabel>Challan Details</SectionLabel>
-        {[["Challan No","#3210"],["Design","D-730"],["Job Type","Stitching"],["Pieces","600"],["Date Issued","07 May 2026"],["Return By","24 May 2026"],["Rate","\u20B9 45 / piece"]].map(([l,v],i)=>(
+        {[["Challan No","#3210"],["Design","D-730"],["Job Type","Stitching"],["Pieces","600"],["Date Issued","07 May 2026"],["Return By","24 May 2026"],["Rate","₹ 45 / piece"]].map(([l,v],i)=>(
           <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
             <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
           </div>
@@ -4930,8 +4930,8 @@ const screens = {
         ))}
       </Card>
       <div style={{display:"flex",gap:8,marginTop:4}}>
-        <button style={{flex:1,padding:"10px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>\u2714 Accept</button>
-        <button style={{flex:1,padding:"10px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>\u00D7 Reject</button>
+        <button style={{flex:1,padding:"10px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>✔ Accept</button>
+        <button style={{flex:1,padding:"10px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>× Reject</button>
       </div>
     </div>
   </MobileFrame>
@@ -4943,7 +4943,7 @@ const screens = {
     <div style={{padding:14}}>
       <div style={{background:"#e65100",borderRadius:6,padding:"10px 14px",marginBottom:12}}>
         <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>Challan #3210</div>
-        <div style={{fontSize:10,color:"#ffcc80"}}>D-730 \u00B7 Stitching \u00B7 600 pieces issued</div>
+        <div style={{fontSize:10,color:"#ffcc80"}}>D-730 · Stitching · 600 pieces issued</div>
       </div>
       <Card>
         <SectionLabel>Enter Pieces Returned</SectionLabel>
@@ -4964,7 +4964,7 @@ const screens = {
         <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",fontSize:12,color:C.textLight,minHeight:60}}>Any notes about quality or count...</div>
       </Card>
       <div style={{marginTop:4}}>
-        <button style={{width:"100%",padding:"12px",background:"#e65100",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:"pointer"}}>Confirm \u0026 Submit</button>
+        <button style={{width:"100%",padding:"12px",background:"#e65100",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:"pointer"}}>Confirm & Submit</button>
       </div>
     </div>
   </MobileFrame>
@@ -4976,26 +4976,26 @@ const screens = {
     <div style={{background:"#e65100",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
       <div>
         <div style={{fontSize:11,color:"#ffcc80"}}>Total Earned (May)</div>
-        <div style={{fontSize:20,fontWeight:700,color:"#fff"}}>\u20B9 28,400</div>
+        <div style={{fontSize:20,fontWeight:700,color:"#fff"}}>₹ 28,400</div>
       </div>
       <div style={{textAlign:"right"}}>
         <div style={{fontSize:10,color:"#ffcc80"}}>Pending</div>
-        <div style={{fontSize:15,fontWeight:600,color:"#fff"}}>\u20B9 9,200</div>
+        <div style={{fontSize:15,fontWeight:600,color:"#fff"}}>₹ 9,200</div>
       </div>
     </div>
     <div style={{padding:14}}>
       {[
-        {challan:"3205",design:"D-715",stage:"EMB",pcs:200,amount:"\u20B9 9,200",date:"12 May",status:"Pending"},
-        {challan:"3198",design:"D-688",stage:"EMB",pcs:600,amount:"\u20B9 19,200",date:"04 May",status:"Paid"},
-        {challan:"3185",design:"D-712",stage:"EMB",pcs:600,amount:"\u20B9 18,000",date:"18 Apr",status:"Paid"},
-        {challan:"3171",design:"D-708",stage:"EMB",pcs:400,amount:"\u20B9 12,400",date:"02 Apr",status:"Paid"},
+        {challan:"3205",design:"D-715",stage:"EMB",pcs:200,amount:"₹ 9,200",date:"12 May",status:"Pending"},
+        {challan:"3198",design:"D-688",stage:"EMB",pcs:600,amount:"₹ 19,200",date:"04 May",status:"Paid"},
+        {challan:"3185",design:"D-712",stage:"EMB",pcs:600,amount:"₹ 18,000",date:"18 Apr",status:"Paid"},
+        {challan:"3171",design:"D-708",stage:"EMB",pcs:400,amount:"₹ 12,400",date:"02 Apr",status:"Paid"},
       ].map((r,i)=>(
         <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
             <span style={{fontSize:11,fontFamily:"monospace",color:"#e65100",fontWeight:700}}>#{r.challan}</span>
             <span style={{fontSize:12,fontWeight:700,color:r.status==="Paid"?C.green:"#b45309"}}>{r.amount}</span>
           </div>
-          <div style={{fontSize:10,color:C.textMuted}}>{r.design} \u00B7 {r.stage} \u00B7 {r.pcs} pcs</div>
+          <div style={{fontSize:10,color:C.textMuted}}>{r.design} · {r.stage} · {r.pcs} pcs</div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
             <span style={{fontSize:10,color:C.textMuted}}>{r.date}</span>
             <span style={{fontSize:10,fontWeight:600,color:r.status==="Paid"?C.green:"#b45309",background:r.status==="Paid"?C.greenLight:"#fff8e1",padding:"2px 6px",borderRadius:3}}>{r.status}</span>
@@ -5013,7 +5013,7 @@ const screens = {
     <div style={{background:"#e65100",padding:"24px 16px",textAlign:"center"}}>
       <div style={{width:52,height:52,borderRadius:"50%",background:"rgba(255,255,255,0.2)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:700,margin:"0 auto 8px"}}>R</div>
       <div style={{fontSize:14,fontWeight:700,color:"#fff"}}>Ramesh Kadkiya</div>
-      <div style={{fontSize:10,color:"#ffcc80"}}>Embroidery \u00B7 Code C-006</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>Embroidery · Code C-006</div>
     </div>
     <div style={{padding:14}}>
       <Card>
@@ -5034,8 +5034,8 @@ const screens = {
       </Card>
       <Card>
         <SectionLabel>Bank Details</SectionLabel>
-        <div style={{fontSize:11,color:C.text,marginBottom:4}}>HDFC Bank \u00B7 Savings</div>
-        <div style={{fontSize:11,color:C.textMuted}}>Account: \u2022\u2022\u2022\u2022 4521</div>
+        <div style={{fontSize:11,color:C.text,marginBottom:4}}>HDFC Bank · Savings</div>
+        <div style={{fontSize:11,color:C.textMuted}}>Account: •••• 4521</div>
         <div style={{fontSize:10,color:C.textMuted,marginTop:6}}>Payments credited within 2 business days of confirmation.</div>
       </Card>
       <button style={{width:"100%",padding:"10px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer",color:C.textMuted,marginTop:4}}>Sign Out</button>
@@ -5047,7 +5047,7 @@ const screens = {
 
 
 const screenGroups = [
-  {platform:"Sales ERP",icon:"\u{1F4BB}",erp:"sales",groups:[
+  {platform:"Sales ERP",icon:"💻",erp:"sales",groups:[
     {label:"Auth",screens:["W-01","W-02"]},
     {label:"Dashboard",screens:["W-03"]},
     {label:"Products",screens:["W-04","W-05","W-06","W-07"]},
@@ -5062,7 +5062,7 @@ const screenGroups = [
     {label:"Challan Print",screens:["W-39"]},
     {label:"Deprecated",screens:["W-10","W-11","W-12","W-19"]},
   ]},
-  {platform:"Manufacturing ERP - GMMS",icon:"\u{1F3ED}",erp:"mfg",groups:[
+  {platform:"Manufacturing ERP - GMMS",icon:"🏭",erp:"mfg",groups:[
     {label:"Dashboard",screens:["G-12"]},
     {label:"Challans",screens:["G-01","G-02","G-03","G-13"]},
     {label:"Contractors",screens:["G-04","G-05"]},
@@ -5075,7 +5075,7 @@ const screenGroups = [
     {label:"Reports",screens:["G-19"]},
     {label:"Contractor Mobile",screens:["M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]},
   ]},
-  {platform:"Mobile App - Godown (CMS)",icon:"\u{1F4F1}",erp:"sales",groups:[
+  {platform:"Mobile App - Godown (CMS)",icon:"📱",erp:"sales",groups:[
     {label:"Auth & Home",screens:["M-01","M-02"]},
     {label:"Navigation",screens:["M-20"]},
     {label:"Scanning & Inventory",screens:["M-03","M-04","M-05","M-06"]},
@@ -5087,7 +5087,7 @@ const screenGroups = [
     {label:"Challan Print",screens:["M-18"]},
     {label:"General",screens:["M-13","M-14"]},
   ]},
-  {platform:"Public-Facing",icon:"\u{1F517}",erp:"sales",groups:[
+  {platform:"Public-Facing",icon:"🔗",erp:"sales",groups:[
     {label:"Customer LR View",screens:["P-01"]},
   ]},
 ];
