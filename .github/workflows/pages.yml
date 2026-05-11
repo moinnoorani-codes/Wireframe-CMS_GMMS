@@ -17,9 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: erp-preview
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,12 +26,14 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: erp-preview/package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: npm ci
+        working-directory: erp-preview
+      - name: Build
+        run: npm run build
+        working-directory: erp-preview
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
