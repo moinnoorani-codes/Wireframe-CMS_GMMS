@@ -1,0 +1,364 @@
+"G-01": () => {
+  const [statusFilter,setStatusFilter]=useState("All");
+  return(
+  <WebLayout activeMenu="Challans" mode="mfg">
+    <GTopBar title="Challan List" sub="All production challans" actions={[{label:"New Challan",primary:true}]}/>
+    <Content>
+      <div style={{display:"flex",gap:8,marginBottom:12,alignItems:"center"}}>
+        <input placeholder="Search challan / design..." style={{flex:1,padding:"6px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
+        {["All","Active","Completed","Overdue","On Hold"].map(s=>(
+          <div key={s} onClick={()=>setStatusFilter(s)} style={{padding:"4px 10px",fontSize:10,borderRadius:4,cursor:"pointer",fontWeight:600,background:statusFilter===s?CO.accent:C.bgSoft,color:statusFilter===s?C.white:C.textMuted,border:`0.5px solid ${statusFilter===s?CO.accentBorder:C.border}`}}>{s}</div>
+        ))}
+      </div>
+      <Card>
+        <TH cols={[{v:"Challan No",w:0.8},{v:"Design No",w:0.6},{v:"Design Name",w:1.4},{v:"Party"},{v:"Pcs",w:0.4},{v:"Flow"},{v:"Status",w:0.7},{v:"Date",w:0.6},{v:"Action",w:0.5}]}/>
+        {[
+          {cn:"CH-3221",dn:"D-730",name:"Floral Embroidery Set",party:"M/s Rajan Fabrics",pcs:600,flow:["EMB","STH","DIA"],status:"Active",date:"07 May"},
+          {cn:"CH-3210",dn:"D-710",name:"Silk Anarkali Premium",party:"M/s Sharma Exports",pcs:450,flow:["EMB","LAC"],status:"Overdue",date:"04 May"},
+          {cn:"CH-3200",dn:"D-695",name:"Chikankari Kurta",party:"M/s Patel Traders",pcs:300,flow:["EMB","WASH"],status:"Active",date:"02 May"},
+          {cn:"CH-3189",dn:"D-688",name:"Block Print Dupatta",party:"M/s Ali Brothers",pcs:800,flow:["PRN","FIN"],status:"Completed",date:"28 Apr"},
+          {cn:"CH-3175",dn:"D-672",name:"Zardozi Lehenga",party:"M/s Kumar Textiles",pcs:200,flow:["EMB","ZAR"],status:"Active",date:"25 Apr"},
+          {cn:"CH-3160",dn:"D-655",name:"Cotton Salwar Set",party:"M/s National Cloth",pcs:1200,flow:["CUT","STH"],status:"On Hold",date:"20 Apr"},
+        ].map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{flex:0.8,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{r.cn}</div>
+            <div style={{flex:0.6,fontFamily:"monospace",color:C.textMuted}}>{r.dn}</div>
+            <div style={{flex:1.4,fontWeight:500}}>{r.name}</div>
+            <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.party}</div>
+            <div style={{flex:0.4,fontWeight:600}}>{r.pcs}</div>
+            <div style={{flex:1}}>{r.flow.map((s,j)=><span key={j} style={{marginRight:3,background:CO.accentLight,color:CO.accent,padding:"1px 6px",borderRadius:3,fontSize:9,fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>{s}</span>)}</div>
+            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Active"?"#e8f5e9":r.status==="Completed"?"#e3f2fd":r.status==="Overdue"?"#ffebee":"#fff8e1",color:r.status==="Active"?"#2e7d32":r.status==="Completed"?"#1565c0":r.status==="Overdue"?"#c62828":"#f57f17"}}>{r.status}</span></div>
+            <div style={{flex:0.6,color:C.textMuted}}>{r.date}</div>
+            <div style={{flex:0.5}}><Btn small>View</Btn></div>
+          </div>
+        ))}
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+
+"G-05": () => (
+  <WebLayout activeMenu="Contractors" mode="mfg">
+    <GTopBar title="Contractor Detail" sub="Ramesh Kadkiya · EMB-001 · Embroidery Specialist"/>
+    <Content>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:14,paddingBottom:12,borderBottom:`0.5px solid ${C.border}`}}>
+              <div style={{width:44,height:44,borderRadius:"50%",background:CO.accentLight,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:700,color:CO.accent,border:`0.5px solid ${CO.accentBorder}`}}>R</div>
+              <div>
+                <div style={{fontSize:14,fontWeight:700}}>Ramesh Kadkiya</div>
+                <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>Code: EMB-001 · Type: Embroidery · Mobile: +91 98765 43210</div>
+                <div style={{marginTop:6,display:"flex",gap:6}}>
+                  <span style={{background:"#e8f5e9",color:"#2e7d32",padding:"2px 8px",borderRadius:3,fontSize:10,fontWeight:600}}>Active</span>
+                  <span style={{background:CO.accentLight,color:CO.accent,padding:"2px 8px",borderRadius:3,fontSize:10}}>Mobile Login: Enabled</span>
+                </div>
+              </div>
+            </div>
+            <div style={{display:"flex",gap:10,marginBottom:14}}>
+              <Metric label="Active Challans" value="4" sub="Currently running"/>
+              <Metric label="Avg Turnaround" value="8.2d" sub="Last 30 challans"/>
+              <Metric label="Rejection Rate" value="1.4%" sub="Last 60 days" green/>
+              <Metric label="Total Earned" value={"₹3.2L"} sub="This FY"/>
+            </div>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Active Challans</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"Challan No",w:0.8},{v:"Design"},{v:"Stage"},{v:"Pieces",w:0.6},{v:"Deadline",w:0.7},{v:"Status",w:0.7}]}/>
+              {[
+                {cn:"CH-3221",design:"D-730",stage:"Embroidery",pcs:600,deadline:"17 May",late:false},
+                {cn:"CH-3215",design:"D-718",stage:"Embroidery",pcs:450,deadline:"15 May",late:true},
+                {cn:"CH-3208",design:"D-705",stage:"Embroidery",pcs:300,deadline:"18 May",late:false},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                  <div style={{flex:0.8,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.cn}</div>
+                  <div style={{flex:1,fontWeight:500}}>{r.design}</div>
+                  <div style={{flex:1}}><span style={{background:CO.accentLight,color:CO.accent,padding:"2px 7px",borderRadius:3,fontSize:10}}>{r.stage}</span></div>
+                  <div style={{flex:0.6}}>{r.pcs}</div>
+                  <div style={{flex:0.7,color:r.late?C.red:C.textMuted,fontWeight:r.late?600:400}}>{r.deadline}{r.late?" (!)" :""}</div>
+                  <div style={{flex:0.7}}><span style={{background:r.late?"#ffebee":"#e8f5e9",color:r.late?C.red:"#2e7d32",padding:"2px 6px",borderRadius:3,fontSize:10,fontWeight:600}}>{r.late?"Overdue":"On Track"}</span></div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Payment History</div>
+            {[
+              {ref:"PAY-1042",ch:"CH-3200",amount:"₹24,000",date:"30 Apr",status:"Paid"},
+              {ref:"PAY-1038",ch:"CH-3185",amount:"₹18,500",date:"25 Apr",status:"Paid"},
+              {ref:"PAY-1025",ch:"CH-3155",amount:"₹15,000",date:"10 Apr",status:"Pending"},
+            ].map((p,i)=>(
+              <div key={i} style={{padding:"7px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
+                  <span style={{fontFamily:"monospace",color:CO.accent,fontSize:10}}>{p.ref}</span>
+                  <span style={{fontWeight:600,color:p.status==="Paid"?"#2e7d32":CO.accent}}>{p.amount}</span>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",color:C.textMuted,fontSize:10}}>
+                  <span>{p.ch} · {p.date}</span>
+                  <span style={{background:p.status==="Paid"?"#e8f5e9":"#fff3e0",color:p.status==="Paid"?"#2e7d32":"#e65100",padding:"1px 6px",borderRadius:3}}>{p.status}</span>
+                </div>
+              </div>
+            ))}
+          </Card>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Notes</div>
+            <div style={{fontSize:11,color:C.textMuted,lineHeight:1.5}}>Reliable contractor for EMB work. Specialized in heavy embroidery. Has own 12-machine unit at Surat.</div>
+          </Card>
+        </div>
+      </div>
+    </Content>
+  </WebLayout>
+),
+
+"G-06": () => {
+  const challans = [
+    {cn:"CH-3189",dn:"D-688",name:"Block Print Dupatta",colours:[{col:"Red",exp:400,act:null},{col:"Blue",exp:400,act:null}]},
+    {cn:"CH-3175",dn:"D-672",name:"Zardozi Lehenga",colours:[{col:"Gold",exp:100,act:null},{col:"Silver",exp:100,act:null}]},
+  ];
+  return(
+  <WebLayout activeMenu="Production" mode="mfg">
+    <GTopBar title="Ready Piece Count" sub="Confirm pieces received at final stage before closing challan" actions={[{label:"Confirm & Close Selected",primary:true}]}/>
+    <Content>
+      {challans.map((ch,ci)=>(
+        <Card key={ci}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,paddingBottom:8,borderBottom:`0.5px solid ${C.border}`}}>
+            <div>
+              <span style={{fontFamily:"monospace",fontWeight:700,color:CO.accent,marginRight:8}}>{ch.cn}</span>
+              <span style={{fontWeight:600}}>{ch.dn} - {ch.name}</span>
+            </div>
+            <Btn small primary>Confirm & Close Challan</Btn>
+          </div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Colour"},{v:"Expected Pcs",w:0.8},{v:"Actual Count",w:0.8},{v:"Difference",w:0.6},{v:"Remark"}]}/>
+            {ch.colours.map((c,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <div style={{flex:1,fontWeight:500}}>{c.col}</div>
+                <div style={{flex:0.8,color:C.textMuted}}>{c.exp} pcs</div>
+                <div style={{flex:0.8}}><input type="number" defaultValue={c.exp} style={{width:70,padding:"3px 6px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,fontSize:11,textAlign:"right"}}/></div>
+                <div style={{flex:0.6,color:C.textMuted}}>-</div>
+                <div style={{flex:1}}><input placeholder="Optional note..." style={{width:"100%",padding:"3px 6px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:10}}/></div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      ))}
+    </Content>
+  </WebLayout>
+  );
+},
+
+"G-07": () => {
+  const [tab,setTab]=useState("Pending");
+  return(
+  <WebLayout activeMenu="Production" mode="mfg">
+    <GTopBar title="Payment & Checking" sub="Contractor payments and piece verification" actions={[{label:"Create Payment",primary:true}]}/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Total Paid (Apr)" value={"₹1.8L"} sub="22 transactions" green/>
+        <Metric label="Pending Payments" value={"₹54,200"} sub="8 challans" alert/>
+        <Metric label="Disputed" value={"₹8,400"} sub="2 issues" alert/>
+        <Metric label="Avg Payment Days" value="6.2d" sub="After challan close"/>
+      </div>
+      <div style={{display:"flex",gap:6,marginBottom:10}}>
+        {["Pending","Paid","All"].map(t=>(
+          <div key={t} onClick={()=>setTab(t)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,cursor:"pointer",fontWeight:600,background:tab===t?CO.accent:C.bgSoft,color:tab===t?C.white:C.textMuted,border:`0.5px solid ${tab===t?CO.accentBorder:C.border}`}}>{t}</div>
+        ))}
+      </div>
+      <Card>
+        <TH cols={[{v:"Ref No",w:0.8},{v:"Challan"},{v:"Contractor"},{v:"Amount",w:0.7},{v:"Pieces",w:0.6},{v:"Date",w:0.6},{v:"Status",w:0.7},{v:"Action",w:0.6}]}/>
+        {[
+          {ref:"PAY-1050",ch:"CH-3200",cont:"Ramesh Kadkiya",amt:"₹24,000",pcs:300,date:"07 May",status:"Pending"},
+          {ref:"PAY-1049",ch:"CH-3198",cont:"Suresh Bhai",amt:"₹18,000",pcs:450,date:"06 May",status:"Pending"},
+          {ref:"PAY-1045",ch:"CH-3185",cont:"Hari Gems",amt:"₹30,000",pcs:600,date:"04 May",status:"Paid"},
+          {ref:"PAY-1042",ch:"CH-3175",cont:"Priya Emb.",amt:"₹21,000",pcs:200,date:"02 May",status:"Paid"},
+        ].filter(r=>tab==="All"||r.status===tab).map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{flex:0.8,fontFamily:"monospace",color:CO.accent,fontSize:10}}>{r.ref}</div>
+            <div style={{flex:1,fontFamily:"monospace"}}>{r.ch}</div>
+            <div style={{flex:1,fontWeight:500}}>{r.cont}</div>
+            <div style={{flex:0.7,fontWeight:600}}>{r.amt}</div>
+            <div style={{flex:0.6,color:C.textMuted}}>{r.pcs}</div>
+            <div style={{flex:0.6,color:C.textMuted}}>{r.date}</div>
+            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Pending"?"#fff3e0":"#e8f5e9",color:r.status==="Pending"?"#e65100":"#2e7d32"}}>{r.status}</span></div>
+            <div style={{flex:0.6}}>{r.status==="Pending"&&<Btn small primary>Pay</Btn>}</div>
+          </div>
+        ))}
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+
+"G-08": () => {
+  const [typeFilter,setTypeFilter]=useState("All");
+  return(
+  <WebLayout activeMenu="RF / Returns" mode="mfg">
+    <GTopBar title="RF Management" sub="Return Fabric entries and tracking" actions={[{label:"Create RF Entry"},{label:"Create RF → G-20",primary:true}]}/>
+    <Content>
+      <div style={{display:"flex",gap:6,marginBottom:10,alignItems:"center"}}>
+        <input placeholder="Search RF no / challan..." style={{flex:1,padding:"5px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
+        {["All","Excess","Damage","Sample","Shortage"].map(t=>(
+          <div key={t} onClick={()=>setTypeFilter(t)} style={{padding:"3px 9px",fontSize:10,borderRadius:3,cursor:"pointer",fontWeight:600,background:typeFilter===t?CO.accent:C.bgSoft,color:typeFilter===t?C.white:C.textMuted,border:`0.5px solid ${typeFilter===t?CO.accentBorder:C.border}`}}>{t}</div>
+        ))}
+      </div>
+      <Card>
+        <TH cols={[{v:"RF No",w:0.7},{v:"Challan",w:0.8},{v:"Design"},{v:"Type",w:0.7},{v:"Pieces",w:0.5},{v:"Contractor"},{v:"Status",w:0.7},{v:"Date",w:0.6},{v:"Action",w:0.5}]}/>
+        {[
+          {rf:"RF-2031",ch:"CH-3210",design:"D-710",type:"Excess",pcs:12,cont:"Salim Works",status:"Received",date:"06 May"},
+          {rf:"RF-2028",ch:"CH-3200",design:"D-695",type:"Damage",pcs:5,cont:"Mohan Stitching",status:"Pending",date:"05 May"},
+          {rf:"RF-2024",ch:"CH-3189",design:"D-688",type:"Sample",pcs:8,cont:"In-house",status:"Received",date:"03 May"},
+          {rf:"RF-2020",ch:"CH-3175",design:"D-672",type:"Shortage",pcs:3,cont:"Hari Gems",status:"Disputed",date:"01 May"},
+        ].filter(r=>typeFilter==="All"||r.type===typeFilter).map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{flex:0.7,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.rf}</div>
+            <div style={{flex:0.8,fontFamily:"monospace"}}>{r.ch}</div>
+            <div style={{flex:1,fontWeight:500}}>{r.design}</div>
+            <div style={{flex:0.7}}><span style={{background:CO.accentLight,color:CO.accent,padding:"2px 6px",borderRadius:3,fontSize:10}}>{r.type}</span></div>
+            <div style={{flex:0.5,fontWeight:600}}>{r.pcs}</div>
+            <div style={{flex:1,color:C.textMuted}}>{r.cont}</div>
+            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:r.status==="Received"?"#e8f5e9":r.status==="Disputed"?"#ffebee":"#fff8e1",color:r.status==="Received"?"#2e7d32":r.status==="Disputed"?C.red:"#f57f17"}}>{r.status}</span></div>
+            <div style={{flex:0.6,color:C.textMuted}}>{r.date}</div>
+            <div style={{flex:0.5}}><Btn small>View</Btn></div>
+          </div>
+        ))}
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+
+"G-09": () => (
+  <WebLayout activeMenu="Fabric / Mill" mode="mfg">
+    <GTopBar title="Mill / Fabric Management" sub="Fabric roll inventory and mill tracking" actions={[{label:"Add Roll"},{label:"Add Mill",primary:true}]}/>
+    <Content>
+      <div style={{display:"flex",gap:12,marginBottom:12}}>
+        <Metric label="Total Rolls" value="142" sub="In stock"/>
+        <Metric label="In Use" value="38" sub="Issued to challans"/>
+        <Metric label="Low Stock Alerts" value="5" sub="Below minimum" alert/>
+        <Metric label="Mills Registered" value="12" sub="Active suppliers"/>
+      </div>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Fabric Roll Inventory</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"Roll No",w:0.7},{v:"Fabric Type"},{v:"Width",w:0.5},{v:"GSM",w:0.4},{v:"Length (m)",w:0.6},{v:"Mill"},{v:"Status",w:0.7},{v:"Action",w:0.5}]}/>
+              {[
+                {roll:"RL-0421",type:"Pure Silk",width:'44"',gsm:80,len:50,mill:"Varanasi Mills",status:"Available"},
+                {roll:"RL-0420",type:"Cotton Voile",width:'58"',gsm:60,len:100,mill:"Surat Fabrics",status:"In Use"},
+                {roll:"RL-0419",type:"Georgette",width:'44"',gsm:70,len:45,mill:"Bhiwandi Co.",status:"Available"},
+                {roll:"RL-0418",type:"Rayon",width:'58"',gsm:110,len:80,mill:"Surat Fabrics",status:"Available"},
+                {roll:"RL-0415",type:"Net",width:'54"',gsm:30,len:20,mill:"Mumbai Nets",status:"Low"},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                  <div style={{flex:0.7,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.roll}</div>
+                  <div style={{flex:1,fontWeight:500}}>{r.type}</div>
+                  <div style={{flex:0.5,color:C.textMuted}}>{r.width}</div>
+                  <div style={{flex:0.4,color:C.textMuted}}>{r.gsm}</div>
+                  <div style={{flex:0.6,fontWeight:600}}>{r.len}</div>
+                  <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.mill}</div>
+                  <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:r.status==="Available"?"#e8f5e9":r.status==="In Use"?"#e3f2fd":"#ffebee",color:r.status==="Available"?"#2e7d32":r.status==="In Use"?"#1565c0":C.red}}>{r.status}</span></div>
+                  <div style={{flex:0.5}}><Btn small>Edit</Btn></div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Mill Summary</div>
+            {[
+              {mill:"Surat Fabrics",rolls:42,active:14},
+              {mill:"Varanasi Mills",rolls:28,active:8},
+              {mill:"Bhiwandi Co.",rolls:35,active:10},
+              {mill:"Mumbai Nets",rolls:18,active:4},
+            ].map((m,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <span style={{fontWeight:500}}>{m.mill}</span>
+                <span style={{color:C.textMuted,fontSize:10}}>{m.rolls} rolls · {m.active} active</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </Content>
+  </WebLayout>
+),
+
+"G-10": () => {
+  const [design,setDesign]=useState("D-730");
+  return(
+  <WebLayout activeMenu="Costing (Owner Only)" mode="mfg">
+    <GTopBar title="Design Costing" sub="Full BOM, job costs, and margin analysis" ownerOnly/>
+    <Content>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+              <div style={{fontSize:12,fontWeight:600}}>Design:</div>
+              {["D-730","D-710","D-695","D-688"].map(d=>(
+                <div key={d} onClick={()=>setDesign(d)} style={{padding:"4px 10px",fontSize:11,borderRadius:4,cursor:"pointer",fontWeight:600,background:design===d?CO.accent:C.bgSoft,color:design===d?C.white:C.textMuted,border:`0.5px solid ${design===d?CO.accentBorder:C.border}`}}>{d}</div>
+              ))}
+            </div>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Bill of Materials - {design}</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",marginBottom:12}}>
+              <TH cols={[{v:"Item"},{v:"Category",w:0.8},{v:"Qty",w:0.5},{v:"Unit",w:0.5},{v:"Rate",w:0.6},{v:"Amount",w:0.7}]}/>
+              {[
+                {item:"Pure Silk Fabric",cat:"Fabric",qty:"2.5m",unit:"per m",rate:"₹850",amt:"₹2,125"},
+                {item:"Zari Thread (Gold)",cat:"Material",qty:"200g",unit:"per 100g",rate:"₹320",amt:"₹640"},
+                {item:"Embroidery Work",cat:"Job Work",qty:"1 challan",unit:"per pc",rate:"₹380",amt:"₹380"},
+                {item:"Stitching",cat:"Job Work",qty:"1 pc",unit:"per pc",rate:"₹120",amt:"₹120"},
+                {item:"Finishing",cat:"Job Work",qty:"1 pc",unit:"per pc",rate:"₹45",amt:"₹45"},
+                {item:"Packaging",cat:"Overhead",qty:"1 set",unit:"per set",rate:"₹35",amt:"₹35"},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                  <div style={{flex:1,fontWeight:500}}>{r.item}</div>
+                  <div style={{flex:0.8}}><span style={{background:C.bgSoft,padding:"2px 6px",borderRadius:3,fontSize:10}}>{r.cat}</span></div>
+                  <div style={{flex:0.5,color:C.textMuted}}>{r.qty}</div>
+                  <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{r.unit}</div>
+                  <div style={{flex:0.6}}>{r.rate}</div>
+                  <div style={{flex:0.7,fontWeight:600,color:CO.accent}}>{r.amt}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Cost Summary</div>
+            {[
+              {label:"Raw Material",val:"₹2,765",pct:"70%"},
+              {label:"Job Work",val:"₹545",pct:"14%"},
+              {label:"Overhead",val:"₹185",pct:"5%"},
+              {label:"Total Cost",val:"₹3,495",pct:"89%",bold:true},
+              {label:"Target Margin",val:"25%",pct:""},
+              {label:"Selling Price",val:"₹4,370",pct:"",bold:true,accent:true},
+            ].map((r,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:r.bold?12:11,fontWeight:r.bold?700:400,color:r.accent?CO.accent:C.text}}>
+                <span>{r.label}</span>
+                <span>{r.val}{r.pct&&<span style={{fontSize:10,color:C.textMuted,marginLeft:6}}>{r.pct}</span>}</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+
+"G-11": () => (
+  <WebLayout activeMenu="Masters" mode="mfg">
+    <Content>
+      <div style={{padding:40,textAlign:"center",color:C.textMuted}}>
+        <div style={{fontSize:22,marginBottom:8}}>{"→"}</div>
+        <div style={{fontSize:14,fontWeight:600,marginBottom:6}}>Content moved to G-14 Design Master</div>
+        <div style={{fontSize:11,marginBottom:16}}>This screen has been consolidated into the Design Master module.</div>
+        <Btn primary>Open G-14 Design Master</Btn>
+      </div>
+    </Content>
+  </WebLayout>
+),
+

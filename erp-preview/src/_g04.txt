@@ -1,0 +1,84 @@
+"G-04": () => {
+  const [showAdd, setShowAdd] = useState(false);
+  return (
+  <WebLayout activeMenu="Contractors" mode="mfg">
+    <GTopBar title="Contractor List" sub="~1,300 registered \u00B7 sorted by workload" actions={[{label:"+ Add Contractor",primary:true},{label:"Export"}]}/>
+    {showAdd&&(
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowAdd(false)}>
+        <div style={{background:C.white,borderRadius:8,padding:24,width:420,maxHeight:"80vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
+            <div style={{fontSize:14,fontWeight:700}}>Add New Contractor</div>
+            <span onClick={()=>setShowAdd(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>\u00D7</span>
+          </div>
+          <Input label="Full Name" placeholder="e.g. Ahmed Embroidery Works" required/>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="Mobile" placeholder="+91 98765 XXXXX" required/></div>
+            <div style={{flex:1}}><Input label="WhatsApp" placeholder="+91 98765 XXXXX"/></div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Primary Job Work Type <span style={{color:C.red}}>*</span></div>
+            <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+              {["EMB","STH","DIA","LAC","WASH","CUT","FIN","HND"].map((t,i)=>(
+                <div key={i} style={{padding:"4px 10px",border:`0.5px solid ${i===0?CO.accentBorder:C.border}`,borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer",background:i===0?CO.accentLight:"#fafafa",color:i===0?CO.accent:C.textMuted}}>{t}</div>
+              ))}
+            </div>
+          </div>
+          <Input label="Address" placeholder="City / Area"/>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="GSTIN" placeholder="Optional"/></div>
+            <div style={{flex:1}}><Input label="Bank Account (last 4)" placeholder="XXXX"/></div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Create Mobile Login?</div>
+            <div style={{display:"flex",gap:6}}>
+              {["Yes - SMS credentials","No - Skip for now"].map((opt,i)=>(
+                <div key={i} style={{padding:"4px 12px",border:`0.5px solid ${i===0?CO.accentBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===0?CO.accentLight:"#fafafa",color:i===0?CO.accent:C.textMuted}}>{opt}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,marginTop:16}}>
+            <button style={{flex:1,padding:"8px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Save Contractor</button>
+            <button onClick={()=>setShowAdd(false)} style={{flex:1,padding:"8px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer"}}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    )}
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:8,marginBottom:12}}>
+        <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px",fontSize:12,color:C.textLight,background:C.white}}>Search by name, code, job work type...</div>
+        <button style={{padding:"6px 12px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer"}}>Job Work Type \u25BE</button>
+        <button style={{padding:"6px 12px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer"}}>Status \u25BE</button>
+        <button onClick={()=>setShowAdd(true)} style={{padding:"6px 14px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,fontSize:11,background:CO.accent,color:C.white,fontWeight:600,cursor:"pointer"}}>+ Add Contractor</button>
+      </div>
+      <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
+        <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+          {["CODE","NAME","JOB WORK TYPE","PENDING","AVG TIME","REJECTION %","CHALLANS","STATUS","ACTIONS"].map((h,i)=><div key={i} style={{flex:i===8?1.2:1}}>{h}</div>)}
+        </div>
+        {[
+          {code:"C-006",name:"Ramesh Kadkiya",type:"Embroidery",pending:8,avg:"9.2d",rej:"1.2%",active:3,status:"Active"},
+          {code:"C-011",name:"Suresh Bhai",type:"Stitching",pending:14,avg:"5.8d",rej:"2.1%",active:5,status:"Active",warn:true},
+          {code:"C-023",name:"Anil Thakkar",type:"Diamond",pending:3,avg:"3.9d",rej:"0.8%",active:2,status:"Active"},
+          {code:"C-045",name:"Mohan Das",type:"Hand Work",pending:0,avg:"2.8d",rej:"0.5%",active:0,status:"Available",green:true},
+          {code:"C-078",name:"Priya Sharma",type:"Lace Work",pending:6,avg:"1.9d",rej:"1.5%",active:4,status:"Active"},
+          {code:"C-102",name:"Deepak Bhai",type:"Stitching",pending:22,avg:"6.1d",rej:"4.2%",active:7,status:"Overloaded",alert:true},
+        ].map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,background:r.alert?C.redLight:C.white}}>
+            <div style={{flex:1,fontFamily:"monospace",fontSize:10,color:CO.accent,fontWeight:600}}>{r.code}</div>
+            <div style={{flex:1,fontWeight:500}}>{r.name}</div>
+            <div style={{flex:1,color:C.textMuted}}>{r.type}</div>
+            <div style={{flex:1,fontWeight:600,color:r.alert||r.warn?C.red:r.pending>10?"#b45309":C.green}}>{r.pending}d</div>
+            <div style={{flex:1,color:C.textMuted}}>{r.avg}</div>
+            <div style={{flex:1,color:parseFloat(r.rej)>3?C.red:C.text}}>{r.rej}</div>
+            <div style={{flex:1}}>{r.active}</div>
+            <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.alert?C.red:r.green?C.green:r.warn?"#b45309":CO.accent,background:r.alert?C.redLight:r.green?C.greenLight:CO.accentLight,padding:"2px 6px",borderRadius:3}}>{r.status}</span></div>
+            <div style={{flex:1.2,display:"flex",gap:4}}>
+              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>View</button>
+              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Ledger</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </WebLayout>
+  );
+},

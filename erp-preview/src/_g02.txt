@@ -1,0 +1,171 @@
+"G-02": () => {
+  const [showDesignHistory, setShowDesignHistory] = useState(false);
+  return (
+  <WebLayout activeMenu="Challans" mode="mfg">
+    <GTopBar title="Create New Challan" sub="Define job work flow, assign contractors, set timelines" actions={[{label:"Confirm \u0026 Notify",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      {showDesignHistory&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowDesignHistory(false)}>
+          <div style={{background:C.white,borderRadius:8,padding:20,width:420,maxHeight:"70vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
+              <div style={{fontSize:13,fontWeight:700}}>Design History - D-730</div>
+              <span onClick={()=>setShowDesignHistory(false)} style={{cursor:"pointer",fontSize:16,color:C.textMuted}}>\u00D7</span>
+            </div>
+            {[
+              {challan:"3209",date:"06 May",pcs:600,note:"2 dupattas missing lace. Lace contractor 3 days late."},
+              {challan:"3198",date:"28 Apr",pcs:500,note:"Fabric overconsumption at embroidery - 6 pieces short."},
+              {challan:"3185",date:"12 Apr",pcs:600,note:"Completed on time. No issues."},
+            ].map((r,i)=>(
+              <div key={i} style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                  <span style={{fontSize:11,fontWeight:700,fontFamily:"monospace"}}>#{r.challan}</span>
+                  <span style={{fontSize:10,color:C.textMuted}}>{r.date} \u00B7 {r.pcs} pcs</span>
+                </div>
+                <div style={{fontSize:11,color:C.text}}>{r.note}</div>
+                <button style={{marginTop:6,fontSize:10,padding:"3px 8px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,color:CO.accent,cursor:"pointer"}}>Prefill from this run</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <SectionLabel>Challan Header</SectionLabel>
+            <div style={{display:"flex",gap:10,marginBottom:4}}>
+              <div style={{flex:1}}><Input label="Challan No (Auto)" placeholder="3211" mono/></div>
+              <div style={{flex:1}}><Input label="Date" placeholder="07 May 2026"/></div>
+            </div>
+            <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
+              <div style={{flex:1}}><Input label="Design Number (D.No)" placeholder="D-730" required note="Auto-fills from last run"/></div>
+              <button onClick={()=>setShowDesignHistory(true)} style={{padding:"6px 12px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,color:C.text,cursor:"pointer",marginBottom:10,whiteSpace:"nowrap"}}>History \u25BE</button>
+            </div>
+            <div style={{border:`1px solid ${C.redBorder}`,borderRadius:6,padding:"10px 12px",background:C.redLight,marginTop:4}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                <div style={{fontSize:11,fontWeight:700,color:C.red}}>Repeat Design Alert - D-730</div>
+                <span style={{fontSize:9,color:C.textMuted}}>2 prior runs</span>
+              </div>
+              <div style={{fontSize:11,color:C.text,marginBottom:4}}><strong>Run #3209 (06 May):</strong> 2 dupattas missing lace. Lace contractor 3 days late.</div>
+              <div style={{fontSize:11,color:C.text,marginBottom:8}}><strong>Run #3198 (28 Apr):</strong> Fabric overconsumption at embroidery - 6 pieces short.</div>
+              <button style={{padding:"5px 14px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer",width:"100%"}}>Acknowledged - Open Form</button>
+            </div>
+          </Card>
+          <Card>
+            <SectionLabel>Fabric Table</SectionLabel>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",marginBottom:8}}>
+              <div style={{display:"flex",background:C.bgSoft,padding:"5px 6px",fontSize:9,fontWeight:700,color:C.textMuted,gap:4}}>
+                <div style={{flex:1.2}}>Fabric Type</div><div style={{flex:0.7}}>Width</div><div style={{flex:0.8}}>Colour</div><div style={{flex:0.5}}>GSM</div><div style={{flex:0.6}}>Qty (m)</div><div style={{flex:0.6}}>Rate</div><div style={{flex:0.7}}>Total</div><div style={{flex:0.8}}>Contractor</div><div style={{flex:0.5,textAlign:"center"}}>Sample</div><div style={{flex:0.3}}/>
+              </div>
+              {[
+                {type:"Georgette",width:'44"',colour:"Pink",gsm:60,qty:"300m",rate:"85",total:"\u20B925,500",cont:"Ramesh",sample:true},
+                {type:"Net Fabric",width:'54"',colour:"Blue",gsm:40,qty:"180m",rate:"120",total:"\u20B921,600",cont:"Suresh",sample:false},
+                {type:"Cotton Lawn",width:'44"',colour:"Cream",gsm:80,qty:"240m",rate:"95",total:"\u20B922,800",cont:"Mohan",sample:true},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"5px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10}}>
+                  <div style={{flex:1.2,fontWeight:500}}>{r.type}</div>
+                  <div style={{flex:0.7,color:C.textMuted}}>{r.width}</div>
+                  <div style={{flex:0.8}}>{r.colour}</div>
+                  <div style={{flex:0.5,color:C.textMuted}}>{r.gsm}</div>
+                  <div style={{flex:0.6,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"2px 4px",background:C.white}}>{r.qty}</div>
+                  <div style={{flex:0.6,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"2px 4px",background:C.white}}>{r.rate}</div>
+                  <div style={{flex:0.7,fontWeight:600}}>{r.total}</div>
+                  <div style={{flex:0.8,fontSize:9,color:CO.accent}}>{r.cont}</div>
+                  <div style={{flex:0.5,textAlign:"center"}}><input type="checkbox" defaultChecked={r.sample} style={{cursor:"pointer"}}/></div>
+                  <div style={{flex:0.3,color:C.red,cursor:"pointer",textAlign:"center",fontSize:12}}>\u00D7</div>
+                </div>
+              ))}
+            </div>
+            <button style={{padding:"5px 12px",border:`0.5px solid ${CO.accentBorder}`,background:CO.accentLight,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>+ Add Fabric Row</button>
+          </Card>
+          <Card>
+            <SectionLabel>Lot Details - Colour Breakdown</SectionLabel>
+            <div style={{display:"flex",gap:10,marginBottom:8}}>
+              <div style={{flex:1}}><Input label="Total Pieces" placeholder="600" required/></div>
+              <div style={{flex:1}}><Input label="Fabric Consumption / Piece" placeholder="50 points" required note="Contractor must not exceed"/></div>
+            </div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",marginBottom:8}}>
+              <div style={{display:"flex",background:C.bgSoft,padding:"5px 8px",fontSize:10,fontWeight:700,color:C.textMuted,gap:8}}>
+                <div style={{flex:2}}>COLOUR</div><div style={{flex:1}}>PIECES</div><div style={{flex:0.5}}/>
+              </div>
+              {[{col:"Pink",pcs:200},{col:"Blue",pcs:200},{col:"Cream",pcs:200}].map((r,i)=>(
+                <div key={i} style={{display:"flex",gap:8,padding:"5px 8px",borderTop:`0.5px solid ${C.border}`,fontSize:11,alignItems:"center"}}>
+                  <div style={{flex:2}}>{r.col}</div>
+                  <div style={{flex:1,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"3px 6px",background:C.white,fontWeight:600}}>{r.pcs}</div>
+                  <div style={{flex:0.5,color:C.red,cursor:"pointer",textAlign:"center"}}>\u00D7</div>
+                </div>
+              ))}
+            </div>
+            <button style={{padding:"5px 12px",border:`0.5px solid ${CO.accentBorder}`,background:CO.accentLight,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>+ Add Colour</button>
+          </Card>
+          <Card>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <SectionLabel>Job Work Flow</SectionLabel>
+              <div style={{fontSize:10,color:C.textMuted}}>Min 3 \u00B7 Max 13 \u00B7 drag to reorder</div>
+            </div>
+            {[
+              {step:1,type:"Embroidery",code:"EMB",cont:"Ramesh Kadkiya",days:10,ok:true},
+              {step:2,type:"Stitching",code:"STH",cont:"Suresh Bhai",days:6,ok:true},
+              {step:3,type:"Diamond",code:"DIA",cont:"Select contractor...",days:4,ok:false},
+              {step:4,type:"Lace Work",code:"LAC",cont:"Mohan Das",days:2,ok:true},
+            ].map((s,i)=>(
+              <div key={i} style={{border:`0.5px solid ${s.ok?CO.accentBorder:C.border}`,borderRadius:4,padding:"8px 10px",marginBottom:6,background:s.ok?CO.accentLight:C.bgSoft,display:"flex",alignItems:"center",gap:8}}>
+                <span style={{color:C.textMuted,cursor:"grab",fontSize:12,flexShrink:0}}>\u22EE\u22EE</span>
+                <div style={{width:20,height:20,borderRadius:"50%",background:s.ok?CO.accent:C.border,color:C.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,flexShrink:0}}>{s.step}</div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:11,fontWeight:600}}>{s.type} <span style={{fontFamily:"monospace",fontSize:9,color:CO.accent}}>/{s.code}</span></div>
+                  <div style={{fontSize:10,color:s.ok?C.textMuted:C.textLight}}>{s.cont}</div>
+                </div>
+                <div style={{fontSize:11,color:C.textMuted,flexShrink:0}}>{s.days}d</div>
+                <span style={{fontSize:14,color:C.red,cursor:"pointer"}}>\u00D7</span>
+              </div>
+            ))}
+            <div style={{display:"flex",gap:6}}>
+              <button style={{flex:1,padding:"7px",border:`1.5px dashed ${CO.accentBorder}`,background:CO.accentLight,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>+ Add Stage</button>
+              <button style={{flex:1,padding:"7px",border:`1.5px dashed ${C.border}`,background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted,fontWeight:600,cursor:"pointer"}}>+ Quick-add Job Type</button>
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <SectionLabel>Quick-add Contractor</SectionLabel>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:8}}>Add a new contractor without leaving this form</div>
+            <Input label="Contractor Name" placeholder="e.g. Ahmed Embroidery Works"/>
+            <Input label="Job Type" placeholder="EMB / STH / DIA..."/>
+            <Input label="Mobile" placeholder="+91 98765 XXXXX"/>
+            <button style={{width:"100%",padding:"6px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>Save \u0026 Use in Flow</button>
+          </Card>
+          <Card>
+            <SectionLabel>Sample Provided</SectionLabel>
+            {["Top (with sleeves \u0026 daman)","Bottom","Dupatta"].map((s,i)=>(
+              <label key={i} style={{display:"flex",alignItems:"center",gap:8,fontSize:12,marginBottom:6,cursor:"pointer"}}>
+                <input type="checkbox" defaultChecked={i<2}/>{s}
+              </label>
+            ))}
+          </Card>
+          <Card>
+            <SectionLabel>Parallel Flows</SectionLabel>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:8}}>Split lot across multiple contractor chains. Max 10 parallel flows.</div>
+            <div style={{padding:"6px 10px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,marginBottom:8}}>
+              <div style={{fontSize:11,fontWeight:600,color:CO.accent}}>1 flow active - 600 pcs</div>
+            </div>
+            <button style={{width:"100%",padding:"6px",border:`0.5px solid ${CO.accentBorder}`,background:C.white,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>+ Split into Parallel Flow</button>
+          </Card>
+          <Card>
+            <SectionLabel>Notes / Remarks</SectionLabel>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",fontSize:12,color:C.textLight,background:C.white,minHeight:60}}>Add specific instructions for this production run...</div>
+            <div style={{fontSize:10,color:C.textMuted,marginTop:4}}>Notes stored against D.No - appear on all future runs.</div>
+          </Card>
+          <Card style={{background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`}}>
+            <SectionLabel>On Confirm</SectionLabel>
+            {["Generate Challan No 3211","SMS + push to Ramesh Kadkiya (EMB)","Challan print-ready","Logged in audit trail"].map((a,i)=>(
+              <div key={i} style={{fontSize:11,color:C.text,padding:"3px 0",display:"flex",alignItems:"center",gap:6}}>
+                <span style={{color:C.green,fontWeight:700}}>\u2714</span>{a}
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},

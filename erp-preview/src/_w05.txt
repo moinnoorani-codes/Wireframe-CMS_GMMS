@@ -1,0 +1,134 @@
+"W-05": () => {
+  const [mode, setMode] = useState("gmms");
+  return (
+  <WebLayout activeMenu="Products">
+    <div style={{padding:"10px 16px",borderBottom:`0.5px solid ${C.border}`,background:C.white,display:"flex",alignItems:"center",gap:10}}>
+      <div style={{fontSize:14,fontWeight:600,flex:1}}>Create / Price SKU</div>
+      <div style={{display:"flex",gap:6}}>
+        <div onClick={()=>setMode("gmms")} style={{padding:"4px 12px",borderRadius:12,fontSize:10,fontWeight:700,cursor:"pointer",background:mode==="gmms"?"#e65100":"#f5f5f5",color:mode==="gmms"?"#fff":"#555",border:`0.5px solid ${mode==="gmms"?"#e65100":"#ddd"}`}}>GMMS \u2014 Price Tag Entry</div>
+        <div onClick={()=>setMode("ext")} style={{padding:"4px 12px",borderRadius:12,fontSize:10,fontWeight:700,cursor:"pointer",background:mode==="ext"?"#555":"#f5f5f5",color:mode==="ext"?"#fff":"#555",border:`0.5px solid ${mode==="ext"?"#555":"#ddd"}`}}>External Stock \u2014 Manual Entry</div>
+      </div>
+    </div>
+    {mode==="gmms"&&(
+      <div style={{padding:"8px 16px",background:"#fff3e0",borderBottom:`0.5px solid ${C.border}`,fontSize:11,color:"#e65100"}}>
+        This SKU was created by the manufacturing team. You can only set pricing \u2014 all other fields are locked.
+      </div>
+    )}
+    <Content>
+      {mode==="gmms"?(
+        <div style={{display:"flex",gap:12}}>
+          <div style={{flex:2}}>
+            <Card>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <SectionLabel>GMMS Origin (Read-only)</SectionLabel>
+                <span style={{fontSize:9,fontWeight:700,padding:"2px 8px",background:"#fff3e0",color:"#e65100",borderRadius:3}}>LOCKED</span>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+                {[["Design No.","D-710"],["Challan No.","3202"],["Production Date","05 May 2026"],["Total Pieces","240 pcs"]].map(([lbl,val],i)=>(
+                  <div key={i} style={{background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px"}}>
+                    <div style={{fontSize:9,color:C.textMuted,marginBottom:3}}>{lbl}</div>
+                    <div style={{fontSize:12,fontWeight:600,color:C.text}}>{val}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+            <Card>
+              <SectionLabel>Pre-filled Fields (Locked)</SectionLabel>
+              <div style={{display:"flex",gap:10,marginBottom:8}}>
+                <div style={{flex:1,background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px"}}>
+                  <div style={{fontSize:9,color:C.textMuted,marginBottom:2}}>Design Name</div>
+                  <div style={{fontSize:12,fontWeight:500}}>Floral Anarkali</div>
+                </div>
+                <div style={{flex:1,background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px"}}>
+                  <div style={{fontSize:9,color:C.textMuted,marginBottom:2}}>SKU Code</div>
+                  <div style={{fontSize:12,fontWeight:500,fontFamily:"monospace"}}>HT-001</div>
+                </div>
+              </div>
+              <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+                <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+                  <div style={{flex:1.2}}>SKU</div><div style={{flex:0.8}}>Colour</div><div style={{flex:0.5}}>Size</div><div style={{flex:0.6}}>Qty</div>
+                </div>
+                {[{sku:"HT-001-RED-M",col:"Red",sz:"M",qty:60},{sku:"HT-001-RED-L",col:"Red",sz:"L",qty:48},{sku:"HT-001-BLU-M",col:"Blue",sz:"M",qty:72},{sku:"HT-001-BLU-L",col:"Blue",sz:"L",qty:60}].map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,background:C.bgSoft,color:C.textMuted}}>
+                    <div style={{flex:1.2,fontFamily:"monospace",fontSize:10}}>{r.sku}</div>
+                    <div style={{flex:0.8}}>{r.col}</div>
+                    <div style={{flex:0.5}}>{r.sz}</div>
+                    <div style={{flex:0.6,fontWeight:600}}>{r.qty}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div style={{flex:1}}>
+            <Card>
+              <SectionLabel>Set Pricing</SectionLabel>
+              <Input label={"Retail Price (\u20B9)"} placeholder="850.00" required note="Required to activate SKU"/>
+              <Input label={"Wholesale Price (\u20B9)"} placeholder="720.00" required note="Shown on wholesale orders"/>
+              <div style={{marginTop:10,display:"flex",flexDirection:"column",gap:6}}>
+                <Btn primary full>Save Pricing</Btn>
+                <Btn full>Save &amp; Print Labels</Btn>
+                <Btn full>Cancel</Btn>
+              </div>
+            </Card>
+          </div>
+        </div>
+      ):(
+        <div style={{display:"flex",gap:12}}>
+          <div style={{flex:2}}>
+            <Card>
+              <SectionLabel>Design Information</SectionLabel>
+              <Input label="Design Name" placeholder="e.g. Floral Anarkali Set" required/>
+              <Input label="SKU Code (auto)" placeholder="HT-001" mono/>
+            </Card>
+            <Card>
+              <SectionLabel>Pricing</SectionLabel>
+              <div style={{display:"flex",gap:10}}>
+                <div style={{flex:1}}><Input label={"Retail Price (\u20B9)"} placeholder="850.00" required note="Shown on retail orders"/></div>
+                <div style={{flex:1}}><Input label={"Wholesale Price (\u20B9)"} placeholder="720.00" required note="Shown on wholesale orders"/></div>
+              </div>
+            </Card>
+            <Card>
+              <SectionLabel>Stock Entry</SectionLabel>
+              <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+                <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+                  <div style={{flex:1.2}}>SKU</div><div style={{flex:0.8}}>Colour</div><div style={{flex:0.5}}>Size</div><div style={{flex:0.6}}>Qty</div><div style={{flex:0.9}}>Rate \u20B9</div>
+                </div>
+                {[{sku:"HT-001-RED-M",col:"Red",sz:"M",qty:24,rate:"850"},{sku:"HT-001-BLU-M",col:"Blue",sz:"M",qty:12,rate:"790"}].map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+                    <div style={{flex:1.2,fontFamily:"monospace",fontSize:10,color:C.textMuted}}>{r.sku}</div>
+                    <div style={{flex:0.8}}>{r.col}</div>
+                    <div style={{flex:0.5}}>{r.sz}</div>
+                    <div style={{flex:0.6,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"3px 6px"}}>{r.qty}</div>
+                    <div style={{flex:0.9,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"3px 6px",fontWeight:600}}>{r.rate}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div style={{flex:1}}>
+            <Card>
+              <SectionLabel>Design Images</SectionLabel>
+              <div style={{height:90,border:`1.5px dashed ${C.border}`,borderRadius:6,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:C.textLight,fontSize:11,marginBottom:8}}>
+                <div style={{fontSize:20,marginBottom:4}}>{"\u2191"}</div>Upload images (multiple)
+              </div>
+            </Card>
+            <Card>
+              <SectionLabel>Barcode Preview</SectionLabel>
+              <div style={{height:50,background:C.bgSoft,borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:6}}>
+                <span style={{fontSize:9,color:C.textMuted,letterSpacing:2}}>||||| HT-001 |||||</span>
+              </div>
+            </Card>
+            <Card>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                <Btn primary full>Save SKU</Btn>
+                <Btn full>Save &amp; Print Labels</Btn>
+                <Btn full>Cancel</Btn>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
+    </Content>
+  </WebLayout>
+  );
+},

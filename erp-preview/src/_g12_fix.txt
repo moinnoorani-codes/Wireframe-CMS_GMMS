@@ -1,0 +1,119 @@
+          <span style={{fontSize:10,fontWeight:600,color:erpMode==="Manufacturing ERP"?C.black:C.textMuted}}>Manufacturing ERP</span>
+        </div>
+        <div style={{display:"flex",gap:6}}>
+          {[
+            {label:"New Challan",nav:"G-02",col:CO.accent},
+            {label:"Reprocess",nav:"G-13",col:"#8e44ad"},
+            {label:"RF / Alter",nav:"G-20",col:"#e67e22"},
+            {label:"Remarks",nav:"G-18",col:"#2980b9"},
+          ].map((a,i)=>(
+            <div key={i} style={{padding:"4px 10px",background:a.col+"18",border:`0.5px solid ${a.col}40`,borderRadius:4,fontSize:10,fontWeight:600,color:a.col,cursor:"pointer"}}>{a.label}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
+        <Metric label="Active Challans" value="42" sub="12 started today"/>
+        <Metric label="Overdue Challans" value="7" sub="Needs attention" alert/>
+        <Metric label="Pieces in Production" value="3,840" sub="Across 42 challans"/>
+        <Metric label="Pending Payments" value={"\u20B918.5L"} sub="12 contractors" alert/>
+        <Metric label="RF Alerts" value="3" sub="Challans in RF state" alert/>
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+        {[["EMB",12,"#e67e22"],["STH",8,"#2980b9"],["DIA",6,"#8e44ad"],["WASH",4,"#1abc9c"],["CUT",3,"#95a5a6"],["FIN",2,"#27ae60"]].map(([stage,cnt,color],i)=>(
+          <div key={i} style={{padding:"4px 12px",borderRadius:16,fontSize:11,fontWeight:600,background:color+"18",color,border:`1px solid ${color}40`}}>{stage}: {cnt}</div>
+        ))}
+      </div>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Overdue Challans</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"C.No",w:0.6},{v:"Design"},{v:"Stage"},{v:"Contractor"},{v:"Days Over",w:0.7},{v:"Action",w:0.6}]}/>
+              {[
+                {cn:"3202",design:"D-710",stage:"Stitching",contractor:"Raju Tailor",days:4},
+                {cn:"3198",design:"D-688",stage:"Embroidery",contractor:"Salim Works",days:3},
+                {cn:"3195",design:"D-695",stage:"Diamond",contractor:"Hari Gems",days:2},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                  <div style={{flex:0.6,fontFamily:"monospace",fontWeight:600}}>{r.cn}</div>
+                  <div style={{flex:1,fontWeight:500}}>{r.design}</div>
+                  <div style={{flex:1}}><span style={{background:"#fff3e0",color:"#e65100",padding:"2px 8px",borderRadius:3,fontSize:10,fontWeight:600}}>{r.stage}</span></div>
+                  <div style={{flex:1,color:C.textMuted}}>{r.contractor}</div>
+                  <div style={{flex:0.7,color:C.red,fontWeight:600}}>{r.days}d</div>
+                  <div style={{flex:0.6}}><Btn small>Track</Btn></div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Contractor Leaderboard</div>
+            <div style={{fontSize:10,color:C.textMuted,marginBottom:8}}>Top 5 by completion rate this month</div>
+            {[
+              {name:"Raju Tailor",rate:96,jobs:24},
+              {name:"Salim Works",rate:92,jobs:18},
+              {name:"Hari Gems",rate:88,jobs:15},
+              {name:"Priya Emb.",rate:85,jobs:12},
+              {name:"Suresh Cut",rate:82,jobs:10},
+            ].map((c,i)=>(
+              <div key={i} style={{marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {c.name}</span><span style={{color:C.textMuted}}>{c.rate}% {"\u00B7"} {c.jobs} jobs</span></div>
+                <div style={{height:6,background:C.bgSoft,borderRadius:3}}><div style={{height:6,background:"#e67e22",borderRadius:3,width:`${c.rate}%`,opacity:0.9-i*0.1}}/></div>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+
+const screenGroups = [
+  {platform:"Sales ERP",icon:"\u{1F4BB}",erp:"sales",groups:[
+    {label:"Auth",screens:["W-01","W-02"]},
+    {label:"Dashboard",screens:["W-03"]},
+    {label:"Products",screens:["W-04","W-05","W-06","W-07"]},
+    {label:"Inventory",screens:["W-09","W-13"]},
+    {label:"Orders",screens:["W-14","W-15","W-16R","W-16W","W-34"]},
+    {label:"Dispatch",screens:["W-17","W-18"]},
+    {label:"Payments",screens:["W-20","W-36"]},
+    {label:"Reports",screens:["W-23","W-24","W-25","W-26","W-27"]},
+    {label:"CCTV",screens:["W-21","W-22"]},
+    {label:"SMS",screens:["W-28","W-29"]},
+    {label:"Admin",screens:["W-30","W-30A","W-31","W-35","W-32","W-33"]},
+    {label:"Challan Print",screens:["W-39"]},
+    {label:"Deprecated",screens:["W-10","W-11","W-12","W-19"]},
+  ]},
+  {platform:"Manufacturing ERP - GMMS",icon:"\u{1F3ED}",erp:"mfg",groups:[
+    {label:"Dashboard",screens:["G-12"]},
+    {label:"Challans",screens:["G-01","G-02","G-03","G-13"]},
+    {label:"Contractors",screens:["G-04","G-05"]},
+    {label:"Production",screens:["G-06","G-07","G-21"]},
+    {label:"RF / Returns",screens:["G-08","G-20"]},
+    {label:"Fabric / Mill",screens:["G-09"]},
+    {label:"Costing (Owner Only)",screens:["G-10"]},
+    {label:"Masters",screens:["G-11","G-14","G-15","G-16","G-17"]},
+    {label:"Notifications",screens:["G-18"]},
+    {label:"Reports",screens:["G-19"]},
+    {label:"Contractor Mobile",screens:["M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]},
+  ]},
+  {platform:"Mobile App - Godown (CMS)",icon:"\u{1F4F1}",erp:"sales",groups:[
+    {label:"Auth & Home",screens:["M-01","M-02"]},
+    {label:"Navigation",screens:["M-20"]},
+    {label:"Scanning & Inventory",screens:["M-03","M-04","M-05","M-06"]},
+    {label:"Order Picking & Dispatch",screens:["M-07","M-08","M-09","M-10","M-11","M-12"]},
+    {label:"Create Order",screens:["M-15R","M-15W"]},
+    {label:"Wholesale Approvals",screens:["M-16"]},
+    {label:"Customer",screens:["M-17"]},
+    {label:"CCTV Recording",screens:["M-19"]},
+    {label:"Challan Print",screens:["M-18"]},
+    {label:"General",screens:["M-13","M-14"]},
+  ]},
+  {platform:"Public-Facing",icon:"\u{1F517}",erp:"sales",groups:[
+    {label:"Customer LR View",screens:["P-01"]},
+  ]},
+];

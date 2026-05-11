@@ -1,0 +1,117 @@
+      {erpMode==="Sales ERP"?(
+      <>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
+        <Metric label="Pending Orders" value="24" sub="3 wholesale pending approval" alert/>
+        <Metric label="Today Dispatches" value="18" sub="\u2191 12% vs yesterday"/>
+        <Metric label="Low Stock SKUs" value="7" sub="Below threshold" alert/>
+        <Metric label="Unconfirmed Payments" value="\u20B91.2L" sub="6 orders unpaid" alert/>
+        <Metric label="Today Collections" value="\u20B984,200" sub="Cash \u20B932k \u00B7 UPI \u20B952k" green/>
+      </div>
+      <div style={{display:"flex",gap:12,marginBottom:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Top-Selling Designs - April 2026</div>
+            {[["Floral Anarkali",340,"\u20B91.36L"],["Solid Kurti",280,"\u20B984k"],["Block Print Salwar",210,"\u20B963k"],["Embr. Dupatta",190,"\u20B995k"]].map(([name,units,rev],i)=>(
+              <div key={i} style={{marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {name}</span><span style={{color:C.textMuted}}>{units} pcs \u00B7 {rev}</span></div>
+                <div style={{height:6,background:C.bgSoft,borderRadius:3}}><div style={{height:6,background:C.black,borderRadius:3,width:`${(units/340)*100}%`,opacity:0.9-i*0.15}}/></div>
+              </div>
+            ))}
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Recent Activity</div>
+            {[
+              {t:"Order #1042 dispatched - Suresh Fabrics",time:"2m ago"},
+              {t:"LR uploaded - Challan CH-881",time:"15m ago"},
+              {t:"Payment \u20B97,800 confirmed #1039",time:"32m ago"},
+              {t:"Low stock: HT-001-RED-M (4 pcs)",time:"1h ago",alert:true},
+              {t:"Wholesale order #W-1008 pending approval",time:"1h ago",alert:true},
+              {t:"New retail order #1043 created",time:"2h ago"},
+            ].map((a,i)=>(
+              <div key={i} style={{fontSize:11,color:a.alert?C.red:C.text,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,display:"flex",justifyContent:"space-between"}}>
+                <span style={{flex:1,marginRight:8}}>{a.t}</span><span style={{color:C.textLight,fontSize:10,whiteSpace:"nowrap"}}>{a.time}</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:10}}>
+        <Card red style={{flex:1}}>
+          <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:6}}>{"\u26A0"} Stock Alerts</div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            {["HT-002-BLU-L (4 pcs)","HT-005-GRN-M (2 pcs)","HT-007-PNK-XL (1 pc)"].map((s,i)=>(
+              <span key={i} style={{fontSize:11,color:C.red,background:C.white,border:`0.5px solid ${C.redBorder}`,padding:"2px 8px",borderRadius:3}}>{s}</span>
+            ))}
+          </div>
+        </Card>
+        <Card red style={{flex:1}}>
+          <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:6}}>{"\u26A0"} Credit Due - Outstanding Payments</div>
+          {[["Deepak Wholesale","\u20B932,800","Overdue 3 days - limit exceeded"],["Ramesh Traders","\u20B98,400","Due tomorrow"]].map(([name,amt,status],i)=>(
+            <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,padding:"4px 0",borderBottom:`0.5px solid ${C.redBorder}`}}>
+              <span>{name}</span><span style={{color:C.red,fontWeight:600,fontSize:10}}>{amt} \u00B7 {status}</span>
+            </div>
+          ))}
+          <div style={{marginTop:6,fontSize:10,color:C.textMuted}}>Click to open Payment Records {"\u2192"}</div>
+        </Card>
+      </div>
+      </>
+      ):(
+      <>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
+        <Metric label="Active Challans" value="42" sub="12 started today"/>
+        <Metric label="Overdue Challans" value="7" sub="Needs attention" alert/>
+        <Metric label="Pieces in Production" value="3,840" sub="Across 42 challans"/>
+        <Metric label="Pending Payments" value={"\u20B918.5L"} sub="12 contractors" alert/>
+        <Metric label="RF Alerts" value="3" sub="Challans in RF state" alert/>
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+        {[["EMB",12,"#e67e22"],["STH",8,"#2980b9"],["DIA",6,"#8e44ad"],["WASH",4,"#1abc9c"],["CUT",3,"#95a5a6"],["FIN",2,"#27ae60"]].map(([stage,count,color],i)=>(
+          <div key={i} style={{padding:"4px 12px",borderRadius:16,fontSize:11,fontWeight:600,background:color+"18",color,border:`1px solid ${color}40`}}>{stage}: {count}</div>
+        ))}
+      </div>
+      <div style={{display:"flex",gap:12,marginBottom:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Overdue Challans</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"C.No",w:0.6},{v:"Design"},{v:"Stage"},{v:"Contractor"},{v:"Days Over",w:0.7},{v:"Action",w:0.6}]}/>
+              {[
+                {cn:"3202",design:"D-710",stage:"Stitching",contractor:"Raju Tailor",days:4},
+                {cn:"3198",design:"D-688",stage:"Embroidery",contractor:"Salim Works",days:3},
+                {cn:"3195",design:"D-695",stage:"Diamond",contractor:"Hari Gems",days:2},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                  <div style={{flex:0.6,fontFamily:"monospace",fontWeight:600}}>{r.cn}</div>
+                  <div style={{flex:1,fontWeight:500}}>{r.design}</div>
+                  <div style={{flex:1}}><span style={{background:"#fff3e0",color:"#e65100",padding:"2px 8px",borderRadius:3,fontSize:10,fontWeight:600}}>{r.stage}</span></div>
+                  <div style={{flex:1,color:C.textMuted}}>{r.contractor}</div>
+                  <div style={{flex:0.7,color:C.red,fontWeight:600}}>{r.days}d</div>
+                  <div style={{flex:0.6}}><Btn small>Track</Btn></div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Contractor Leaderboard</div>
+            <div style={{fontSize:10,color:C.textMuted,marginBottom:8}}>Top 5 by completion rate this month</div>
+            {[
+              {name:"Raju Tailor",rate:96,jobs:24},
+              {name:"Salim Works",rate:92,jobs:18},
+              {name:"Hari Gems",rate:88,jobs:15},
+              {name:"Priya Emb.",rate:85,jobs:12},
+              {name:"Suresh Cut",rate:82,jobs:10},
+            ].map((c,i)=>(
+              <div key={i} style={{marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}><span><strong>#{i+1}</strong> {c.name}</span><span style={{color:C.textMuted}}>{c.rate}% {"\u00B7"} {c.jobs} jobs</span></div>
+                <div style={{height:6,background:C.bgSoft,borderRadius:3}}><div style={{height:6,background:"#e67e22",borderRadius:3,width:`${c.rate}%`,opacity:0.9-i*0.1}}/></div>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+      </>
+      )}

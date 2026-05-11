@@ -1,0 +1,861 @@
+// G-13: Reprocess Challan
+"G-13": () => {
+  const [jobType, setJobType] = useState("Embroidery");
+  return (
+  <WebLayout activeMenu="Challans" mode="mfg">
+    <GTopBar title="Reprocess Challan" sub="Same design, same items \u00B7 change job type, party, and date" actions={[{label:"Confirm Reprocess",primary:true},{label:"Cancel"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{padding:"8px 12px",background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:4,marginBottom:12,fontSize:11,color:"#e65100"}}>
+        Reprocessing Challan #3202 \u00B7 Design D-710 \u00B7 Same pieces and quantities will be carried over.
+      </div>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <SectionLabel>Carry-Over Details (Locked)</SectionLabel>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+              {[["Original Challan","#3202"],["Design No.","D-710"],["Design Name","Floral Anarkali"],["Total Pieces","240 pcs"],["Colours","Pink \u00D7 80, Blue \u00D7 80, Cream \u00D7 80"],["Original Job Type","Stitching (STH)"]].map(([l,v],i)=>(
+                <div key={i} style={{background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px"}}>
+                  <div style={{fontSize:9,color:C.textMuted,marginBottom:2}}>{l}</div>
+                  <div style={{fontSize:12,fontWeight:600,color:C.text}}>{v}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <SectionLabel>New Job Parameters</SectionLabel>
+            <div style={{marginBottom:10}}>
+              <div style={{fontSize:11,color:C.textMuted,marginBottom:6}}>New Job Work Type <span style={{color:C.red}}>*</span></div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {["Embroidery","Stitching","Diamond","Lace Work","Washing","Cutting","Finishing"].map((t,i)=>(
+                  <div key={i} onClick={()=>setJobType(t)} style={{padding:"4px 12px",border:`0.5px solid ${jobType===t?CO.accentBorder:C.border}`,borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:jobType===t?CO.accentLight:"#fafafa",color:jobType===t?CO.accent:C.textMuted}}>{t}</div>
+                ))}
+              </div>
+            </div>
+            <Input label="New Contractor" placeholder="Search or select contractor..." required/>
+            <div style={{display:"flex",gap:10}}>
+              <div style={{flex:1}}><Input label="New Date" placeholder="09 May 2026" required/></div>
+              <div style={{flex:1}}><Input label="Expected Return (days)" placeholder="7" required/></div>
+            </div>
+            <Input label="Reason for Reprocess" placeholder="e.g. Previous work rejected, quality issue" required/>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <SectionLabel>Piece Summary</SectionLabel>
+            {[{col:"Pink",pcs:80},{col:"Blue",pcs:80},{col:"Cream",pcs:80}].map((r,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <span>{r.col}</span><span style={{fontWeight:600}}>{r.pcs} pcs</span>
+              </div>
+            ))}
+            <div style={{display:"flex",justifyContent:"space-between",padding:"8px 0",fontSize:12,fontWeight:700}}>
+              <span>Total</span><span>240 pcs</span>
+            </div>
+          </Card>
+          <Card style={{background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`}}>
+            <SectionLabel>On Confirm</SectionLabel>
+            {["New Challan #3211 created","Linked to original #3202","SMS to new contractor","Audit trail updated","G-12 dashboard refreshed"].map((a,i)=>(
+              <div key={i} style={{fontSize:11,color:C.text,padding:"3px 0",display:"flex",alignItems:"center",gap:6}}>
+                <span style={{color:C.green,fontWeight:700}}>\u2714</span>{a}
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},
+// G-14: Design Master
+"G-14": () => {
+  const [showUpload, setShowUpload] = useState(false);
+  return (
+  <WebLayout activeMenu="Designs" mode="mfg">
+    <GTopBar title="Design Master" sub="DST upload \u00B7 IP-restricted \u00B7 Stitch lock \u00B7 Owner approval" ownerOnly actions={[{label:"Upload Design",primary:true}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{padding:"8px 12px",background:"#111",borderRadius:4,marginBottom:12,display:"flex",alignItems:"center",gap:10}}>
+        <span style={{fontSize:11,color:"#888"}}>\uD83D\uDD12 Designer workstations have internet blocked at IP level. Only this portal URL is whitelisted. Telegram disabled on all designer machines.</span>
+      </div>
+      {showUpload&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowUpload(false)}>
+          <div style={{background:C.white,borderRadius:8,padding:24,width:400}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
+              <div style={{fontSize:14,fontWeight:700}}>Upload New Design</div>
+              <span onClick={()=>setShowUpload(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted}}>\u00D7</span>
+            </div>
+            <div style={{border:`1.5px dashed ${CO.accentBorder}`,borderRadius:6,padding:16,textAlign:"center",background:CO.accentLight,marginBottom:12,cursor:"pointer"}}>
+              <div style={{fontSize:24,marginBottom:4}}>\u2191</div>
+              <div style={{fontSize:12,fontWeight:600}}>Upload DST File Only</div>
+              <div style={{fontSize:10,color:C.textMuted,marginTop:4}}>EMB files are rejected. Only machine-compatible DST.</div>
+            </div>
+            <Input label="Design Name" placeholder="e.g. Floral Embroidery Set" required/>
+            <div style={{display:"flex",gap:10}}>
+              <div style={{flex:1}}><Input label="HSN Code" placeholder="6303" required/></div>
+              <div style={{flex:1}}><Input label="Design No." placeholder="Auto-assigned" mono/></div>
+            </div>
+            <div style={{padding:"6px 8px",background:C.redLight,border:`0.5px solid ${C.redBorder}`,borderRadius:4,fontSize:11,color:C.red,marginBottom:12}}>EMB files are blocked. All upload attempts are logged.</div>
+            <div style={{display:"flex",gap:8}}>
+              <button style={{flex:1,padding:"8px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Submit for Approval</button>
+              <button onClick={()=>setShowUpload(false)} style={{flex:1,padding:"8px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer"}}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
+            <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+              {["D.NO","DESIGN NAME","HSN","UPLOADED","STITCH CT","STATUS","STITCH LOCK","ACTIONS"].map((h,i)=><div key={i} style={{flex:1}}>{h}</div>)}
+            </div>
+            {[
+              {dno:"D-730",name:"Floral Embr. Set",hsn:"6303",by:"Designer 1",stitch:"82,400",status:"Approved",locked:true},
+              {dno:"D-731",name:"Geometric Border",hsn:"6303",by:"Designer 2",stitch:"Pending",status:"Pending",locked:false,pending:true},
+              {dno:"D-732",name:"Mirror Work Suit",hsn:"6301",by:"Designer 1",stitch:" - ",status:"Rejected",locked:false,rejected:true},
+              {dno:"D-728",name:"Solid Embr. Top",hsn:"6303",by:"Designer 3",stitch:"68,200",status:"Approved",locked:true},
+            ].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,background:r.pending?CO.accentLight:C.white}}>
+                <div style={{flex:1,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.dno}</div>
+                <div style={{flex:1,fontWeight:500}}>{r.name}</div>
+                <div style={{flex:1,color:C.textMuted,fontFamily:"monospace"}}>{r.hsn}</div>
+                <div style={{flex:1,color:C.textMuted}}>{r.by}</div>
+                <div style={{flex:1,fontFamily:"monospace",fontWeight:r.locked?600:400}}>{r.stitch}</div>
+                <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.status==="Approved"?C.green:r.pending?CO.accent:C.red,background:r.status==="Approved"?C.greenLight:r.pending?CO.accentLight:C.redLight,padding:"2px 5px",borderRadius:3}}>{r.status}</span></div>
+                <div style={{flex:1}}>{r.locked?<span style={{fontSize:10,color:C.green,fontWeight:600}}>\u2714 Locked</span>:r.pending?<button style={{padding:"3px 8px",fontSize:10,background:CO.accent,color:C.white,border:"none",borderRadius:3,cursor:"pointer"}}>Lock Now</button>:<span style={{fontSize:10,color:C.textMuted}}>N/A</span>}</div>
+                <div style={{flex:1,display:"flex",gap:4}}>
+                  <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>View</button>
+                  {r.rejected&&<button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Re-upload</button>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <SectionLabel>Upload New Design</SectionLabel>
+            <button onClick={()=>setShowUpload(true)} style={{width:"100%",padding:"40px 16px",border:`1.5px dashed ${CO.accentBorder}`,borderRadius:6,background:CO.accentLight,color:CO.accent,fontSize:12,fontWeight:600,cursor:"pointer",textAlign:"center"}}>
+              \u2191 Upload DST File
+            </button>
+          </Card>
+          <Card>
+            <SectionLabel>IP Restriction Log</SectionLabel>
+            {[["Designer 1","D-730","View","07 May 09:12",true],["Designer 2","D-731","Upload","07 May 10:44",true],["Unknown IP","D-728","Attempt","06 May 22:10",false]].map(([u,d,act,t,ok],i)=>(
+              <div key={i} style={{fontSize:10,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`,display:"flex",justifyContent:"space-between"}}>
+                <span style={{color:ok?C.text:C.red}}>{u} \u00B7 {d} \u00B7 {act}</span>
+                <span style={{color:ok?C.textMuted:C.red,fontWeight:ok?400:700}}>{ok?t:"\u26A0 Flagged"}</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},
+// G-15: Job Work Types
+"G-15": () => {
+  const [showAdd, setShowAdd] = useState(false);
+  const types = [
+    {code:"EMB",name:"Embroidery",unit:"Per Stitch",rate:"0.18",active:true},
+    {code:"STH",name:"Stitching",unit:"Per Piece",rate:"45.00",active:true},
+    {code:"DIA",name:"Diamond Work",unit:"Per Piece",rate:"28.00",active:true},
+    {code:"LAC",name:"Lace Work",unit:"Per Meter",rate:"12.00",active:true},
+    {code:"WASH",name:"Washing",unit:"Per Piece",rate:"8.00",active:true},
+    {code:"CUT",name:"Cutting",unit:"Per Piece",rate:"15.00",active:true},
+    {code:"FIN",name:"Finishing",unit:"Per Piece",rate:"10.00",active:true},
+    {code:"HND",name:"Hand Work",unit:"Per Piece",rate:"35.00",active:true},
+    {code:"PRT",name:"Printing",unit:"Per Meter",rate:"22.00",active:true},
+    {code:"EMB2",name:"Machine Embr.",unit:"Per Stitch",rate:"0.12",active:true},
+    {code:"BTN",name:"Button Work",unit:"Per Piece",rate:"6.00",active:false},
+    {code:"ZAR",name:"Zardozi",unit:"Per Piece",rate:"85.00",active:true},
+    {code:"SEQ",name:"Sequin Work",unit:"Per Piece",rate:"30.00",active:false},
+  ];
+  return (
+  <WebLayout activeMenu="Masters" mode="mfg">
+    <GTopBar title="Job Work Types" sub="13 types configured \u00B7 manage rates and availability" actions={[{label:"+ Add Type",primary:true}]}/>
+    {showAdd&&(
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowAdd(false)}>
+        <div style={{background:C.white,borderRadius:8,padding:24,width:380}} onClick={e=>e.stopPropagation()}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
+            <div style={{fontSize:14,fontWeight:700}}>Add Job Work Type</div>
+            <span onClick={()=>setShowAdd(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted}}>\u00D7</span>
+          </div>
+          <Input label="Type Code (e.g. EMB)" placeholder="3-5 chars" required mono/>
+          <Input label="Type Name" placeholder="e.g. Embroidery" required/>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}>
+              <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Unit <span style={{color:C.red}}>*</span></div>
+              <select style={{width:"100%",padding:"7px 8px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,background:C.white}}>
+                <option>Per Piece</option><option>Per Meter</option><option>Per Stitch</option>
+              </select>
+            </div>
+            <div style={{flex:1}}><Input label="Default Rate (\u20B9)" placeholder="0.00" required/></div>
+          </div>
+          <div style={{display:"flex",gap:8,marginTop:16}}>
+            <button style={{flex:1,padding:"8px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Save</button>
+            <button onClick={()=>setShowAdd(false)} style={{flex:1,padding:"8px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer"}}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    )}
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
+        <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+          {["CODE","NAME","BILLING UNIT","DEFAULT RATE","STATUS","ACTIONS"].map((h,i)=><div key={i} style={{flex:i===5?1.5:1}}>{h}</div>)}
+        </div>
+        {types.map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,background:r.active?C.white:"#fafafa",opacity:r.active?1:0.6}}>
+            <div style={{flex:1,fontFamily:"monospace",fontWeight:700,color:CO.accent}}>{r.code}</div>
+            <div style={{flex:1,fontWeight:500}}>{r.name}</div>
+            <div style={{flex:1,color:C.textMuted}}>{r.unit}</div>
+            <div style={{flex:1,fontFamily:"monospace",fontWeight:600}}>\u20B9{r.rate}</div>
+            <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.active?C.green:C.textMuted,background:r.active?C.greenLight:"#f5f5f5",padding:"2px 6px",borderRadius:3}}>{r.active?"Active":"Inactive"}</span></div>
+            <div style={{flex:1.5,display:"flex",gap:4}}>
+              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
+              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${r.active?C.redBorder:C.border}`,borderRadius:3,background:r.active?C.redLight:C.greenLight,color:r.active?C.red:C.green,cursor:"pointer"}}>{r.active?"Deactivate":"Activate"}</button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={()=>setShowAdd(true)} style={{marginTop:12,padding:"8px 20px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>+ Add Job Work Type</button>
+    </div>
+  </WebLayout>
+  );
+},
+// G-16: Color Master
+"G-16": () => {
+  const [selectedDesign, setSelectedDesign] = useState("D-730");
+  return (
+  <WebLayout activeMenu="Masters" mode="mfg">
+    <GTopBar title="Colour Master" sub="Colours per design \u00B7 used across challans and SKU creation" actions={[{label:"+ Add Colour",primary:true}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{width:200,flexShrink:0}}>
+          <Card>
+            <SectionLabel>Select Design</SectionLabel>
+            {[
+              {dno:"D-730",name:"Floral Anarkali",colors:5},
+              {dno:"D-710",name:"Georgette Set",colors:4},
+              {dno:"D-688",name:"Block Print",colors:6},
+              {dno:"D-731",name:"Geometric Border",colors:3},
+            ].map((d,i)=>(
+              <div key={i} onClick={()=>setSelectedDesign(d.dno)} style={{padding:"8px 10px",borderRadius:4,marginBottom:4,cursor:"pointer",background:selectedDesign===d.dno?CO.accentLight:"#fafafa",border:`0.5px solid ${selectedDesign===d.dno?CO.accentBorder:C.border}`}}>
+                <div style={{fontSize:11,fontWeight:700,color:selectedDesign===d.dno?CO.accent:C.text,fontFamily:"monospace"}}>{d.dno}</div>
+                <div style={{fontSize:10,color:C.textMuted}}>{d.name}</div>
+                <div style={{fontSize:9,color:C.textMuted}}>{d.colors} colours</div>
+              </div>
+            ))}
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <div style={{fontSize:12,fontWeight:700}}>{selectedDesign} \u00B7 Colour List</div>
+              <button style={{padding:"5px 12px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>+ Add</button>
+            </div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+                {["#","COLOUR NAME","HEX / SHADE CODE","PIECES (LAST RUN)","ACTIVE","ACTIONS"].map((h,i)=><div key={i} style={{flex:i===5?1.2:i===0?0.4:1}}>{h}</div>)}
+              </div>
+              {[
+                {id:1,name:"Deep Pink",hex:"#e91e63",shade:"DP-01",pcs:200,active:true},
+                {id:2,name:"Royal Blue",hex:"#1565c0",shade:"RB-02",pcs:200,active:true},
+                {id:3,name:"Cream White",hex:"#fff8e1",shade:"CW-03",pcs:200,active:true},
+                {id:4,name:"Mint Green",hex:"#4caf50",shade:"MG-04",pcs:0,active:false},
+                {id:5,name:"Gold",hex:"#ffc107",shade:"GD-05",pcs:120,active:true},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,opacity:r.active?1:0.55}}>
+                  <div style={{flex:0.4,color:C.textMuted}}>{r.id}</div>
+                  <div style={{flex:1,display:"flex",alignItems:"center",gap:6}}><div style={{width:14,height:14,borderRadius:3,background:r.hex,border:`0.5px solid ${C.border}`,flexShrink:0}}/>{r.name}</div>
+                  <div style={{flex:1,fontFamily:"monospace",fontSize:10,color:C.textMuted}}>{r.shade}</div>
+                  <div style={{flex:1,fontWeight:r.pcs>0?600:400,color:r.pcs>0?C.text:C.textMuted}}>{r.pcs>0?`${r.pcs} pcs`:"N/A"}</div>
+                  <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.active?C.green:C.textMuted}}>{r.active?"Yes":"No"}</span></div>
+                  <div style={{flex:1.2,display:"flex",gap:4}}>
+                    <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
+                    <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${r.active?C.redBorder:C.border}`,borderRadius:3,background:r.active?C.redLight:C.greenLight,color:r.active?C.red:C.green,cursor:"pointer"}}>{r.active?"Hide":"Show"}</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},
+// G-17: Contractor Registry
+"G-17": () => {
+  const [tab, setTab] = useState("list");
+  return (
+  <WebLayout activeMenu="Contractors" mode="mfg">
+    <GTopBar title="Contractor Registry" sub="Full registration \u00B7 GSTIN \u00B7 bank details \u00B7 mobile login" actions={[{label:"Register Contractor",primary:true},{label:"Export"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:6,marginBottom:12}}>
+        {[["list","All Contractors"],["pending","Pending Verification"],["inactive","Inactive"]].map(([v,l],i)=>(
+          <div key={i} onClick={()=>setTab(v)} style={{padding:"5px 14px",borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:tab===v?CO.accent:"#f5f5f5",color:tab===v?C.white:C.textMuted,border:`0.5px solid ${tab===v?CO.accent:C.border}`}}>{l}</div>
+        ))}
+      </div>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
+            <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+              {["CODE","NAME","TYPE","MOBILE","GSTIN","BANK","LOGIN","STATUS","ACTION"].map((h,i)=><div key={i} style={{flex:1}}>{h}</div>)}
+            </div>
+            {[
+              {code:"C-006",name:"Ramesh Kadkiya",type:"EMB",mobile:"98250-XXXXX",gstin:"27ABCDE",bank:"HDFC \u2022\u2022\u2022\u22124521",login:true,status:"Active"},
+              {code:"C-011",name:"Suresh Bhai",type:"STH",mobile:"94260-XXXXX",gstin:" - ",bank:"SBI \u2022\u2022\u2022\u22128832",login:true,status:"Active"},
+              {code:"C-023",name:"Anil Thakkar",type:"DIA",mobile:"99250-XXXXX",gstin:"27XYZAA",bank:"ICICI \u2022\u2022\u2022\u22123310",login:false,status:"Pending"},
+              {code:"C-045",name:"Mohan Das",type:"HND",mobile:"98250-XXXXX",gstin:" - ",bank:"BOI \u2022\u2022\u2022\u22126640",login:true,status:"Active"},
+            ].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+                <div style={{flex:1,fontFamily:"monospace",fontSize:10,color:CO.accent,fontWeight:600}}>{r.code}</div>
+                <div style={{flex:1,fontWeight:500}}>{r.name}</div>
+                <div style={{flex:1}}><span style={{fontSize:9,fontWeight:700,background:CO.accentLight,color:CO.accent,padding:"2px 5px",borderRadius:3}}>{r.type}</span></div>
+                <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.mobile}</div>
+                <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.gstin}</div>
+                <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.bank}</div>
+                <div style={{flex:1}}><span style={{fontSize:9,fontWeight:600,color:r.login?C.green:C.textMuted}}>{r.login?"\u2714 Active":"No login"}</span></div>
+                <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.status==="Active"?C.green:CO.accent}}>{r.status}</span></div>
+                <div style={{flex:1,display:"flex",gap:3}}>
+                  <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <SectionLabel>Quick Register</SectionLabel>
+            <Input label="Full Name" placeholder="Contractor name" required/>
+            <div style={{display:"flex",gap:10}}>
+              <div style={{flex:1}}><Input label="Mobile" placeholder="+91 XXXXX" required/></div>
+              <div style={{flex:1}}><Input label="Job Type" placeholder="EMB/STH..."/></div>
+            </div>
+            <Input label="Address / City" placeholder="Surat / Ahmedabad"/>
+            <Input label="GSTIN" placeholder="Optional"/>
+            <Input label="Bank Account No." placeholder="For payments"/>
+            <div style={{marginBottom:8}}>
+              <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Mobile Login</div>
+              <div style={{display:"flex",gap:6}}>
+                {["Create login (SMS PIN)","Skip for now"].map((opt,i)=>(
+                  <div key={i} style={{padding:"4px 10px",border:`0.5px solid ${i===0?CO.accentBorder:C.border}`,borderRadius:3,fontSize:10,cursor:"pointer",background:i===0?CO.accentLight:"#fafafa",color:i===0?CO.accent:C.textMuted}}>{opt}</div>
+                ))}
+              </div>
+            </div>
+            <Btn primary full>Register Contractor</Btn>
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},
+// G-18: Notifications Center
+"G-18": () => {
+  const [filter, setFilter] = useState("all");
+  const events = [
+    {type:"accepted",challan:"3210",design:"D-730",contractor:"Ramesh Kadkiya",stage:"EMB",time:"07 May 09:14",msg:"Challan accepted by Ramesh"},
+    {type:"rejected",challan:"3208",design:"D-728",contractor:"Suresh Bhai",stage:"STH",time:"06 May 17:22",msg:"Rejection: Not enough capacity this week"},
+    {type:"sent",challan:"3211",design:"D-710",contractor:"Anil Thakkar",stage:"DIA",time:"07 May 11:00",msg:"Challan sent to Anil for Diamond work"},
+    {type:"accepted",challan:"3205",design:"D-715",contractor:"Mohan Das",stage:"HND",time:"05 May 15:30",msg:"Accepted"},
+    {type:"sent",challan:"3209",design:"D-718",contractor:"Priya Sharma",stage:"LAC",time:"06 May 10:00",msg:"Sent to Priya for Lace Work"},
+    {type:"rejected",challan:"3207",design:"D-712",contractor:"Deepak Bhai",stage:"STH",time:"05 May 18:45",msg:"Rejected: Already has 22 pending challans"},
+  ];
+  const filtered = filter==="all"?events:events.filter(e=>e.type===filter);
+  const typeColor = {accepted:C.green,rejected:C.red,sent:CO.accent};
+  const typeBg = {accepted:C.greenLight,rejected:C.redLight,sent:CO.accentLight};
+  return (
+  <WebLayout activeMenu="Notifications" mode="mfg">
+    <GTopBar title="Notifications Centre" sub="Challan events \u00B7 accept / reject / sent tracking" actions={[{label:"Mark All Read"},{label:"Settings"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:6,marginBottom:12}}>
+        {[["all","All Events"],["accepted","Accepted"],["rejected","Rejected"],["sent","Sent"]].map(([v,l],i)=>(
+          <div key={i} onClick={()=>setFilter(v)} style={{padding:"5px 14px",borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:filter===v?CO.accent:"#f5f5f5",color:filter===v?C.white:C.textMuted,border:`0.5px solid ${filter===v?CO.accent:C.border}`}}>{l}</div>
+        ))}
+      </div>
+      {filtered.map((ev,i)=>(
+        <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 14px",marginBottom:8,display:"flex",alignItems:"flex-start",gap:10}}>
+          <div style={{width:8,height:8,borderRadius:"50%",background:typeColor[ev.type],marginTop:4,flexShrink:0}}/>
+          <div style={{flex:1}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+              <div style={{display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:3,background:typeBg[ev.type],color:typeColor[ev.type],textTransform:"uppercase"}}>{ev.type}</span>
+                <span style={{fontSize:11,fontWeight:600,fontFamily:"monospace"}}>#{ev.challan}</span>
+                <span style={{fontSize:10,color:C.textMuted}}>{ev.design} \u00B7 {ev.stage}</span>
+              </div>
+              <span style={{fontSize:10,color:C.textMuted}}>{ev.time}</span>
+            </div>
+            <div style={{fontSize:11,color:C.text}}>{ev.msg}</div>
+            <div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{ev.contractor}</div>
+          </div>
+          <button style={{padding:"4px 10px",fontSize:10,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,background:CO.accentLight,color:CO.accent,cursor:"pointer",flexShrink:0}}>View Challan</button>
+        </div>
+      ))}
+    </div>
+  </WebLayout>
+  );
+},
+// G-19: GMMS Reports Hub
+"G-19": () => {
+  const [report, setReport] = useState("challan");
+  return (
+  <WebLayout activeMenu="Reports" mode="mfg">
+    <GTopBar title="GMMS Reports Hub" sub="Challan status \u00B7 contractor performance \u00B7 design cost history" actions={[{label:"Export PDF"},{label:"Export CSV",primary:true}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:6,marginBottom:16}}>
+        {[["challan","Challan Status"],["contractor","Contractor Performance"],["design","Design Cost History"]].map(([v,l],i)=>(
+          <div key={i} onClick={()=>setReport(v)} style={{padding:"6px 16px",borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:report===v?CO.accent:"#f5f5f5",color:report===v?C.white:C.textMuted,border:`0.5px solid ${report===v?CO.accent:C.border}`}}>{l}</div>
+        ))}
+      </div>
+      {report==="challan"&&(
+        <div style={{display:"flex",gap:12}}>
+          <div style={{flex:2}}>
+            <Card>
+              <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Challan Status Overview \u00B7 May 2026</div>
+              <div style={{display:"flex",gap:8,marginBottom:14}}>
+                {[["Total Issued","127",""],["Completed","98",C.green],["In Progress","22",CO.accent],["Overdue","7",C.red]].map(([l,v,c],i)=>(
+                  <div key={i} style={{flex:1,textAlign:"center",padding:"10px 6px",background:C.bgSoft,borderRadius:4,border:`0.5px solid ${C.border}`}}>
+                    <div style={{fontSize:20,fontWeight:700,color:c||C.text}}>{v}</div>
+                    <div style={{fontSize:10,color:C.textMuted}}>{l}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+                <TH cols={[{v:"Challan",w:0.8},{v:"Design"},{v:"Contractor"},{v:"Stage"},{v:"Days Used",w:0.8},{v:"Status"}]}/>
+                {[["3210","D-730","Ramesh K.","STH","18d","In Progress"],["3208","D-728","Suresh B.","STH","22d","Overdue"],["3205","D-715","Mohan D.","HND","12d","Completed"],["3203","D-712","Priya S.","LAC","9d","Completed"]].map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+                    {r.map((v,j)=><div key={j} style={{flex:j===0?0.8:j===4?0.8:1,fontFamily:j===0?"monospace":"inherit",color:j===5?(v==="Overdue"?C.red:v==="In Progress"?CO.accent:C.green):j===0?CO.accent:j===4?(parseInt(v)>20?C.red:C.text):C.text,fontWeight:j===0||j===5?600:400,fontSize:j===0?10:11}}>{v}</div>)}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div style={{flex:1}}>
+            <Card>
+              <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Date Range</div>
+              <div style={{display:"flex",gap:8}}>
+                <div style={{flex:1}}><Input label="From" placeholder="01 May 2026"/></div>
+                <div style={{flex:1}}><Input label="To" placeholder="31 May 2026"/></div>
+              </div>
+              <div style={{marginBottom:8}}>
+                <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Filter by Stage</div>
+                <select style={{width:"100%",padding:"7px 8px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,background:C.white}}>
+                  <option>All Stages</option><option>EMB</option><option>STH</option><option>DIA</option>
+                </select>
+              </div>
+              <Btn primary full>Generate Report</Btn>
+            </Card>
+          </div>
+        </div>
+      )}
+      {report==="contractor"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Contractor Performance \u00B7 May 2026</div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Contractor"},{v:"Type"},{v:"Challans"},{v:"Completed"},{v:"Avg Days"},{v:"Rejection %"},{v:"Score"}]}/>
+            {[["Ramesh Kadkiya","EMB","24","24","9.1d","1.2%","98"],["Suresh Bhai","STH","18","16","5.8d","2.1%","92"],["Anil Thakkar","DIA","15","14","3.9d","0.8%","94"],["Priya Sharma","LAC","12","11","2.1d","1.5%","88"],["Deepak Bhai","STH","10","7","6.1d","4.2%","71"]].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+                {r.map((v,j)=><div key={j} style={{flex:1,color:j===6?(parseInt(v)>=90?C.green:parseInt(v)>=80?CO.accent:C.red):j===5?(parseFloat(v)>3?C.red:C.text):C.text,fontWeight:j===6?700:400}}>{v}</div>)}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+      {report==="design"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Design Cost History</div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Design"},{v:"Name"},{v:"Runs"},{v:"Avg Cost/Pc"},{v:"Total Spend"},{v:"Last Run"}]}/>
+            {[["D-730","Floral Anarkali","3","\u20B9 142","\u20B9 2.56L","07 May"],["D-710","Georgette Set","5","\u20B9 98","\u20B9 1.88L","02 May"],["D-688","Block Print","2","\u20B9 76","\u20B9 0.91L","28 Apr"],["D-715","Embr. Dupatta","4","\u20B9 55","\u20B9 1.32L","05 May"]].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+                {r.map((v,j)=><div key={j} style={{flex:1,fontFamily:j===0?"monospace":"inherit",color:j===0?CO.accent:j===4?"#b45309":C.text,fontWeight:j===0||j===4?600:400}}>{v}</div>)}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+    </div>
+  </WebLayout>
+  );
+},
+// G-20: RF Creation
+"G-20": () => {
+  const [lookupBy, setLookupBy] = useState("invoice");
+  const [found, setFound] = useState(true);
+  return (
+  <WebLayout activeMenu="RF" mode="mfg">
+    <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. \u00B7 raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <SectionLabel>Lookup</SectionLabel>
+            <div style={{display:"flex",gap:6,marginBottom:10}}>
+              {[["invoice","Invoice No."],["design","Design No."]].map(([v,l],i)=>(
+                <div key={i} onClick={()=>setLookupBy(v)} style={{padding:"5px 16px",borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:lookupBy===v?CO.accent:"#f5f5f5",color:lookupBy===v?C.white:C.textMuted,border:`0.5px solid ${lookupBy===v?CO.accent:C.border}`}}>{l}</div>
+              ))}
+            </div>
+            <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
+              <div style={{flex:1}}><Input label={lookupBy==="invoice"?"Invoice No.":"Design No."} placeholder={lookupBy==="invoice"?"e.g. INV-2024-1042":"e.g. D-710"} required/></div>
+              <button onClick={()=>setFound(true)} style={{padding:"7px 16px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer",marginBottom:10}}>Search</button>
+            </div>
+            {found&&(
+              <div style={{border:`0.5px solid ${CO.accentBorder}`,borderRadius:6,padding:"10px 14px",background:CO.accentLight,marginTop:4}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+                  <div style={{fontSize:12,fontWeight:700}}>Challan #3202 \u00B7 D-710 Floral Anarkali</div>
+                  <span style={{fontSize:10,padding:"2px 8px",background:C.greenLight,color:C.green,borderRadius:3,fontWeight:600}}>Found</span>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                  {[["Design","D-710"],["Pieces","240 pcs"],["Contractor","Ramesh Kadkiya"],["Stage","STH \u00B7 Completed"],["Invoice","INV-2024-1042"],["Date","03 May 2026"]].map(([l,v],i)=>(
+                    <div key={i} style={{fontSize:11}}>
+                      <span style={{color:C.textMuted}}>{l}: </span><span style={{fontWeight:600}}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+          <Card>
+            <SectionLabel>RF / Alteration Details</SectionLabel>
+            <div style={{marginBottom:10}}>
+              <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>RF Type <span style={{color:C.red}}>*</span></div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {["Fabric Short","Quality Reject","Stitching Error","Missing Pieces","Late Delivery","Other"].map((t,i)=>(
+                  <div key={i} style={{padding:"4px 10px",border:`0.5px solid ${i===2?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===2?C.redLight:"#fafafa",color:i===2?C.red:C.textMuted,fontWeight:i===2?600:400}}>{t}</div>
+                ))}
+              </div>
+            </div>
+            <Input label="Pieces Affected" placeholder="e.g. 24" required/>
+            <Input label="Description" placeholder="Describe the issue in detail" required/>
+            <div style={{marginBottom:8}}>
+              <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Assign to Contractor?</div>
+              <div style={{display:"flex",gap:6}}>
+                {["Yes \u2014 Raise against Ramesh","No \u2014 Internal only"].map((opt,i)=>(
+                  <div key={i} style={{padding:"4px 12px",border:`0.5px solid ${i===0?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===0?C.redLight:"#fafafa",color:i===0?C.red:C.textMuted,fontWeight:i===0?600:400}}>{opt}</div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card style={{background:C.redLight,border:`0.5px solid ${C.redBorder}`}}>
+            <SectionLabel>RF Summary</SectionLabel>
+            {[["Challan","#3202"],["Design","D-710"],["Type","Stitching Error"],["Pieces","24"],["Assigned to","Ramesh Kadkiya"],["Status","Pending"]].map(([l,v],i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.redBorder}`,fontSize:11}}>
+                <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
+              </div>
+            ))}
+            <div style={{marginTop:10}}>
+              <Btn primary full>Submit RF</Btn>
+            </div>
+          </Card>
+          <Card>
+            <SectionLabel>Recent RFs</SectionLabel>
+            {[["#RF-441","D-688","STH Error","Resolved"],["#RF-440","D-730","Fabric Short","Open"],["#RF-439","D-710","Late Delivery","Closed"]].map(([id,d,t,st],i)=>(
+              <div key={i} style={{padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <div style={{display:"flex",justifyContent:"space-between"}}>
+                  <span style={{fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{id}</span>
+                  <span style={{fontSize:10,color:st==="Open"?C.red:st==="Resolved"?C.green:C.textMuted,fontWeight:600}}>{st}</span>
+                </div>
+                <div style={{fontSize:10,color:C.textMuted}}>{d} \u00B7 {t}</div>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},
+// G-21: SKU Outward
+"G-21": () => {
+  const [step, setStep] = useState(1);
+  return (
+  <WebLayout activeMenu="SKU Outward" mode="mfg">
+    <GTopBar title="SKU Outward" sub="GMMS creates SKUs from finished pieces \u00B7 auto-stocks Sales ERP" actions={[{label:"Confirm \u0026 Stock",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:6,marginBottom:16}}>
+        {["1. Select Challan","2. Map to SKU","3. Set Pricing","4. Confirm"].map((s,i)=>(
+          <div key={i} style={{flex:1,textAlign:"center",padding:"6px",borderRadius:3,fontSize:11,fontWeight:600,background:step===i+1?CO.accent:step>i+1?C.green:"#f5f5f5",color:step>=i+1?C.white:C.textMuted,border:`0.5px solid ${step===i+1?CO.accent:step>i+1?C.green:C.border}`,cursor:"pointer"}} onClick={()=>setStep(i+1)}>{s}</div>
+        ))}
+      </div>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          {step===1&&(
+            <Card>
+              <SectionLabel>Select Completed Challan</SectionLabel>
+              <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+                <TH cols={[{v:"Challan",w:0.8},{v:"Design"},{v:"Name"},{v:"Pieces"},{v:"Completed"},{v:"Select",w:0.7}]}/>
+                {[["3202","D-710","Floral Anarkali","240","03 May"],["3198","D-688","Block Print Salwar","180","28 Apr"],["3195","D-715","Embr. Dupatta","120","25 Apr"]].map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11,background:i===0?CO.accentLight:C.white}}>
+                    <div style={{flex:0.8,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>#{r[0]}</div>
+                    <div style={{flex:1,fontFamily:"monospace",fontSize:10}}>{r[1]}</div>
+                    <div style={{flex:1,fontWeight:500}}>{r[2]}</div>
+                    <div style={{flex:1}}>{r[3]} pcs</div>
+                    <div style={{flex:1,color:C.textMuted}}>{r[4]}</div>
+                    <div style={{flex:0.7}}><input type="radio" name="challan" defaultChecked={i===0} style={{cursor:"pointer"}}/></div>
+                  </div>
+                ))}
+              </div>
+              <div style={{marginTop:10}}><Btn primary full onClick={()=>setStep(2)}>Next: Map to SKU</Btn></div>
+            </Card>
+          )}
+          {step===2&&(
+            <Card>
+              <SectionLabel>Map Pieces to SKU Variants</SectionLabel>
+              <div style={{padding:"8px 10px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,marginBottom:10,fontSize:11}}>
+                Challan #3202 \u00B7 D-710 Floral Anarkali \u00B7 240 pcs ready
+              </div>
+              <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+                <div style={{display:"flex",background:C.bgSoft,padding:"5px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
+                  <div style={{flex:1.2}}>Colour</div><div style={{flex:0.8}}>Size</div><div style={{flex:1}}>SKU Code</div><div style={{flex:0.8}}>Pieces</div><div style={{flex:0.8}}>To Stock</div>
+                </div>
+                {[{col:"Pink",sz:"M",sku:"HT-001-PNK-M",pcs:40,stock:40},{col:"Pink",sz:"L",sku:"HT-001-PNK-L",pcs:40,stock:40},{col:"Blue",sz:"M",sku:"HT-001-BLU-M",pcs:40,stock:40},{col:"Blue",sz:"L",sku:"HT-001-BLU-L",pcs:40,stock:40},{col:"Cream",sz:"M",sku:"HT-001-CRM-M",pcs:40,stock:40},{col:"Cream",sz:"L",sku:"HT-001-CRM-L",pcs:40,stock:40}].map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+                    <div style={{flex:1.2}}>{r.col}</div>
+                    <div style={{flex:0.8}}>{r.sz}</div>
+                    <div style={{flex:1,fontFamily:"monospace",fontSize:10,color:CO.accent}}>{r.sku}</div>
+                    <div style={{flex:0.8}}>{r.pcs}</div>
+                    <div style={{flex:0.8,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"2px 6px",background:C.white,fontWeight:600}}>{r.stock}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{marginTop:10,display:"flex",gap:6}}>
+                <Btn full>Back</Btn>
+                <Btn primary full>Next: Set Pricing</Btn>
+              </div>
+            </Card>
+          )}
+          {(step===3||step===4)&&(
+            <Card>
+              <SectionLabel>{step===3?"Set Pricing":"Confirm \u0026 Stock"}</SectionLabel>
+              {step===3&&<>
+                <div style={{display:"flex",gap:10}}>
+                  <div style={{flex:1}}><Input label={"Retail Price (\u20B9)"} placeholder="850.00" required note="Applied to all variants"/></div>
+                  <div style={{flex:1}}><Input label={"Wholesale Price (\u20B9)"} placeholder="720.00" required/></div>
+                </div>
+                <div style={{padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted,marginBottom:8}}>
+                  240 pieces \u00D7 \u20B9850 retail = <strong style={{color:C.text}}>\u20B9 2,04,000 retail value</strong>
+                </div>
+                <div style={{display:"flex",gap:6}}>
+                  <Btn full>Back</Btn>
+                  <Btn primary full>Next: Confirm</Btn>
+                </div>
+              </>}
+              {step===4&&<>
+                {["240 pieces stocked in Sales ERP","6 SKU variants created / updated","Price \u20B9850 retail set for HT-001","W-04 SKU List refreshed","Audit trail logged"].map((a,i)=>(
+                  <div key={i} style={{fontSize:11,color:C.text,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,display:"flex",alignItems:"center",gap:6}}>
+                    <span style={{color:C.green,fontWeight:700}}>\u2714</span>{a}
+                  </div>
+                ))}
+                <div style={{marginTop:12}}><Btn primary full>Confirm \u0026 Stock Now</Btn></div>
+              </>}
+            </Card>
+          )}
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <SectionLabel>Outward Summary</SectionLabel>
+            {[["Challan","#3202"],["Design","D-710"],["Name","Floral Anarkali"],["Total Pieces","240"],["SKU Variants","6"],["Retail Price","\u20B9 850"],["Wholesale","\u20B9 720"],["Stock Target","W-04 Sales ERP"]].map(([l,v],i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+  );
+},
+// M-G01: Contractor Mobile Login
+"M-G01": () => (
+  <MobileFrame>
+    <div style={{background:"#e65100",padding:"40px 24px 28px",textAlign:"center"}}>
+      <div style={{fontSize:26,fontWeight:700,color:"#fff",letterSpacing:2}}>GMMS</div>
+      <div style={{fontSize:11,color:"#ffcc80",marginTop:4}}>Contractor Portal</div>
+    </div>
+    <div style={{padding:20}}>
+      <Input label="Mobile Number" placeholder="+91 98250 XXXXX" required/>
+      <Input label="PIN" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022" required/>
+      <div style={{marginTop:8}}><Btn primary full>Sign In</Btn></div>
+      <div style={{textAlign:"center",marginTop:12,fontSize:11,color:C.textMuted}}>PIN sent by CMS admin via SMS</div>
+      <div style={{marginTop:16,padding:"10px 12px",background:C.bgSoft,borderRadius:6,border:`0.5px solid ${C.border}`}}>
+        <div style={{fontSize:11,color:C.textMuted}}>New contractor? Contact your CMS representative to get access.</div>
+      </div>
+    </div>
+  </MobileFrame>
+),
+// M-G02: My Challans
+"M-G02": () => (
+  <MobileFrame>
+    <MNav label="My Challans" action="Ramesh K."/>
+    <div style={{padding:14}}>
+      <div style={{display:"flex",gap:4,marginBottom:12}}>
+        {["Pending","Active","Done"].map((t,i)=>(
+          <div key={i} style={{flex:1,textAlign:"center",padding:"6px 0",borderRadius:3,fontSize:11,fontWeight:600,background:i===1?"#e65100":"#f5f5f5",color:i===1?"#fff":"#888",border:`0.5px solid ${i===1?"#e65100":"#ddd"}`}}>{t}</div>
+        ))}
+      </div>
+      {[
+        {cno:"3210",design:"D-730",name:"Floral Anarkali",pcs:600,stage:"STH",due:"24 May",status:"Active",urgent:true},
+        {cno:"3205",design:"D-715",name:"Embr. Dupatta",pcs:200,stage:"EMB",due:"28 May",status:"Active",urgent:false},
+        {cno:"3201",design:"D-708",name:"Georgette Suit",pcs:400,stage:"EMB",due:"30 May",status:"Active",urgent:false},
+      ].map((r,i)=>(
+        <div key={i} style={{background:C.white,border:`0.5px solid ${r.urgent?C.redBorder:C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+            <span style={{fontSize:12,fontWeight:700,fontFamily:"monospace",color:"#e65100"}}>#{r.cno}</span>
+            {r.urgent&&<span style={{fontSize:9,fontWeight:700,background:C.redLight,color:C.red,padding:"2px 6px",borderRadius:3}}>OVERDUE</span>}
+          </div>
+          <div style={{fontSize:11,fontWeight:600,marginBottom:2}}>{r.name}</div>
+          <div style={{fontSize:10,color:C.textMuted}}>{r.design} \u00B7 {r.pcs} pcs \u00B7 {r.stage}</div>
+          <div style={{fontSize:10,color:r.urgent?C.red:C.textMuted,marginTop:4}}>Due: {r.due}</div>
+          <div style={{marginTop:8,display:"flex",gap:6}}>
+            <button style={{flex:1,padding:"6px",background:"#e65100",color:"#fff",border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>View Details</button>
+          </div>
+        </div>
+      ))}
+    </div>
+    <MBottomNav active="Home"/>
+  </MobileFrame>
+),
+// M-G03: Challan Detail (Accept / Reject)
+"M-G03": () => (
+  <MobileFrame>
+    <MNav label="Challan #3210"/>
+    <div style={{background:"#e65100",padding:"10px 14px"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>D-730 \u00B7 Floral Anarkali</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>600 pcs \u00B7 Stitching \u00B7 Due 24 May</div>
+    </div>
+    <div style={{padding:14}}>
+      <div style={{background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:6,padding:"8px 12px",marginBottom:10,fontSize:11,color:"#e65100",fontWeight:600}}>
+        \u26A0 New challan awaiting your acceptance
+      </div>
+      <Card>
+        <SectionLabel>Challan Details</SectionLabel>
+        {[["Challan No","#3210"],["Design","D-730"],["Job Type","Stitching"],["Pieces","600"],["Date Issued","07 May 2026"],["Return By","24 May 2026"],["Rate","\u20B9 45 / piece"]].map(([l,v],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
+          </div>
+        ))}
+      </Card>
+      <Card>
+        <SectionLabel>Colour Breakdown</SectionLabel>
+        {[["Pink",200],["Blue",200],["Cream",200]].map(([c,p],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",fontSize:11}}>
+            <span>{c}</span><span style={{fontWeight:600}}>{p} pcs</span>
+          </div>
+        ))}
+      </Card>
+      <div style={{display:"flex",gap:8,marginTop:4}}>
+        <button style={{flex:1,padding:"10px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>\u2714 Accept</button>
+        <button style={{flex:1,padding:"10px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>\u00D7 Reject</button>
+      </div>
+    </div>
+  </MobileFrame>
+),
+// M-G04: Confirm Pieces Sent
+"M-G04": () => (
+  <MobileFrame>
+    <MNav label="Confirm Pieces Sent"/>
+    <div style={{padding:14}}>
+      <div style={{background:"#e65100",borderRadius:6,padding:"10px 14px",marginBottom:12}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>Challan #3210</div>
+        <div style={{fontSize:10,color:"#ffcc80"}}>D-730 \u00B7 Stitching \u00B7 600 pieces issued</div>
+      </div>
+      <Card>
+        <SectionLabel>Enter Pieces Returned</SectionLabel>
+        <div style={{fontSize:11,color:C.textMuted,marginBottom:10}}>Enter count of finished pieces being sent back. Any discrepancy will trigger a dispute.</div>
+        {[{col:"Pink",issued:200},{col:"Blue",issued:200},{col:"Cream",issued:200}].map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+            <div style={{flex:1,fontSize:12}}>{r.col}</div>
+            <div style={{fontSize:11,color:C.textMuted}}>of {r.issued}</div>
+            <div style={{width:70,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"6px 8px",fontSize:14,fontWeight:700,textAlign:"center",background:C.white}}>{r.issued}</div>
+          </div>
+        ))}
+        <div style={{marginTop:4,padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted}}>
+          Total: <strong>600 / 600 pieces</strong>
+        </div>
+      </Card>
+      <Card>
+        <SectionLabel>Notes (Optional)</SectionLabel>
+        <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",fontSize:12,color:C.textLight,minHeight:60}}>Any notes about quality or count...</div>
+      </Card>
+      <div style={{marginTop:4}}>
+        <button style={{width:"100%",padding:"12px",background:"#e65100",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:"pointer"}}>Confirm \u0026 Submit</button>
+      </div>
+    </div>
+  </MobileFrame>
+),
+// M-G05: My Payment Ledger
+"M-G05": () => (
+  <MobileFrame>
+    <MNav label="My Payment Ledger"/>
+    <div style={{background:"#e65100",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div>
+        <div style={{fontSize:11,color:"#ffcc80"}}>Total Earned (May)</div>
+        <div style={{fontSize:20,fontWeight:700,color:"#fff"}}>\u20B9 28,400</div>
+      </div>
+      <div style={{textAlign:"right"}}>
+        <div style={{fontSize:10,color:"#ffcc80"}}>Pending</div>
+        <div style={{fontSize:15,fontWeight:600,color:"#fff"}}>\u20B9 9,200</div>
+      </div>
+    </div>
+    <div style={{padding:14}}>
+      {[
+        {challan:"3205",design:"D-715",stage:"EMB",pcs:200,amount:"\u20B9 9,200",date:"12 May",status:"Pending"},
+        {challan:"3198",design:"D-688",stage:"EMB",pcs:600,amount:"\u20B9 19,200",date:"04 May",status:"Paid"},
+        {challan:"3185",design:"D-712",stage:"EMB",pcs:600,amount:"\u20B9 18,000",date:"18 Apr",status:"Paid"},
+        {challan:"3171",design:"D-708",stage:"EMB",pcs:400,amount:"\u20B9 12,400",date:"02 Apr",status:"Paid"},
+      ].map((r,i)=>(
+        <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+            <span style={{fontSize:11,fontFamily:"monospace",color:"#e65100",fontWeight:700}}>#{r.challan}</span>
+            <span style={{fontSize:12,fontWeight:700,color:r.status==="Paid"?C.green:"#b45309"}}>{r.amount}</span>
+          </div>
+          <div style={{fontSize:10,color:C.textMuted}}>{r.design} \u00B7 {r.stage} \u00B7 {r.pcs} pcs</div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+            <span style={{fontSize:10,color:C.textMuted}}>{r.date}</span>
+            <span style={{fontSize:10,fontWeight:600,color:r.status==="Paid"?C.green:"#b45309",background:r.status==="Paid"?C.greenLight:"#fff8e1",padding:"2px 6px",borderRadius:3}}>{r.status}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+    <MBottomNav active="Profile"/>
+  </MobileFrame>
+),
+// M-G06: My Profile
+"M-G06": () => (
+  <MobileFrame>
+    <MNav label="My Profile"/>
+    <div style={{background:"#e65100",padding:"24px 16px",textAlign:"center"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:"rgba(255,255,255,0.2)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:700,margin:"0 auto 8px"}}>R</div>
+      <div style={{fontSize:14,fontWeight:700,color:"#fff"}}>Ramesh Kadkiya</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>Embroidery \u00B7 Code C-006</div>
+    </div>
+    <div style={{padding:14}}>
+      <Card>
+        <SectionLabel>Personal Details</SectionLabel>
+        {[["Mobile","+91 98250-XXXXX"],["City","Surat"],["Joined","12 Jan 2025"],["GSTIN","27ABCDE1234F1Z5"]].map(([l,v],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
+          </div>
+        ))}
+      </Card>
+      <Card>
+        <SectionLabel>Performance</SectionLabel>
+        {[["This Month Jobs","12"],["Completion Rate","96%"],["Avg Turnaround","9.1 days"],["Rejection Rate","1.2%"]].map(([l,v],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:600,color:l.includes("Rejection")?C.green:l.includes("Rate")&&v==="96%"?C.green:C.text}}>{v}</span>
+          </div>
+        ))}
+      </Card>
+      <Card>
+        <SectionLabel>Bank Details</SectionLabel>
+        <div style={{fontSize:11,color:C.text,marginBottom:4}}>HDFC Bank \u00B7 Savings</div>
+        <div style={{fontSize:11,color:C.textMuted}}>Account: \u2022\u2022\u2022\u2022 4521</div>
+        <div style={{fontSize:10,color:C.textMuted,marginTop:6}}>Payments credited within 2 business days of confirmation.</div>
+      </Card>
+      <button style={{width:"100%",padding:"10px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer",color:C.textMuted,marginTop:4}}>Sign Out</button>
+    </div>
+    <MBottomNav active="Profile"/>
+  </MobileFrame>
+),

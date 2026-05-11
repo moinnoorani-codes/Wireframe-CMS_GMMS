@@ -1,0 +1,72 @@
+"G-03": () => (
+  <WebLayout activeMenu="Challans" mode="mfg">
+    <GTopBar title="Challan Tracking - #3210" sub="D-730 \u00B7 Floral Embroidery Set \u00B7 600 pcs \u00B7 Started 07 May 2026" actions={[{label:"Add Note"},{label:"Reprocess \u2192 G-13"},{label:"Print Challan",primary:true}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
+      <div style={{display:"flex",gap:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:14}}>Production Progress Tracker</div>
+            {[
+              {step:1,code:"EMB",label:"Embroidery",cont:"Ramesh Kadkiya",sent:600,conf:600,start:"07 May",deadline:"17 May",status:"completed"},
+              {step:2,code:"STH",label:"Stitching",cont:"Suresh Bhai",sent:600,conf:598,start:"18 May",deadline:"24 May",status:"inprogress"},
+              {step:3,code:"DIA",label:"Diamond Work",cont:"Anil Thakkar",sent:null,deadline:"28 May",status:"pending"},
+              {step:4,code:"LAC",label:"Lace Work",cont:"Mohan Das",sent:null,deadline:"30 May",status:"pending"},
+              {step:5,code:"PKG",label:"Ready Count",cont:"In-house Staff",sent:null,deadline:"01 Jun",status:"pending"},
+            ].map((s,i)=>(
+              <div key={i} style={{display:"flex",gap:0,marginBottom:0}}>
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",width:28,flexShrink:0}}>
+                  <div style={{width:18,height:18,borderRadius:"50%",background:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.border,display:"flex",alignItems:"center",justifyContent:"center",zIndex:1,flexShrink:0}}>
+                    {s.status==="completed"&&<span style={{color:C.white,fontSize:9,fontWeight:700}}>\u2714</span>}
+                    {s.status==="inprogress"&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  {i<4&&<div style={{width:1.5,flex:1,minHeight:20,background:s.status==="completed"?C.green:C.border,margin:"2px 0"}}/>}
+                </div>
+                <div style={{flex:1,paddingBottom:10,paddingLeft:8}}>
+                  <div style={{border:`0.5px solid ${s.status==="completed"?C.greenBorder:s.status==="inprogress"?CO.accentBorder:C.border}`,borderRadius:4,padding:"8px 10px",background:s.status==="completed"?C.greenLight:s.status==="inprogress"?CO.accentLight:C.white}}>
+                    <div style={{display:"flex",justifyContent:"space-between"}}>
+                      <div><span style={{fontSize:10,fontFamily:"monospace",color:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.textLight,fontWeight:600}}>/{s.code}</span><span style={{fontSize:12,fontWeight:600,marginLeft:6}}>{s.label}</span></div>
+                      <span style={{fontSize:10,fontWeight:600,color:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.textLight,textTransform:"uppercase"}}>{s.status==="inprogress"?"In Progress":s.status==="completed"?"Completed":"Pending"}</span>
+                    </div>
+                    <div style={{fontSize:11,color:C.textMuted,marginTop:4}}>{s.cont}</div>
+                    {s.sent&&<div style={{display:"flex",gap:12,marginTop:6,fontSize:11}}>
+                      <span>Sent: <strong>{s.sent}</strong></span>
+                      {s.conf&&<span style={{color:s.conf<s.sent?C.red:C.green}}>Confirmed: <strong>{s.conf}</strong>{s.conf<s.sent&&<span style={{color:C.red}}> (-{s.sent-s.conf} dispute)</span>}</span>}
+                      <span style={{color:C.textMuted}}>Deadline: {s.deadline}</span>
+                    </div>}
+                    {s.status==="pending"&&<div style={{fontSize:10,color:C.textMuted,marginTop:4}}>Deadline: {s.deadline}</div>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card>
+            <SectionLabel>Challan Summary</SectionLabel>
+            {[["Challan No","3210"],["Design No","D-730"],["Total Pieces","600"],["Colours","Pink/Blue/Cream \u00D7 200 each"],["Flow","4 stages + Ready Count"],["Started","07 May 2026"],["Expected Completion","01 Jun 2026"]].map(([l,v],i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500,textAlign:"right",maxWidth:"55%"}}>{v}</span>
+              </div>
+            ))}
+          </Card>
+          <Card>
+            <SectionLabel>Notes History</SectionLabel>
+            {[
+              {author:"Moin N.",stage:"EMB",time:"07 May 09:30",cat:"Quality",note:"Ensure stitch count matches approved 82,400."},
+              {author:"Raju S.",stage:"STH",time:"18 May 11:00",cat:"Shortage",note:"2 pieces short on confirmation. Dispute raised."},
+            ].map((n,i)=>(
+              <div key={i} style={{padding:"6px 0",borderBottom:`0.5px solid ${C.border}`}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:C.textMuted,marginBottom:2}}>
+                  <span>{n.author} \u00B7 {n.stage}</span><span>{n.time}</span>
+                </div>
+                <div style={{fontSize:10,color:CO.accent,marginBottom:2}}>[{n.cat}]</div>
+                <div style={{fontSize:11}}>{n.note}</div>
+              </div>
+            ))}
+            <button style={{marginTop:6,width:"100%",padding:"5px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white,cursor:"pointer",color:C.textMuted}}>+ Add Note</button>
+          </Card>
+        </div>
+      </div>
+    </div>
+  </WebLayout>
+),
