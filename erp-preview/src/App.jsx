@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { jobTimelineDefaults } from "./gmmsJobTimeline";
 
 const C = {
   bgSoft: "#f5f5f5", text: "#111111", textMuted: "#666666", textLight: "#999999",
@@ -3857,6 +3858,8 @@ const screens = {
 
 "G-02": () => {
   const [showDesignHistory, setShowDesignHistory] = useState(false);
+  const createdAt = "11 May 2026, 15:42";
+  const totalTimelineDays = jobTimelineDefaults.reduce((sum, job) => sum + job.targetDays, 0);
   return (
   <WebLayout activeMenu="Challans" mode="mfg">
     <GTopBar title="Create New Challan" sub="Define job work flow, assign contractors, set timelines" actions={[{label:"Confirm & Notify",primary:true},{label:"Save Draft"},{label:"Cancel"}]}/>
@@ -3892,6 +3895,10 @@ const screens = {
             <div style={{display:"flex",gap:10,marginBottom:4}}>
               <div style={{flex:1}}><Input label="Challan No (Auto)" placeholder="3211" mono/></div>
               <div style={{flex:1}}><Input label="Date" placeholder="07 May 2026"/></div>
+            </div>
+            <div style={{display:"flex",gap:10,marginBottom:4}}>
+              <div style={{flex:1}}><Input label="Created Timestamp (Auto)" placeholder={createdAt} mono note="Recorded when the user creates the challan"/></div>
+              <div style={{flex:1}}><Input label="Created By" placeholder="Moin Noorani" note="Stored in challan audit trail"/></div>
             </div>
             <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
               <div style={{flex:1}}><Input label="Design Number (D.No)" placeholder="D-730" required note="Auto-fills from last run"/></div>
@@ -3956,6 +3963,36 @@ const screens = {
           </Card>
           <Card>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <SectionLabel>Job Timeline Setup</SectionLabel>
+              <div style={{fontSize:10,color:CO.accent,fontWeight:700}}>Template: GMMS-JOB-TIMELINE-v1</div>
+            </div>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:8}}>
+              Default days come from the timeline config file and can be adjusted per challan before confirmation.
+            </div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white,marginBottom:8}}>
+              <div style={{display:"flex",background:C.bgSoft,padding:"5px 8px",fontSize:9,fontWeight:700,color:C.textMuted,gap:6}}>
+                <div style={{flex:0.7}}>CODE</div><div style={{flex:1.2}}>JOB</div><div style={{flex:1.2}}>CONTRACTOR</div><div style={{flex:0.8}}>DAYS</div><div style={{flex:1.5}}>STARTS AFTER</div><div style={{flex:1.4}}>ESCALATION</div>
+              </div>
+              {jobTimelineDefaults.map((job,i)=>(
+                <div key={job.code} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 8px",borderTop:`0.5px solid ${C.border}`,fontSize:10,background:i===1?CO.accentLight:C.white}}>
+                  <div style={{flex:0.7,fontFamily:"monospace",fontWeight:700,color:CO.accent}}>{job.code}</div>
+                  <div style={{flex:1.2,fontWeight:600}}>{job.jobType}</div>
+                  <div style={{flex:1.2,color:C.textMuted}}>{job.owner}</div>
+                  <div style={{flex:0.8}}>
+                    <div style={{border:`0.5px solid ${C.border}`,borderRadius:3,padding:"2px 6px",background:C.white,fontWeight:700,width:"fit-content"}}>{job.targetDays} days</div>
+                  </div>
+                  <div style={{flex:1.5,color:C.textMuted}}>{job.startTrigger}</div>
+                  <div style={{flex:1.4,color:i===1?CO.accent:C.textMuted,fontWeight:i===1?600:400}}>{job.escalation}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{display:"flex",gap:8,alignItems:"center"}}>
+              <div style={{fontSize:11,color:C.textMuted,flex:1}}>Expected completion: <strong style={{color:C.text}}>{totalTimelineDays} days from confirmation</strong></div>
+              <button style={{padding:"6px 12px",border:`0.5px solid ${CO.accentBorder}`,background:CO.accentLight,borderRadius:4,fontSize:11,color:CO.accent,fontWeight:600,cursor:"pointer"}}>Edit Timeline</button>
+            </div>
+          </Card>
+          <Card>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <SectionLabel>Job Work Flow</SectionLabel>
               <div style={{fontSize:10,color:C.textMuted}}>Min 3 · Max 13 · drag to reorder</div>
             </div>
@@ -4014,7 +4051,7 @@ const screens = {
           </Card>
           <Card style={{background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`}}>
             <SectionLabel>On Confirm</SectionLabel>
-            {["Generate Challan No 3211","SMS + push to Ramesh Kadkiya (EMB)","Challan print-ready","Logged in audit trail"].map((a,i)=>(
+            {["Generate Challan No 3211",`Record created timestamp: ${createdAt}`,"Apply job timeline defaults from GMMS-JOB-TIMELINE-v1","SMS + push to Ramesh Kadkiya (EMB)","Challan print-ready","Logged in audit trail"].map((a,i)=>(
               <div key={i} style={{fontSize:11,color:C.text,padding:"3px 0",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{color:C.green,fontWeight:700}}>✔</span>{a}
               </div>
@@ -4665,6 +4702,7 @@ const screens = {
 "G-20": () => {
   const [lookupBy, setLookupBy] = useState("invoice");
   const [found, setFound] = useState(true);
+  const rfCreatedAt = "11 May 2026, 15:44";
   return (
   <WebLayout activeMenu="RF" mode="mfg">
     <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. · raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
@@ -4710,6 +4748,10 @@ const screens = {
             </div>
             <Input label="Pieces Affected" placeholder="e.g. 24" required/>
             <Input label="Description" placeholder="Describe the issue in detail" required/>
+            <div style={{display:"flex",gap:10}}>
+              <div style={{flex:1}}><Input label="RF Created Timestamp (Auto)" placeholder={rfCreatedAt} mono note="Recorded when the user submits RF"/></div>
+              <div style={{flex:1}}><Input label="Created By" placeholder="Moin Noorani" note="Stored in RF audit trail"/></div>
+            </div>
             <div style={{marginBottom:8}}>
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Assign to Contractor?</div>
               <div style={{display:"flex",gap:6}}>
@@ -4723,7 +4765,7 @@ const screens = {
         <div style={{flex:1}}>
           <Card style={{background:C.redLight,border:`0.5px solid ${C.redBorder}`}}>
             <SectionLabel>RF Summary</SectionLabel>
-            {[["Challan","#3202"],["Design","D-710"],["Type","Stitching Error"],["Pieces","24"],["Assigned to","Ramesh Kadkiya"],["Status","Pending"]].map(([l,v],i)=>(
+            {[["Challan","#3202"],["Design","D-710"],["Type","Stitching Error"],["Pieces","24"],["Created At",rfCreatedAt],["Created By","Moin Noorani"],["Assigned to","Ramesh Kadkiya"],["Status","Pending"]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.redBorder}`,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
               </div>
