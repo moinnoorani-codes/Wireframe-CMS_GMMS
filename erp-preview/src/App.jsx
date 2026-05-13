@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { jobTimelineDefaults } from "./gmmsJobTimeline";
+import { FLOWS, ROLE_COLORS, ERP_COLORS, getFlowsForScreen, getFlowById, getFlowNavigation, getStepIndexByScreen, getScreenRole, getScreenFlows } from "./flows-data";
+import { RoleBadge, FlowTag, FlowBar, FlowDiagram, FlowNavButtons } from "./flows-ui";
 
 const C = {
   bgSoft: "#f5f5f5", text: "#111111", textMuted: "#666666", textLight: "#999999",
@@ -81,10 +83,10 @@ const Toggle = ({options,active}) => (
   </div>
 );
 
-const Tabs = ({tabs,active}) => (
+const Tabs = ({tabs,active,onChange}) => (
   <div style={{display:"flex",borderBottom:`0.5px solid ${C.border}`,marginBottom:14,background:C.white}}>
     {tabs.map((t,i)=>(
-      <div key={i} style={{padding:"10px 16px",fontSize:12,fontWeight:600,color:active===t?C.black:C.textMuted,borderBottom:active===t?`2px solid ${C.black}`:"2px solid transparent",cursor:"pointer"}}>{t}</div>
+      <div key={i} onClick={()=>onChange&&onChange(t)} style={{padding:"10px 16px",fontSize:12,fontWeight:600,color:active===t?C.black:C.textMuted,borderBottom:active===t?`2px solid ${C.black}`:"2px solid transparent",cursor:"pointer"}}>{t}</div>
     ))}
   </div>
 );
@@ -1658,84 +1660,117 @@ const screens = {
 // CCTV
 // ------------------------------------------------------------------------
 
-"W-21": () => (
-  <WebLayout activeMenu="CCTV">
-    <TopBar title="CCTV Console" sub="Dispatch video recording & footage library"/>
-    <Content pad={false}>
-      <Tabs tabs={["Record New Dispatch","Footage Library"]} active="Record New Dispatch"/>
-      <div style={{padding:16}}>
-        <div style={{display:"flex",gap:12}}>
-          <div style={{flex:1}}>
-            <Card>
-              <SectionLabel>Step 1  -  Identify Order</SectionLabel>
-              <div style={{display:"flex",gap:8,marginBottom:10}}>
-                <div style={{flex:1}}><Input label="Order ID / Challan Number" placeholder="Scan label or type Order ID..." mono note="Scan the printed Order ID label at dispatch station"/></div>
-                <div style={{paddingTop:18}}><Btn>⊙ Scan</Btn></div>
+"W-21": ({ onNavigate }) => {
+  const [tab, setTab] = useState("Record New Dispatch");
+  return (
+    <WebLayout activeMenu="CCTV">
+      <TopBar title="CCTV Console" sub="Dispatch video recording & footage library"/>
+      <Content pad={false}>
+        <Tabs tabs={["Record New Dispatch","Footage Library"]} active={tab} onChange={setTab}/>
+        {tab === "Record New Dispatch" ? (
+          <div style={{padding:16}}>
+            <div style={{display:"flex",gap:12}}>
+              <div style={{flex:1}}>
+                <Card>
+                  <SectionLabel>Step 1  -  Identify Order</SectionLabel>
+                  <div style={{display:"flex",gap:8,marginBottom:10}}>
+                    <div style={{flex:1}}><Input label="Order ID / Challan Number" placeholder="Scan label or type Order ID..." mono note="Scan the printed Order ID label at dispatch station"/></div>
+                    <div style={{paddingTop:18}}><Btn>⊙ Scan</Btn></div>
+                  </div>
+                  <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:8}}>
+                    <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Order Found  -  #1043</div>
+                    <div style={{fontSize:12,marginTop:2}}>Ramesh Traders · 4 items · ₹3,400</div>
+                    <div style={{fontSize:11,color:C.textMuted}}>Challan: CH-882 · Dispatching to Mumbai</div>
+                  </div>
+                  <div style={{display:"flex",gap:8,marginBottom:12}}>
+                    <Btn small>🖨 Print Label</Btn>
+                    <span style={{fontSize:10,color:C.textMuted,alignSelf:"center"}}>Prints order ID label for dispatch station scanning</span>
+                  </div>
+                  <SectionLabel>Step 2  -  Camera</SectionLabel>
+                  <div style={{display:"flex",gap:8,marginBottom:12}}>
+                    {["CAM-1 (Dispatch A) ●","CAM-2 (Dispatch B)"].map((c,i)=>(
+                      <div key={i} style={{flex:1,padding:"8px 12px",border:`0.5px solid ${i===0?C.black:C.border}`,borderRadius:4,background:i===0?C.black:C.white,color:i===0?C.white:C.textMuted,fontSize:11,textAlign:"center",cursor:"pointer"}}>{c}</div>
+                    ))}
+                  </div>
+                  <SectionLabel>Step 3  -  Recording Controls</SectionLabel>
+                  <div style={{padding:"14px",background:C.bgSoft,borderRadius:6,border:`0.5px solid ${C.border}`,textAlign:"center",marginBottom:10}}>
+                    <div style={{fontSize:11,color:C.textMuted,marginBottom:10}}>Ready to record · CAM-1 live</div>
+                    <Btn success>▶ Start Recording</Btn>
+                  </div>
+                  <div style={{padding:"14px",background:C.black,borderRadius:6,textAlign:"center"}}>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:8}}>
+                      <div style={{width:10,height:10,borderRadius:"50%",background:C.red}}/>
+                      <span style={{color:C.white,fontSize:12,fontWeight:600}}>RECORDING · 01:24</span>
+                    </div>
+                    <div style={{fontSize:11,color:"#888",marginBottom:10}}>Order #1043 · CAM-1 · 04 Apr 09:45</div>
+                    <Btn danger>◼ Stop & Save Recording</Btn>
+                  </div>
+                  <div style={{marginTop:8,fontSize:10,color:C.textMuted}}>On stop: clip is saved and automatically linked to Order #1043 · Challan CH-882</div>
+                </Card>
               </div>
-              {/* Order found state */}
-              <div style={{padding:"10px 12px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:6,marginBottom:8}}>
-                <div style={{fontSize:12,fontWeight:600,color:C.green}}>✔ Order Found  -  #1043</div>
-                <div style={{fontSize:12,marginTop:2}}>Ramesh Traders · 4 items · ₹3,400</div>
-                <div style={{fontSize:11,color:C.textMuted}}>Challan: CH-882 · Dispatching to Mumbai</div>
+              <div style={{flex:1}}>
+                <Card>
+                  <SectionLabel>Recently Recorded</SectionLabel>
+                  {[
+                    {order:"#1042",ch:"CH-881",cust:"Suresh Fabrics",time:"09:45",dur:"3m 22s",cam:"CAM-1"},
+                    {order:"#1041",ch:"CH-880",cust:"Deepak & Sons",time:"11:20",dur:"2m 48s",cam:"CAM-2"},
+                  ].map((v,i)=>(
+                    <div key={i} style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",marginBottom:10}}>
+                      <div style={{height:70,background:C.black,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{textAlign:"center",color:"#666"}}>
+                          <div style={{fontSize:16}}>▶</div>
+                          <div style={{fontSize:9,marginTop:2}}>{v.cam} · 04 Apr {v.time} · {v.dur}</div>
+                        </div>
+                      </div>
+                      <div style={{padding:"8px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        <div>
+                          <div style={{fontSize:12,fontWeight:600,fontFamily:"monospace"}}>{v.order}</div>
+                          <div style={{fontSize:11,color:C.textMuted}}>{v.cust} · {v.ch}</div>
+                        </div>
+                        <Btn small onClick={()=>onNavigate&&onNavigate("W-22")}>View →</Btn>
+                      </div>
+                    </div>
+                  ))}
+                </Card>
               </div>
-              {/* Print Label button  -  prints dispatch label for this order ID */}
-              <div style={{display:"flex",gap:8,marginBottom:12}}>
-                <Btn small>🖨 Print Label</Btn>
-                <span style={{fontSize:10,color:C.textMuted,alignSelf:"center"}}>Prints order ID label for dispatch station scanning</span>
-              </div>
-              <SectionLabel>Step 2  -  Camera</SectionLabel>
-              <div style={{display:"flex",gap:8,marginBottom:12}}>
-                {["CAM-1 (Dispatch A) ●","CAM-2 (Dispatch B)"].map((c,i)=>(
-                  <div key={i} style={{flex:1,padding:"8px 12px",border:`0.5px solid ${i===0?C.black:C.border}`,borderRadius:4,background:i===0?C.black:C.white,color:i===0?C.white:C.textMuted,fontSize:11,textAlign:"center",cursor:"pointer"}}>{c}</div>
-                ))}
-              </div>
-              <SectionLabel>Step 3  -  Recording Controls</SectionLabel>
-              <div style={{padding:"14px",background:C.bgSoft,borderRadius:6,border:`0.5px solid ${C.border}`,textAlign:"center",marginBottom:10}}>
-                <div style={{fontSize:11,color:C.textMuted,marginBottom:10}}>Ready to record · CAM-1 live</div>
-                <Btn success>▶ Start Recording</Btn>
-              </div>
-              {/* Recording in progress state */}
-              <div style={{padding:"14px",background:C.black,borderRadius:6,textAlign:"center"}}>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:8}}>
-                  <div style={{width:10,height:10,borderRadius:"50%",background:C.red}}/>
-                  <span style={{color:C.white,fontSize:12,fontWeight:600}}>RECORDING · 01:24</span>
-                </div>
-                <div style={{fontSize:11,color:"#888",marginBottom:10}}>Order #1043 · CAM-1 · 04 Apr 09:45</div>
-                <Btn danger>◼ Stop & Save Recording</Btn>
-              </div>
-              <div style={{marginTop:8,fontSize:10,color:C.textMuted}}>On stop: clip is saved and automatically linked to Order #1043 · Challan CH-882</div>
-            </Card>
+            </div>
           </div>
-          <div style={{flex:1}}>
+        ) : (
+          <div style={{padding:16}}>
+            <div style={{display:"flex",gap:8,marginBottom:14}}>
+              <Input label="Search by Order / Challan" placeholder="Type Order ID or Challan..." mono wide/>
+              <div style={{paddingTop:18}}><Btn small>Filter</Btn></div>
+            </div>
             <Card>
-              <SectionLabel>Recently Recorded</SectionLabel>
+              <SectionLabel>Footage Library</SectionLabel>
+              <TH cols={[{v:"Preview"},{v:"Order ID"},{v:"Customer"},{v:"Date"},{v:"Duration"},{v:"Camera"},{v:""}]}/>
               {[
-                {order:"#1042",ch:"CH-881",cust:"Suresh Fabrics",time:"09:45",dur:"3m 22s",cam:"CAM-1"},
-                {order:"#1041",ch:"CH-880",cust:"Deepak & Sons",time:"11:20",dur:"2m 48s",cam:"CAM-2"},
+                {order:"#1042",ch:"CH-881",cust:"Suresh Fabrics",date:"04 Apr 09:45",dur:"3m 22s",cam:"CAM-1"},
+                {order:"#1041",ch:"CH-880",cust:"Deepak & Sons",date:"04 Apr 11:20",dur:"2m 48s",cam:"CAM-2"},
+                {order:"#1039",ch:"CH-877",cust:"Rajesh Garments",date:"03 Apr 16:10",dur:"4m 05s",cam:"CAM-1"},
+                {order:"#1037",ch:"CH-875",cust:"Mohan Textiles",date:"03 Apr 14:30",dur:"2m 12s",cam:"CAM-2"},
+                {order:"#1035",ch:"CH-873",cust:"Priya Fashion",date:"02 Apr 12:00",dur:"3m 40s",cam:"CAM-1"},
+                {order:"#1033",ch:"CH-870",cust:"Om Traders",date:"02 Apr 10:15",dur:"1m 55s",cam:"CAM-2"},
               ].map((v,i)=>(
-                <div key={i} style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",marginBottom:10}}>
-                  <div style={{height:70,background:C.black,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                    <div style={{textAlign:"center",color:"#666"}}>
-                      <div style={{fontSize:16}}>▶</div>
-                      <div style={{fontSize:9,marginTop:2}}>{v.cam} · 04 Apr {v.time} · {v.dur}</div>
-                    </div>
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:`0.5px solid ${C.border}`}}>
+                  <div style={{width:48,height:32,background:C.black,borderRadius:3,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    <span style={{fontSize:10,color:"#555"}}>▶</span>
                   </div>
-                  <div style={{padding:"8px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                    <div>
-                      <div style={{fontSize:12,fontWeight:600,fontFamily:"monospace"}}>{v.order}</div>
-                      <div style={{fontSize:11,color:C.textMuted}}>{v.cust} · {v.ch}</div>
-                    </div>
-                    <Btn small>View →</Btn>
-                  </div>
+                  <div style={{flex:1,fontSize:12,fontWeight:600,fontFamily:"monospace"}}>{v.order}</div>
+                  <div style={{flex:1.5,fontSize:11,color:C.text}}>{v.cust}</div>
+                  <div style={{flex:1.5,fontSize:10,color:C.textMuted}}>{v.date}</div>
+                  <div style={{flex:0.6,fontSize:10,color:C.textMuted}}>{v.dur}</div>
+                  <div style={{flex:0.8,fontSize:10,color:C.textMuted}}>{v.cam}</div>
+                  <div><Btn small onClick={()=>onNavigate&&onNavigate("W-22")}>▶ Play</Btn></div>
                 </div>
               ))}
             </Card>
           </div>
-        </div>
-      </div>
-    </Content>
-  </WebLayout>
-),
+        )}
+      </Content>
+    </WebLayout>
+  );
+},
 
 "W-22": () => (
   <WebLayout activeMenu="CCTV">
@@ -5245,6 +5280,22 @@ export default function App() {
   const totalScreens = Object.keys(screens).length;
   const isMfgScreen = GMMS_IDS.has(active);
 
+  const [flowMode, setFlowMode] = useState(false);
+  const [activeFlowId, setActiveFlowId] = useState(null);
+  const [activeFlowStep, setActiveFlowStep] = useState(0);
+  const [showFlowsList, setShowFlowsList] = useState(false);
+  const [showFlowDiagram, setShowFlowDiagram] = useState(false);
+
+  const activeFlow = useMemo(() => activeFlowId ? getFlowById(activeFlowId) : null, [activeFlowId]);
+  const nav = useMemo(() => activeFlow ? getFlowNavigation(activeFlowId, activeFlowStep) : { prev: null, next: null }, [activeFlowId, activeFlowStep]);
+  const screenFlowsList = useMemo(() => getScreenFlows(active), [active]);
+  const primaryRole = useMemo(() => { const r = getScreenRole(active); return r ? r[0] : null; }, [active]);
+
+  function handleFlowNavigate(id) { setActive(id); const idx = getStepIndexByScreen(activeFlowId, id); if (idx >= 0) setActiveFlowStep(idx); }
+  function handleFlowPrev() { if (nav.prev) handleFlowNavigate(nav.prev.screen); }
+  function handleFlowNext() { if (nav.next) handleFlowNavigate(nav.next.screen); }
+  function handleStartFlow(fid, sid) { setActiveFlowId(fid); const idx = getStepIndexByScreen(fid, sid); setActiveFlowStep(idx >= 0 ? idx : 0); setFlowMode(true); }
+
   const visibleGroups = screenGroups.filter(p =>
     sidebarErp === "both" || p.erp === sidebarErp
   );
@@ -5253,61 +5304,116 @@ export default function App() {
     <div style={{fontFamily:"system-ui,-apple-system,sans-serif",display:"flex",height:"100vh",background:C.bgSoft,overflow:"hidden"}}>
       {/* Sidebar */}
       <div style={{width:230,background:C.white,borderRight:`0.5px solid ${C.border}`,overflowY:"auto",flexShrink:0,paddingBottom:20,display:"flex",flexDirection:"column"}}>
-        {/* Header with ERP filter */}
+        {/* Header with ERP filter + Screens/Flows toggle */}
         <div style={{padding:"12px 14px 10px",borderBottom:`0.5px solid ${C.border}`,flexShrink:0}}>
           <div style={{fontSize:14,fontWeight:700,letterSpacing:0.5,marginBottom:6}}>
-            CMS <span style={{color:"#888",fontWeight:400,fontSize:11}}>×</span> <span style={{color:CO.accent,fontSize:13}}>GMMS</span>
+            CMS <span style={{color:"#888",fontWeight:400,fontSize:11}}>{"\u00d7"}</span> <span style={{color:CO.accent,fontSize:13}}>GMMS</span>
           </div>
-          <div style={{fontSize:9,color:C.textMuted,marginBottom:8}}>Wireframe Explorer · {totalScreens} screens</div>
-          {/* ERP Toggle Filter */}
-          <div style={{display:"flex",border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
-            {[["both","All"],["sales","Sales"],["mfg","Mfg"]].map(([v,l],i)=>(
-              <div key={i} onClick={()=>setSidebarErp(v)} style={{flex:1,textAlign:"center",padding:"4px 0",fontSize:10,fontWeight:600,cursor:"pointer",background:sidebarErp===v?C.black:C.white,color:sidebarErp===v?C.white:C.textMuted,borderRight:i<2?`0.5px solid ${C.border}`:"none"}}>{l}</div>
+          <div style={{fontSize:9,color:C.textMuted,marginBottom:8}}>Wireframe Explorer {"\u00b7"} {totalScreens} screens</div>
+          {/* Views Toggle: Screens | Flows */}
+          <div style={{display:"flex",gap:0,marginBottom:6}}>
+            {[["screens","Screens"],["flows","Flows"]].map(([v,l],i)=>(
+              <div key={i} onClick={()=>setShowFlowsList(v==="flows")} style={{flex:1,textAlign:"center",padding:"4px 0",fontSize:10,fontWeight:600,cursor:"pointer",background:(v==="screens"?true:showFlowsList)?C.black:C.white,color:(v==="screens"?true:showFlowsList)?C.white:C.textMuted,border:`0.5px solid ${C.border}`,borderRight:i===0?0:"none",borderRadius:v==="screens"?"4px 0 0 4px":"0 4px 4px 0"}}>{l}</div>
             ))}
           </div>
-        </div>
-        {/* Screen Groups */}
-        <div style={{flex:1,overflowY:"auto"}}>
-          {visibleGroups.map((platform,pi)=>(
-            <div key={pi}>
-              <div style={{padding:"8px 14px 3px",fontSize:9,fontWeight:700,color:platform.erp==="mfg"?CO.accent:C.textMuted,letterSpacing:"0.08em",textTransform:"uppercase",borderBottom:`0.5px solid ${C.border}`,background:platform.erp==="mfg"?"#fef9f5":C.white}}>
-                {platform.icon} {platform.platform}
-              </div>
-              {platform.groups.map((group,gi)=>(
-                <div key={gi}>
-                  <div style={{padding:"5px 14px 2px",fontSize:9,fontWeight:700,color:group.label.includes("Deprecated")?C.red:group.label.includes("Owner")?CO.accent:C.textLight,letterSpacing:"0.05em",textTransform:"uppercase"}}>{group.label}</div>
-                  {group.screens.map((id)=>{
-                    const isDeprecated = (screenLabels[id] || "").startsWith("[");
-                    const isOwnerOnly = id==="G-10";
-                    const isMfg = GMMS_IDS.has(id);
-                    return (
-                      <div key={id} onClick={()=>setActive(id)} style={{display:"flex",alignItems:"center",gap:7,padding:"5px 14px",cursor:"pointer",background:active===id?(isMfg?CO.accent:C.black):"transparent",color:active===id?C.white:isDeprecated?C.red:isOwnerOnly?CO.accent:C.textMuted,fontSize:11,borderLeft:active===id?`2px solid ${isMfg?CO.accentBorder:C.red}`:"2px solid transparent",transition:"background 0.1s",opacity:isDeprecated&&active!==id?0.55:1}}>
-                        <span style={{fontSize:9,opacity:0.6,fontFamily:"monospace",flexShrink:0}}>{id}</span>
-                        <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{screenLabels[id]}</span>
-                      </div>
-                    );
-                  })}
-                </div>
+          {/* ERP Toggle Filter (Screens view only) */}
+          {!showFlowsList && (
+            <div style={{display:"flex",border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              {[["both","All"],["sales","Sales"],["mfg","Mfg"]].map(([v,l],i)=>(
+                <div key={i} onClick={()=>setSidebarErp(v)} style={{flex:1,textAlign:"center",padding:"4px 0",fontSize:10,fontWeight:600,cursor:"pointer",background:sidebarErp===v?C.black:C.white,color:sidebarErp===v?C.white:C.textMuted,borderRight:i<2?`0.5px solid ${C.border}`:"none"}}>{l}</div>
               ))}
             </div>
-          ))}
+          )}
         </div>
+        {/* Screens or Flows view */}
+        {!showFlowsList ? (
+          /* Screens view */
+          <div style={{flex:1,overflowY:"auto"}}>
+            {visibleGroups.map((platform,pi)=>(
+              <div key={pi}>
+                <div style={{padding:"8px 14px 3px",fontSize:9,fontWeight:700,color:platform.erp==="mfg"?CO.accent:C.textMuted,letterSpacing:"0.08em",textTransform:"uppercase",borderBottom:`0.5px solid ${C.border}`,background:platform.erp==="mfg"?"#fef9f5":C.white}}>
+                  {platform.icon} {platform.platform}
+                </div>
+                {platform.groups.map((group,gi)=>(
+                  <div key={gi}>
+                    <div style={{padding:"5px 14px 2px",fontSize:9,fontWeight:700,color:group.label.includes("Deprecated")?C.red:group.label.includes("Owner")?CO.accent:C.textLight,letterSpacing:"0.05em",textTransform:"uppercase"}}>{group.label}</div>
+                    {group.screens.map((id)=>{
+                      const isDeprecated = (screenLabels[id] || "").startsWith("[");
+                      const isOwnerOnly = id==="G-10";
+                      const isMfg = GMMS_IDS.has(id);
+                      return (
+                        <div key={id} onClick={()=>setActive(id)} style={{display:"flex",alignItems:"center",gap:7,padding:"5px 14px",cursor:"pointer",background:active===id?(isMfg?CO.accent:C.black):"transparent",color:active===id?C.white:isDeprecated?C.red:isOwnerOnly?CO.accent:C.textMuted,fontSize:11,borderLeft:active===id?`2px solid ${isMfg?CO.accentBorder:C.red}`:"2px solid transparent",transition:"background 0.1s",opacity:isDeprecated&&active!==id?0.55:1}}>
+                          <span style={{fontSize:9,opacity:0.6,fontFamily:"monospace",flexShrink:0}}>{id}</span>
+                          <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{screenLabels[id]}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Flows view */
+          <div style={{flex:1,overflowY:"auto"}}>
+            {[["sales","Sales ERP"],["mfg","Manufacturing ERP"],["cross","Cross-ERP"]].map(([erp,label])=> {
+              const ef = FLOWS.filter(f => f.erp === erp);
+              const ec = ERP_COLORS[erp] || { accent: C.textMuted, light: C.bgSoft, border: C.border };
+              if (ef.length === 0) return null;
+              return (
+                <div key={erp}>
+                  <div style={{padding:"8px 14px 3px",fontSize:9,fontWeight:700,color:ec.accent,letterSpacing:"0.08em",textTransform:"uppercase",borderBottom:`0.5px solid ${C.border}`,background:erp==="mfg"?"#fef9f5":ec.light}}>
+                    {label}
+                  </div>
+                  {ef.map((flow)=>(
+                    <div key={flow.id} onClick={()=>{ setActiveFlowId(flow.id); setActiveFlowStep(0); setFlowMode(true); setActive(flow.steps[0].screen); setShowFlowsList(false); }} style={{display:"flex",flexDirection:"column",gap:2,padding:"7px 14px",cursor:"pointer",background:activeFlowId===flow.id&&flowMode?ec.light:"transparent",borderLeft:activeFlowId===flow.id&&flowMode?`2px solid ${ec.accent}`:"2px solid transparent"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                        <span style={{fontSize:12,fontWeight:600,color:flowMode&&activeFlowId===flow.id?ec.accent:C.text,flex:1}}>{flow.name}</span>
+                        <span style={{fontSize:9,color:C.textMuted,fontFamily:"monospace"}}>{flow.steps.length} steps</span>
+                      </div>
+                      <div style={{fontSize:9,color:C.textMuted}}>{flow.description}</div>
+                      <div style={{display:"flex",gap:3,marginTop:2,flexWrap:"wrap"}}>
+                        {[...new Set(flow.steps.filter(s=>s.screen).map(s=>s.screen))].slice(0,5).map(sid=>(
+                          <span key={sid} style={{fontSize:8,fontFamily:"monospace",color:C.textMuted,padding:"1px 4px",background:C.bgSoft,borderRadius:2,border:`0.5px solid ${C.border}`}}>{sid}</span>
+                        ))}
+                        {flow.steps.length > 5 && <span style={{fontSize:8,color:C.textMuted}}>+{flow.steps.length-5}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div style={{flex:1,overflowY:"auto",padding:24}}>
+        {flowMode && activeFlow && (
+          <FlowBar flow={activeFlow} currentStep={activeFlow.steps[activeFlowStep]} stepIndex={activeFlowStep} totalSteps={activeFlow.steps.length} onPrev={handleFlowPrev} onNext={handleFlowNext} onDiagram={()=>setShowFlowDiagram(true)} onExit={()=>{ setFlowMode(false); setShowFlowsList(true); }} />
+        )}
         <div style={{marginBottom:14,display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
           <div style={{fontSize:11,fontFamily:"monospace",fontWeight:700,padding:"2px 8px",borderRadius:3,background:isMfgScreen?CO.accentLight:C.redLight,color:isMfgScreen?CO.accent:C.red,border:`0.5px solid ${isMfgScreen?CO.accentBorder:C.redBorder}`}}>{active}</div>
           <div style={{fontSize:15,fontWeight:600}}>{screenLabels[active]}</div>
+          {primaryRole && <RoleBadge role={primaryRole} />}
+          {screenFlowsList.slice(0,3).map(f => (
+            <FlowTag key={f.id} flowId={f.id} flowName={f.name} erp={f.erp} active={flowMode && activeFlowId===f.id} onClick={()=>handleStartFlow(f.id, active)} />
+          ))}
           <div style={{marginLeft:"auto",display:"flex",gap:8,alignItems:"center"}}>
             <span style={{fontSize:10,padding:"2px 8px",borderRadius:3,fontWeight:600,border:`0.5px solid ${isMfgScreen?CO.accentBorder:C.border}`,color:isMfgScreen?CO.accent:C.textMuted,background:isMfgScreen?CO.accentLight:C.bgSoft}}>
               {isMfgScreen?"Manufacturing ERP":active.startsWith("M")?"Mobile App":active.startsWith("P")?"Public":"Sales ERP"}
             </span>
-            <span style={{fontSize:10,color:C.textMuted}}>v4.0 · {totalScreens} screens</span>
+            <span style={{fontSize:10,color:C.textMuted}}>v4.0 {"\u00b7"} {totalScreens} screens</span>
           </div>
         </div>
-        {Screen ? <Screen/> : <div style={{padding:40,textAlign:"center",color:C.textMuted}}>Screen not found</div>}
+        {Screen ? <Screen onNavigate={setActive}/> : <div style={{padding:40,textAlign:"center",color:C.textMuted}}>Screen not found</div>}
+        {flowMode && activeFlow && (
+          <FlowNavButtons screenId={active} prevStep={nav?.prev} nextStep={nav?.next} onNavigate={(id)=>{ handleFlowNavigate(id); }} onStartFlow={(fid, sid)=>{ handleStartFlow(fid, sid); }} />
+        )}
       </div>
+      {showFlowDiagram && activeFlow && (
+        <FlowDiagram flow={activeFlow} currentStepIndex={activeFlowStep} onNavigate={(id)=>{ handleFlowNavigate(id); }} onClose={()=>setShowFlowDiagram(false)} />
+      )}
     </div>
   );
 }
