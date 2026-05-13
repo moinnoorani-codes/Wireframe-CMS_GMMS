@@ -130,10 +130,10 @@ export const FLOWS = [
     description: "End-to-end challan from creation to payment",
     steps: [
       { screen: "G-12", label: "Production Dashboard", role: "Owner/Manager", desc: "Overview of all production activity" },
-      { screen: "G-02", label: "Create Challan", role: "Manager", desc: "Issue new job challan to contractor" },
+      { screen: "G-02", label: "Create Challan", role: "Production Manager", desc: "Issue new job challan to contractor" },
       { screen: "G-01", label: "Challan List", role: "All", desc: "View all active challans" },
       { screen: "G-03", label: "Challan Tracking", role: "All", desc: "Track challan progress by design" },
-      { screen: "G-06", label: "Ready Piece Count", role: "Supervisor", desc: "Record completed pieces" },
+      { screen: "G-06", label: "Ready Piece Count", role: "Production Staff", desc: "Record completed pieces" },
       { screen: "G-07", label: "Payment & Checking", role: "Owner/Accounts", desc: "QC check and process payment" },
     ],
   },
@@ -144,9 +144,9 @@ export const FLOWS = [
     description: "Handle reprocessing, alterations, and rejected fabric returns",
     steps: [
       { screen: "G-12", label: "Production Dashboard", role: "Manager", desc: "Navigate to reprocess or RF" },
-      { screen: "G-13", label: "Reprocess Challan", role: "Manager", desc: "Create reprocess challan for fixes" },
-      { screen: "G-20", label: "Create RF Entry", role: "Manager", desc: "Log rejection/return to fabric mill" },
-      { screen: "G-08", label: "RF Management", role: "Manager", desc: "Track all rejection/return requests" },
+      { screen: "G-13", label: "Reprocess Challan", role: "Production Manager", desc: "Create reprocess challan for fixes" },
+      { screen: "G-20", label: "Create RF Entry", role: "Production Manager", desc: "Log rejection/return to fabric mill" },
+      { screen: "G-08", label: "RF Management", role: "Production Manager", desc: "Track all rejection/return requests" },
     ],
   },
   {
@@ -155,8 +155,8 @@ export const FLOWS = [
     erp: "mfg",
     description: "Manage contractors and their payments",
     steps: [
-      { screen: "G-04", label: "Contractor List", role: "Manager", desc: "View all contractors" },
-      { screen: "G-05", label: "Contractor Detail", role: "Manager", desc: "Detailed contractor ledger and history" },
+      { screen: "G-04", label: "Contractor List", role: "Production Manager", desc: "View all contractors" },
+      { screen: "G-05", label: "Contractor Detail", role: "Production Manager", desc: "Detailed contractor ledger and history" },
       { screen: "G-07", label: "Payment & Checking", role: "Owner/Accounts", desc: "Process contractor payments" },
     ],
   },
@@ -189,8 +189,8 @@ export const FLOWS = [
     erp: "mfg",
     description: "Manage fabric inventory from mill to challan",
     steps: [
-      { screen: "G-09", label: "Mill / Fabric Management", role: "Manager", desc: "Track fabric stock and mill orders" },
-      { screen: "G-02", label: "Create Challan", role: "Manager", desc: "Issue fabric to contractor via challan" },
+      { screen: "G-09", label: "Mill / Fabric Management", role: "Production Manager", desc: "Track fabric stock and mill orders" },
+      { screen: "G-02", label: "Create Challan", role: "Production Manager", desc: "Issue fabric to contractor via challan" },
     ],
   },
   {
@@ -201,8 +201,18 @@ export const FLOWS = [
     steps: [
       { screen: "G-12", label: "Production Dashboard", role: "Owner/Manager", desc: "KPI tiles, overdue challans, leaderboard" },
       { screen: "G-18", label: "Notifications Center", role: "All", desc: "View production alerts and updates" },
-      { screen: "G-22", label: "Live Inventory (GMMS)", role: "Manager", desc: "Monitor GMMS stock levels" },
+      { screen: "G-22", label: "Live Inventory (GMMS)", role: "Production Manager", desc: "Monitor GMMS stock levels" },
       { screen: "G-19", label: "Reports Hub (GMMS)", role: "Owner/Manager", desc: "Generate manufacturing reports" },
+    ],
+  },
+  {
+    id: "mfg-admin",
+    name: "Admin & Security (GMMS)",
+    erp: "mfg",
+    description: "User management, role permissions, and system configuration for manufacturing",
+    steps: [
+      { screen: "G-30", label: "User Management (GMMS)", role: "Owner/Admin", desc: "Manage manufacturing users and roles" },
+      { screen: "G-30A", label: "Role Permissions (GMMS)", role: "Owner/Admin", desc: "Configure GMMS role-based access" },
     ],
   },
 
@@ -292,6 +302,9 @@ export const ROLE_COLORS = {
   "Accounts":         { bg: "#e0f2fe", fg: "#0369a1" },
   "Godown Staff":     { bg: "#dcfce7", fg: "#166534" },
   "GMMS Staff":       { bg: "#ffedd5", fg: "#c2410c" },
+  "Production Manager": { bg: "#ffedd5", fg: "#c2410c" },
+  "Production Staff": { bg: "#fef3c7", fg: "#92400e" },
+  "Owner/Admin":      { bg: "#fed7aa", fg: "#9a3412" },
   "Sales Staff":      { bg: "#dbeafe", fg: "#1e40af" },
   "Contractor":       { bg: "#f3e8ff", fg: "#7c3aed" },
   "Supervisor":       { bg: "#d1fae5", fg: "#065f46" },

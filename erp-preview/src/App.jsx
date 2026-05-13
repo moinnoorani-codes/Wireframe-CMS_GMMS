@@ -175,7 +175,7 @@ const SALES_MENU=[
   {icon:"⊡",label:"Reports",screens:[{id:"W-23",label:"Reports Hub"},{id:"W-24",label:"Sales Report"},{id:"W-25",label:"Ageing Report"},{id:"W-26",label:"Top Designs"},{id:"W-27",label:"Customer History"}]},
   {icon:"✉",label:"SMS",screens:[{id:"W-28",label:"SMS Log"},{id:"W-29",label:"SMS Templates"}]},
   {icon:"📊",label:"Daily Ops",screens:[{id:"W-36",label:"Daily Reconciliation"},{id:"W-39",label:"Challan Print Preview"}]},
-  {icon:"⚙",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-30A",label:"Role Permissions"},{id:"W-31",label:"Customer Master"},{id:"W-35",label:"Edit Customer"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
+  {icon:"\u2699",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-30A",label:"Role Permissions"},{id:"W-31",label:"Customer Master"},{id:"W-35",label:"Edit Customer"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
 ];
 
 // ─── Manufacturing ERP sidebar (GMMS) ───────────────────────────────────────
@@ -191,8 +191,7 @@ const MFG_MENU=[
   {icon:"🎨",label:"Masters",screens:[{id:"G-14",label:"Design Master"},{id:"G-15",label:"Job Work Types"},{id:"G-16",label:"Color Master"},{id:"G-17",label:"Contractor Registry"}]},
   {icon:"🔔",label:"Notifications",screens:[{id:"G-18",label:"Notifications Center"}]},
   {icon:"📊",label:"Reports",screens:[{id:"G-19",label:"GMMS Reports Hub"}]},
-  {icon:"📱",label:"Contractor Mobile",screens:[{id:"M-G01",label:"Contractor Login"},{id:"M-G02",label:"My Challans"},{id:"M-G03",label:"Challan Detail"},{id:"M-G04",label:"Confirm Pieces Sent"},{id:"M-G05",label:"My Payment Ledger"},{id:"M-G06",label:"My Profile"}]},
-  {icon:"⚙",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
+  {icon:"\u2699",label:"Admin",screens:[{id:"G-30",label:"User Management (GMMS)"},{id:"G-30A",label:"Role Permissions (GMMS)"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
 ];
 
 const SidebarMenu = ({menu,activeMenu,accentColor,logo,subtitle,user}) => {
@@ -2081,6 +2080,9 @@ const screens = {
           {name:"Mohammad Ali",email:"ali@cms.com",role:"Super Admin",mob:"+91 79905 01710",status:"Active",login:"04 Apr 09:15",crossErp:"Both"},
           {name:"Raju Singh",email:"raju@cms.com",role:"Godown Staff",mob:"+91 98765 43210",status:"Active",login:"04 Apr 08:45",crossErp:"Sales"},
           {name:"Priya Sharma",email:"priya@cms.com",role:"Office Staff",mob:"+91 87654 32109",status:"Active",login:"04 Apr 09:15",crossErp:"Sales"},
+          {name:"Vikram Singh",email:"vikram@cms.com",role:"Production Manager",mob:"+91 98765 43211",status:"Active",login:"04 Apr 09:30",crossErp:"Manufacturing"},
+          {name:"Suresh Patel",email:"suresh@cms.com",role:"Production Staff",mob:"+91 87654 32110",status:"Active",login:"04 Apr 08:50",crossErp:"Manufacturing"},
+          {name:"Amit Shah",email:"amit@cms.com",role:"Accounts",mob:"+91 76543 21099",status:"Active",login:"04 Apr 09:10",crossErp:"Manufacturing"},
           {name:"Mohan Das",email:"mohan@cms.com",role:"Manager",mob:"+91 76543 21098",status:"Inactive",login:"28 Mar 17:00",crossErp:"Sales"},
         ].map((u,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 10px",borderTop:`0.5px solid ${C.border}`,background:u.status==="Inactive"?C.bgSoft:C.white}}>
@@ -2090,7 +2092,7 @@ const screens = {
             </div>
             <div style={{flex:1.4,fontSize:11,color:C.textMuted}}>{u.email}</div>
             <div style={{flex:1}}><Tag>{u.role}</Tag></div>
-            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:u.crossErp==="Both"?CO.accentLight:C.bgSoft,color:u.crossErp==="Both"?CO.accent:C.textMuted,border:`0.5px solid ${u.crossErp==="Both"?CO.accentBorder:C.border}`}}>{u.crossErp}</span></div>
+            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:u.crossErp!=="Sales"?CO.accentLight:C.bgSoft,color:u.crossErp!=="Sales"?CO.accent:C.textMuted,border:`0.5px solid ${u.crossErp!=="Sales"?CO.accentBorder:C.border}`}}>{u.crossErp}</span></div>
             <div style={{flex:0.9,fontSize:11,color:C.textMuted,fontFamily:"monospace"}}>{u.mob}</div>
             <div style={{flex:0.6}}><Tag color={u.status==="Inactive"?"red":"black"}>{u.status}</Tag></div>
             <div style={{flex:1,fontSize:11,color:C.textMuted}}>{u.login}</div>
@@ -2120,13 +2122,16 @@ const screens = {
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
               {[
                 {role:"Super Admin",desc:"Full access cross-ERP for owners (Kadir Bhai, Ali Bhai)",icon:"⚙"},
-                {role:"Manager",desc:"Orders, approvals, reports, payments  -  no admin settings",icon:"◉"},
-                {role:"Office Staff",desc:"Orders, inventory, customers  -  no approvals or admin",icon:"□"},
-                {role:"Godown Staff",desc:"Mobile app only  -  scanning, picking, dispatch, LR upload",icon:"⊏"},
+                {role:"Production Manager",desc:"Full GMMS access  -  challans, production, contractors, fabric",icon:"▣"},
+                {role:"Production Staff",desc:"Floor production  -  update piece counts, track challans",icon:"◈"},
+                {role:"Accounts",desc:"Payments, reconciliation, reports (GMMS finance)",icon:"₹"},
+                {role:"Manager",desc:"Sales ERP  -  orders, approvals, reports, payments",icon:"◉"},
+                {role:"Office Staff",desc:"Sales ERP  -  orders, inventory, customers",icon:"□"},
+                {role:"Godown Staff",desc:"Mobile only  -  scanning, picking, dispatch, LR upload",icon:"⊏"}
               ].map((r,i)=>(
-                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:i===3?C.bgSoft:C.white,cursor:"pointer"}}>
-                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===3?C.black:C.border}`,background:i===3?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
-                    {i===3&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:i===6?C.bgSoft:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===6?C.black:C.border}`,background:i===6?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
+                    {i===6&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
                   </div>
                   <div>
                     <div style={{fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:6}}><span>{r.icon}</span>{r.role}</div>
@@ -2176,9 +2181,12 @@ const screens = {
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
               {[
                 {role:"Super Admin",desc:"Full cross-ERP access",icon:"⚙",sel:false},
-                {role:"Manager",desc:"Orders, approvals, reports",icon:"◉",sel:false},
-                {role:"Office Staff",desc:"Orders, inventory, customers",icon:"□",sel:false},
-                {role:"Godown Staff",desc:"Mobile app  -  scan, pick, dispatch",icon:"⊏",sel:true},
+                {role:"Production Manager",desc:"Full GMMS access  -  challans, production, contractors",icon:"▣",sel:false},
+                {role:"Production Staff",desc:"Floor production  -  view challans, update piece counts",icon:"◈",sel:false},
+                {role:"Accounts",desc:"Payments, reconciliation, reports (GMMS)",icon:"₹",sel:false},
+                {role:"Manager",desc:"Sales ERP  -  orders, approvals, reports",icon:"◉",sel:false},
+                {role:"Office Staff",desc:"Sales ERP  -  orders, inventory, customers",icon:"□",sel:false},
+                {role:"Godown Staff",desc:"Mobile  -  scan, pick, dispatch",icon:"⊏",sel:true}
               ].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
                   <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${r.sel?C.black:C.border}`,background:r.sel?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
@@ -2220,8 +2228,8 @@ const screens = {
     <Content>
       {/* Role selector tabs */}
       <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
-        {["Super Admin","Manager","Office Staff","Godown Staff"].map((role,i)=>(
-          <span key={i} style={{fontSize:11,padding:"5px 14px",borderRadius:3,border:`0.5px solid ${i===2?C.black:C.border}`,background:i===2?C.black:C.white,color:i===2?C.white:C.textMuted,cursor:"pointer",fontWeight:i===2?600:400}}>{role}</span>
+        {["Super Admin","Production Manager","Production Staff","Accounts","Manager","Office Staff","Godown Staff"].map((role,i)=>(
+          <span key={i} style={{fontSize:11,padding:"5px 14px",borderRadius:3,border:`0.5px solid ${i===5?C.black:C.border}`,background:i===5?C.black:C.white,color:i===5?C.white:C.textMuted,cursor:"pointer",fontWeight:i===5?600:400}}>{role}</span>
         ))}
         <Btn small>+ Add Role</Btn>
         <div style={{marginLeft:"auto",display:"flex",gap:6}}>
@@ -2243,6 +2251,14 @@ const screens = {
         {module:"CCTV",perms:[{label:"View CCTV console",checked:false},{label:"Start/stop recording",checked:false},{label:"View footage library",checked:false}]},
         {module:"Reports",perms:[{label:"View reports",checked:true},{label:"Export reports",checked:false}]},
         {module:"Admin",perms:[{label:"User management",checked:false},{label:"Role permissions",checked:false},{label:"Customer master",checked:true},{label:"System settings",checked:false},{label:"Audit trail",checked:false}]},
+        {module:"Mfg — Challans",perms:[{label:"View challan list & details",checked:true},{label:"Create new challans",checked:true},{label:"Edit existing challans",checked:false},{label:"Track challan progress",checked:true},{label:"Close / complete challans",checked:false}]},
+        {module:"Mfg — Production",perms:[{label:"View production status",checked:true},{label:"Update ready piece counts",checked:true},{label:"Process SKU outward",checked:false},{label:"Payment & piece verification",checked:false}]},
+        {module:"Mfg — Contractors",perms:[{label:"View contractor list",checked:true},{label:"Register new contractors",checked:true},{label:"Edit contractor details",checked:false},{label:"Delete contractor records",checked:false}]},
+        {module:"Mfg — Fabric / Mill",perms:[{label:"View fabric inventory & mill data",checked:true},{label:"Add new fabric rolls",checked:true},{label:"Edit fabric roll details",checked:false}]},
+        {module:"Mfg — RF / Returns",perms:[{label:"View RF / return entries",checked:true},{label:"Create RF entries",checked:true},{label:"Edit existing RF entries",checked:false}]},
+        {module:"Mfg — Masters",perms:[{label:"Manage design master (DST files)",checked:false},{label:"Configure job work types & rates",checked:false},{label:"Manage color master per design",checked:false},{label:"Contractor registry management",checked:false}]},
+        {module:"Mfg — Costing (Owner)",perms:[{label:"View design BOM & cost breakdown",checked:false},{label:"Edit cost data",checked:false}]},
+        {module:"Mfg — Notifications",perms:[{label:"View notification center",checked:true}]},
         {module:"ERP Cross-Access",perms:[{label:"Access Manufacturing ERP (GMMS)",checked:false},{label:"Access Sales ERP (CMS)",checked:true}]},
       ].map((section,si)=>(
         <Card key={si} style={{marginBottom:10}}>
@@ -2284,9 +2300,11 @@ const screens = {
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
               {[
                 {role:"Start with blank / no permissions",desc:"All permissions off by default",icon:"•",sel:false},
+                {role:"Copy from: Production Manager",desc:"Full GMMS  -  challans, production, contractors, fabric",icon:"▣",sel:false},
+                {role:"Copy from: Production Staff",desc:"Floor production  -  challan view, piece counts",icon:"◈",sel:false},
                 {role:"Copy from: Manager",desc:"Orders, approvals, reports, payments",icon:"◉",sel:false},
                 {role:"Copy from: Office Staff",desc:"Orders, inventory, customers  -  no approvals",icon:"□",sel:true},
-                {role:"Copy from: Godown Staff",desc:"Mobile only  -  scan, pick, dispatch",icon:"⊏",sel:false},
+                {role:"Copy from: Godown Staff",desc:"Mobile only  -  scan, pick, dispatch",icon:"⊏",sel:false}
               ].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
                   <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${r.sel?C.black:C.border}`,background:r.sel?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2}}>
@@ -2331,7 +2349,7 @@ const screens = {
           <div style={{marginBottom:14}}>
             <div style={{fontSize:11,color:C.textMuted,marginBottom:6,fontWeight:500}}>Reassign affected users to:</div>
             <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
-              {["Manager","Godown Staff"].map((r,i)=>(
+              {["Production Manager","Production Staff","Manager","Godown Staff"].map((r,i)=>(
                 <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",cursor:"pointer",background:i===0?C.bgSoft:C.white}}>
                   <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===0?C.black:C.border}`,background:i===0?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                     {i===0&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
@@ -4778,7 +4796,7 @@ const screens = {
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>RF Type <span style={{color:C.red}}>*</span></div>
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                 {["Fabric Short","Quality Reject","Stitching Error","Missing Pieces","Late Delivery","Other"].map((t,i)=>(
-                  <div key={i} style={{padding:"4px 10px",border:`0.5px solid ${i===2?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===2?C.redLight:"#fafafa",color:i===2?C.red:C.textMuted,fontWeight:i===2?600:400}}>{t}</div>
+                  <div key={i} style={{padding:"4px 10px",border:`0.5px solid ${i===5?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===5?C.redLight:"#fafafa",color:i===5?C.red:C.textMuted,fontWeight:i===5?600:400}}>{t}</div>
                 ))}
               </div>
             </div>
@@ -4993,6 +5011,32 @@ const screens = {
     </div>
   </WebLayout>
 ),
+
+// G-30: User Management (GMMS)
+"G-30": () => (
+  <WebLayout activeMenu="Admin" mode="mfg">
+    <GTopBar title="User Management (GMMS)" sub="Test minimal screen" actions={[{label:"+ Add User",primary:true}]}/>
+    <Content>
+      <div style={{padding:16}}>
+        <div style={{fontSize:14,fontWeight:600,color:CO.accent,marginBottom:16}}>GMMS User Management</div>
+        <div style={{fontSize:11,color:C.textMuted}}>Diagnostic minimal screen - working if you see this.</div>
+      </div>
+    </Content>
+  </WebLayout>
+),
+
+// G-30A: Role Permissions (GMMS)
+"G-30A": () => (
+  <WebLayout activeMenu="Admin" mode="mfg">
+    <GTopBar title="Role Permissions (GMMS)" sub="Test minimal screen" actions={[{label:"Save All Permissions",primary:true}]}/>
+    <Content>
+      <div style={{padding:16}}>
+        <div style={{fontSize:14,fontWeight:600,color:CO.accent,marginBottom:16}}>GMMS Role Permissions</div>
+        <div style={{fontSize:11,color:C.textMuted}}>Diagnostic minimal screen - working if you see this.</div>
+      </div>
+    </Content>
+  </WebLayout>
+),
 // M-G01: Contractor Mobile Login
 "M-G01": () => (
   <MobileFrame>
@@ -5148,7 +5192,8 @@ const screens = {
     <MBottomNav active="Payments" type="gmms"/>
   </MobileFrame>
 ),
-// M-G06: My Profile
+  "M-G06":"My Profile",
+  "G-30":"User Management (GMMS)","G-30A":"Role Permissions (GMMS)",
 "M-G06": () => (
   <MobileFrame>
     <MNav label="My Profile"/>
@@ -5217,6 +5262,7 @@ const screenGroups = [
     {label:"Notifications",screens:["G-18"]},
     {label:"Reports",screens:["G-19"]},
     {label:"Contractor Mobile",screens:["M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]},
+    {label:"Admin",screens:["G-30","G-30A","W-32","W-33"]},
   ]},
   {platform:"Mobile App - Godown (CMS)",icon:"📱",erp:"sales",groups:[
     {label:"Auth & Home",screens:["M-01","M-02"]},
@@ -5269,9 +5315,10 @@ const screenLabels = {
   "G-20":"Create RF Entry","G-21":"SKU Outward","G-22":"Live Inventory",
   "M-G01":"Contractor Login","M-G02":"My Challans","M-G03":"Challan Detail",
   "M-G04":"Confirm Pieces Sent","M-G05":"My Payment Ledger","M-G06":"My Profile",
+  "G-30":"User Management (GMMS)","G-30A":"Role Permissions (GMMS)",
 };
 
-const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
+const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","G-30","G-30A","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
 
 export default function App() {
   const [active, setActive] = useState("W-03");
