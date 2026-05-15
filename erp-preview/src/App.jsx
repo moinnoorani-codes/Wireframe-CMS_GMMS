@@ -5015,28 +5015,347 @@ const screens = {
 // G-30: User Management (GMMS)
 "G-30": () => (
   <WebLayout activeMenu="Admin" mode="mfg">
-    <GTopBar title="User Management (GMMS)" sub="Test minimal screen" actions={[{label:"+ Add User",primary:true}]}/>
+    <GTopBar title="User Management (GMMS)" actions={[{label:"+ Add User",primary:true}]}/>
     <Content>
-      <div style={{padding:16}}>
-        <div style={{fontSize:14,fontWeight:600,color:CO.accent,marginBottom:16}}>GMMS User Management</div>
-        <div style={{fontSize:11,color:C.textMuted}}>Diagnostic minimal screen - working if you see this.</div>
+      <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white,marginBottom:16}}>
+        <TH cols={[{v:"Name"},{v:"Email",w:1.4},{v:"Role"},{v:"Mobile",w:0.9},{v:"Cross-ERP",w:0.7},{v:"Status",w:0.6},{v:"Last Login"},{v:"Actions",w:0.8}]}/>
+        <div style={{fontSize:10,color:C.textMuted,padding:"6px 10px",background:CO.accentLight,borderTop:`0.5px solid ${CO.accentBorder}`}}>{"🔒"} <strong style={{color:CO.accent}}>Super Admin</strong>: Full access to both Sales ERP and Manufacturing ERP. Reserved for owners (Kadir Bhai, Ali Bhai).</div>
+        {[
+          {name:"Abdul Kadir",email:"admin@cms.com",role:"Super Admin",mob:"+91 91046 70469",status:"Active",login:"04 Apr 09:00",crossErp:"Both"},
+          {name:"Mohammad Ali",email:"ali@cms.com",role:"Super Admin",mob:"+91 79905 01710",status:"Active",login:"04 Apr 09:15",crossErp:"Both"},
+          {name:"Raju Singh",email:"raju@cms.com",role:"Godown Staff",mob:"+91 98765 43210",status:"Active",login:"04 Apr 08:45",crossErp:"Sales"},
+          {name:"Priya Sharma",email:"priya@cms.com",role:"Office Staff",mob:"+91 87654 32109",status:"Active",login:"04 Apr 09:15",crossErp:"Sales"},
+          {name:"Vikram Singh",email:"vikram@cms.com",role:"Production Manager",mob:"+91 98765 43211",status:"Active",login:"04 Apr 09:30",crossErp:"Manufacturing"},
+          {name:"Suresh Patel",email:"suresh@cms.com",role:"Production Staff",mob:"+91 87654 32110",status:"Active",login:"04 Apr 08:50",crossErp:"Manufacturing"},
+          {name:"Amit Shah",email:"amit@cms.com",role:"Accounts",mob:"+91 76543 21099",status:"Active",login:"04 Apr 09:10",crossErp:"Manufacturing"},
+          {name:"Mohan Das",email:"mohan@cms.com",role:"Manager",mob:"+91 76543 21098",status:"Inactive",login:"28 Mar 17:00",crossErp:"Sales"},
+        ].map((u,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 10px",borderTop:`0.5px solid ${C.border}`,background:u.status==="Inactive"?C.bgSoft:C.white}}>
+            <div style={{flex:1,display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:28,height:28,borderRadius:"50%",background:C.black,display:"flex",alignItems:"center",justifyContent:"center",color:C.white,fontSize:11,fontWeight:700,flexShrink:0}}>{u.name[0]}</div>
+              <span style={{fontSize:12,fontWeight:500}}>{u.name}</span>
+            </div>
+            <div style={{flex:1.4,fontSize:11,color:C.textMuted}}>{u.email}</div>
+            <div style={{flex:1}}><Tag>{u.role}</Tag></div>
+            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:u.crossErp!=="Sales"?CO.accentLight:C.bgSoft,color:u.crossErp!=="Sales"?CO.accent:C.textMuted,border:`0.5px solid ${u.crossErp!=="Sales"?CO.accentBorder:C.border}`}}>{u.crossErp}</span></div>
+            <div style={{flex:0.9,fontSize:11,color:C.textMuted,fontFamily:"monospace"}}>{u.mob}</div>
+            <div style={{flex:0.6}}><Tag color={u.status==="Inactive"?"red":"black"}>{u.status}</Tag></div>
+            <div style={{flex:1,fontSize:11,color:C.textMuted}}>{u.login}</div>
+            <div style={{flex:0.8,display:"flex",gap:5}}><Btn small>Edit</Btn><Btn danger small>Deactivate</Btn></div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── DIALOG STATE 1: + Add User ────────────────────── */}
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+        ↓ Dialog shown when "+ Add User" is clicked
+      </div>
+      <div style={{position:"relative",minHeight:460,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:16}}>
+        {/* Dimmed background hint */}
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ User list in background ]</div>
+        <Modal title="Add New User">
+          <div style={{marginBottom:14,padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted,border:`0.5px solid ${C.border}`}}>
+            A login account will be created and a temporary password emailed to the user.
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="Full Name" placeholder="e.g. Raju Singh" required/></div>
+            <div style={{flex:1}}><Input label="Mobile Number" placeholder="+91 98765 43210" required note="Used for account identification"/></div>
+          </div>
+          <Input label="Email Address" placeholder="raju@cms.com" required note="Login credential + password reset link sent here"/>
+          <div style={{marginBottom:9}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Role <span style={{color:C.red}}>*</span></div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
+              {[
+                {role:"Super Admin",desc:"Full access cross-ERP for owners (Kadir Bhai, Ali Bhai)",icon:"⚙"},
+                {role:"Production Manager",desc:"Full GMMS access  -  challans, production, contractors, fabric",icon:"▣"},
+                {role:"Production Staff",desc:"Floor production  -  update piece counts, track challans",icon:"◈"},
+                {role:"Accounts",desc:"Payments, reconciliation, reports (GMMS finance)",icon:"₹"},
+                {role:"Manager",desc:"Sales ERP  -  orders, approvals, reports, payments",icon:"◉"},
+                {role:"Office Staff",desc:"Sales ERP  -  orders, inventory, customers",icon:"□"},
+                {role:"Godown Staff",desc:"Mobile only  -  scanning, picking, dispatch, LR upload",icon:"⊏"}
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:i===6?C.bgSoft:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===6?C.black:C.border}`,background:i===6?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
+                    {i===6&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:6}}><span>{r.icon}</span>{r.role}</div>
+                    <div style={{fontSize:10,color:C.textMuted,marginTop:1}}>{r.desc}</div>
+                  </div>
+                  <div style={{marginLeft:"auto"}}><span style={{fontSize:10,color:C.red,cursor:"pointer"}}>View permissions ↗</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Account Status</div>
+            <div style={{display:"flex",gap:8}}>
+              {["Active ●","Inactive"].map((s,i)=>(
+                <span key={i} style={{fontSize:11,padding:"5px 14px",border:`0.5px solid ${i===0?C.black:C.border}`,borderRadius:4,background:i===0?C.black:C.white,color:i===0?C.white:C.textMuted,cursor:"pointer"}}>{s}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn>Cancel</Btn>
+            <Btn primary>Create User + Send Invite</Btn>
+          </div>
+        </Modal>
+      </div>
+
+      {/* ── DIALOG STATE 2: Edit User ────────────────────── */}
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+        ↓ Dialog shown when "Edit" is clicked on a user row
+      </div>
+      <div style={{position:"relative",minHeight:440,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ User list in background ]</div>
+        <Modal title="Edit User  -  Raju Singh">
+          <div style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",background:C.bgSoft,borderRadius:6,marginBottom:14,border:`0.5px solid ${C.border}`}}>
+            <div style={{width:40,height:40,borderRadius:"50%",background:C.black,display:"flex",alignItems:"center",justifyContent:"center",color:C.white,fontSize:16,fontWeight:700,flexShrink:0}}>R</div>
+            <div>
+              <div style={{fontSize:13,fontWeight:600}}>Raju Singh</div>
+              <div style={{fontSize:11,color:C.textMuted}}>raju@cms.com · Last login: 04 Apr 08:45</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="Full Name" placeholder="Raju Singh"/></div>
+            <div style={{flex:1}}><Input label="Mobile" placeholder="+91 98765 43210"/></div>
+          </div>
+          <Input label="Email" placeholder="raju@cms.com" note="Changing email will require re-verification"/>
+          <div style={{marginBottom:9}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Change Role</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              {[
+                {role:"Super Admin",desc:"Full cross-ERP access",icon:"⚙",sel:false},
+                {role:"Production Manager",desc:"Full GMMS access  -  challans, production, contractors",icon:"▣",sel:false},
+                {role:"Production Staff",desc:"Floor production  -  challan view, update piece counts",icon:"◈",sel:false},
+                {role:"Accounts",desc:"Payments, reconciliation, reports (GMMS)",icon:"₹",sel:false},
+                {role:"Manager",desc:"Sales ERP  -  orders, approvals, reports",icon:"◉",sel:false},
+                {role:"Office Staff",desc:"Sales ERP  -  orders, inventory, customers",icon:"□",sel:false},
+                {role:"Godown Staff",desc:"Mobile  -  scan, pick, dispatch",icon:"⊏",sel:true}
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${r.sel?C.black:C.border}`,background:r.sel?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {r.sel&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <span style={{fontSize:11}}>{r.icon} {r.role}</span>
+                  <span style={{fontSize:10,color:C.textMuted}}> -  {r.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Status</div>
+            <div style={{display:"flex",gap:8}}>
+              {["Active ●","Inactive"].map((s,i)=>(
+                <span key={i} style={{fontSize:11,padding:"5px 14px",border:`0.5px solid ${i===0?C.black:C.border}`,borderRadius:4,background:i===0?C.black:C.white,color:i===0?C.white:C.textMuted,cursor:"pointer"}}>{s}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{padding:"8px 10px",background:"#fff8e1",border:`0.5px solid #f5c842`,borderRadius:4,fontSize:11,color:"#7a5c00",marginBottom:12}}>
+            ⚠ Changing this user's role will take effect on their next login.
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"space-between",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn danger>Deactivate Account</Btn>
+            <div style={{display:"flex",gap:8}}>
+              <Btn>Cancel</Btn>
+              <Btn primary>Save Changes</Btn>
+            </div>
+          </div>
+        </Modal>
       </div>
     </Content>
   </WebLayout>
 ),
 
 // G-30A: Role Permissions (GMMS)
-"G-30A": () => (
+"G-30A": () => {
+  const [activeRole, setActiveRole] = useState(0);
+  const roles = [
+    "Super Admin",
+    "Production Manager",
+    "Production Staff",
+    "Accounts",
+    "Manager",
+    "Office Staff",
+    "Godown Staff",
+  ];
+  const roleDesc = [
+    "Full unrestricted access to all modules. Reserved for owners (Kadir Bhai, Ali Bhai). Cannot be edited.",
+    "Full GMMS access — challans, contractors, production, fabric, RF, masters, notifications. Read-only Sales ERP.",
+    "Manufacturing floor — view challans, update piece counts. No create/delete on masters.",
+    "GMMS finance — payments, reconciliation, reports, SMS. No production module access.",
+    "Sales ERP operational control — orders, approvals, reports, payments, CRM. Limited GMMS read-only.",
+    "General office — order processing, payment recording, dispatch tracking, basic CRM.",
+    "Warehouse operations — picking, dispatch, LR upload, mobile scanning. No sales or finance access.",
+  ];
+  const T=true,F=false;
+  const permsData = [
+    [[T,T],[T,T,T,T,T],[T,T],[T,T,T,T,T,T,T,T],[T,T,T],[T,T,T],[T,T,T],[T,T],[T,T,T,T,T],[T,T,T,T,T],[T,T,T,T],[T,T,T,T],[T,T,T],[T,T,T],[T,T,T,T],[T,T],[T],[T,T]],
+    [[T,F],[T,F,F,F,F],[T,F],[T,F,F,F,F,F,F,F],[F,F,F],[F,F,F],[F,F,F],[T,F],[F,F,F,F,F],[T,T,T,T,T],[T,T,T,T],[T,T,T,T],[T,T,T],[T,T,T],[T,T,T,T],[F,F],[T],[T,F]],
+    [[T,F],[T,F,F,F,F],[T,F],[F,F,F,F,F,F,F,F],[F,F,F],[F,F,F],[F,F,F],[F,F],[F,F,F,F,F],[T,F,F,F,F],[T,T,F,F],[T,F,F,F],[T,F,F],[T,F,F],[F,F,F,F],[F,F],[T],[T,F]],
+    [[T,F],[T,F,F,F,F],[F,F],[T,F,F,F,F,F,F,F],[F,F,F],[T,T,F],[F,F,F],[T,T],[F,F,F,F,F],[F,F,F,F,F],[F,F,F,F],[F,F,F,F],[F,F,F],[F,F,F],[F,F,F,F],[F,F],[F],[T,F]],
+    [[T,T],[T,T,T,T,T],[T,T,T],[T,T,T,T,T,T,T,T],[T,T,T],[T,T,T],[T,T,T],[T,T],[T,F,T,F,T],[T,T,T,T,T],[T,T,F,F],[T,T,F,F],[T,T,F],[T,T,F],[T,T,T,T],[F,F],[T],[T,T]],
+    [[T,F],[T,F,F,F,F],[T,F],[T,T,T,F,F,T,T,T],[T,F,F],[T,T,F],[F,F,F],[T,F],[F,F,T,F,F],[F,F,F,F,F],[F,F,F,F],[F,F,F,F],[F,F,F],[F,F,F],[F,F,F,F],[F,F],[F],[F,T]],
+    [[T,F],[T,F,F,T,F],[T,F,T],[T,F,F,F,F,F,F,T],[T,T,F],[F,F,F],[T,T,F],[F,F],[F,F,F,F,F],[F,F,F,F,F],[F,F,F,F],[F,F,F,F],[F,F,F],[F,F,F],[F,F,F,F],[F,F],[F],[T,F]],
+  ];
+  const modules = [
+    {name:"Dashboard",perms:["View dashboard & metrics","Export dashboard data"]},
+    {name:"Products & SKU",perms:["View product list","Create / edit SKU","Add stock (via SKU edit)","Print labels & barcodes","Delete SKU"]},
+    {name:"Inventory",perms:["View live inventory","View stock alerts"]},
+    {name:"Orders",perms:["View order list","Create retail order","Create wholesale order","Approve wholesale orders","Reject / cancel orders","Edit order before approval","Record payment","Print challan"]},
+    {name:"Dispatch & LR",perms:["View LR console","Upload LR document","Resend LR SMS"]},
+    {name:"Payments",perms:["View payment records","Record installment payments","Delete payment records"]},
+    {name:"CCTV",perms:["View footage library","Record dispatch video","Download footage clips"]},
+    {name:"Reports",perms:["View reports","Export reports"]},
+    {name:"Admin",perms:["User management","Role permissions","Customer master","System settings","Audit trail"]},
+    {name:"Mfg — Challans",perms:["View challan list & details","Create new challans","Edit existing challans","Track challan progress","Close / complete challans"]},
+    {name:"Mfg — Production",perms:["View production status","Update ready piece counts","Process SKU outward","Payment & piece verification"]},
+    {name:"Mfg — Contractors",perms:["View contractor list","Register new contractors","Edit contractor details","Delete contractor records"]},
+    {name:"Mfg — Fabric / Mill",perms:["View fabric inventory & mill data","Add new fabric rolls","Edit fabric roll details"]},
+    {name:"Mfg — RF / Returns",perms:["View RF / return entries","Create RF entries","Edit existing RF entries"]},
+    {name:"Mfg — Masters",perms:["Manage design master (DST files)","Configure job work types & rates","Manage color master per design","Contractor registry management"]},
+    {name:"Mfg — Costing (Owner only)",perms:["View design BOM & cost breakdown","Edit cost data"]},
+    {name:"Mfg — Notifications",perms:["View notification center"]},
+    {name:"ERP Cross-Access",perms:["Access Manufacturing ERP (GMMS)","Access Sales ERP (CMS)"]},
+  ];
+  const rp = permsData[activeRole];
+  const isSuperAdmin = activeRole === 0;
+  return (
   <WebLayout activeMenu="Admin" mode="mfg">
-    <GTopBar title="Role Permissions (GMMS)" sub="Test minimal screen" actions={[{label:"Save All Permissions",primary:true}]}/>
+    <GTopBar title="Role Permissions (GMMS)" sub="Configure what each role can access and do" actions={[{label:"Save All Permissions",primary:true}]}/>
     <Content>
-      <div style={{padding:16}}>
-        <div style={{fontSize:14,fontWeight:600,color:CO.accent,marginBottom:16}}>GMMS Role Permissions</div>
-        <div style={{fontSize:11,color:C.textMuted}}>Diagnostic minimal screen - working if you see this.</div>
+      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        {roles.map((role,i)=>(
+          <span key={i} onClick={()=>setActiveRole(i)} style={{fontSize:11,padding:"5px 14px",borderRadius:3,border:`0.5px solid ${i===activeRole?CO.accent:C.border}`,background:i===activeRole?CO.accent:C.white,color:i===activeRole?C.white:C.textMuted,cursor:"pointer",fontWeight:i===activeRole?600:400}}>{role}</span>
+        ))}
+        <Btn small>{"+ Add Role"}</Btn>
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          <Btn small>Duplicate Role</Btn>
+          {!isSuperAdmin&&<Btn danger small>Delete Role</Btn>}
+        </div>
+      </div>
+      <div style={{fontSize:11,color:isSuperAdmin?"#7a5c00":C.textMuted,marginBottom:12,padding:"7px 10px",background:isSuperAdmin?"#fff8e1":C.bgSoft,borderRadius:4,border:`0.5px solid ${isSuperAdmin?"#f5c842":C.border}`}}>
+        {isSuperAdmin&&<span style={{fontWeight:700,color:"#7a5c00"}}>{"🔒"} Locked — </span>}
+        <strong>{roles[activeRole]}</strong>: {roleDesc[activeRole]}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        {modules.map((section,si)=>{
+          const rowPerms = rp[si]||[];
+          const checkedCount = isSuperAdmin ? section.perms.length : rowPerms.filter(Boolean).length;
+          const total = section.perms.length;
+          return (
+          <Card key={si} style={{marginBottom:0}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+              <div style={{fontSize:12,fontWeight:600}}>{section.name}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:10,color:checkedCount===total?C.green:checkedCount===0?C.red:CO.accent,fontWeight:600}}>{checkedCount}/{total}</span>
+                {!isSuperAdmin&&<div style={{display:"flex",gap:4}}>
+                  <span style={{fontSize:10,color:CO.accent,cursor:"pointer",textDecoration:"underline"}}>All</span>
+                  <span style={{fontSize:10,color:C.textMuted,cursor:"pointer",textDecoration:"underline"}}>None</span>
+                </div>}
+              </div>
+            </div>
+            <div>
+              {section.perms.map((perm,pi)=>{
+                const checked = isSuperAdmin ? true : (rowPerms[pi]||false);
+                return (
+                <div key={pi} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:pi<section.perms.length-1?`0.5px solid ${C.border}`:"none"}}>
+                  <div style={{width:16,height:16,borderRadius:3,border:`0.5px solid ${checked?(isSuperAdmin?"#2e7d32":C.black):C.border}`,background:checked?(isSuperAdmin?"#2e7d32":C.black):C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {checked&&<span style={{color:C.white,fontSize:10,lineHeight:1}}>{"✔"}</span>}
+                  </div>
+                  <span style={{fontSize:11,color:checked?C.text:C.textMuted,flex:1}}>{perm}</span>
+                  {!checked&&<Tag color="red">Denied</Tag>}
+                </div>
+                );
+              })}
+            </div>
+          </Card>
+          );
+        })}
+      </div>
+
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",margin:"20px 0 10px"}}>
+        {"↓"} Dialog shown when "+ Add Role" is clicked
+      </div>
+      <div style={{position:"relative",minHeight:500,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:20}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ Permission matrix in background ]</div>
+        <Modal title="Create New Role" width={500}>
+          <div style={{padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted,border:`0.5px solid ${C.border}`,marginBottom:14}}>
+            Define a new role name and optionally copy permissions from an existing role as a starting point.
+          </div>
+          <Input label="Role Name" placeholder="e.g. Accountant / Supervisor / Sales Rep" required note="This name will appear in user assignment and audit logs"/>
+          <Input label="Description (optional)" placeholder="e.g. Can view orders and record payments  -  no stock access"/>
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:6,fontWeight:500}}>Copy Permissions From (optional)</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
+              {[
+                {role:"Start with blank / no permissions",desc:"All permissions off by default",sel:false},
+                {role:"Copy from: Production Manager",desc:"Full GMMS — challans, production, contractors, fabric",sel:false},
+                {role:"Copy from: Production Staff",desc:"Floor production — challan view, piece counts",sel:false},
+                {role:"Copy from: Manager",desc:"Orders, approvals, reports, payments",sel:false},
+                {role:"Copy from: Office Staff",desc:"Orders, inventory, customers — no approvals",sel:true},
+                {role:"Copy from: Godown Staff",desc:"Mobile only — scan, pick, dispatch",sel:false},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${r.sel?C.black:C.border}`,background:r.sel?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2}}>
+                    {r.sel&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:r.sel?600:400}}>{r.role}</div>
+                    <div style={{fontSize:10,color:C.textMuted,marginTop:1}}>{r.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{padding:"8px 10px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:4,fontSize:11,color:C.green,marginBottom:14}}>
+            {"✔"} Copying from "Office Staff" — you can fine-tune individual permissions after creation.
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn>Cancel</Btn>
+            <Btn primary>{"Create Role →"}</Btn>
+          </div>
+        </Modal>
+      </div>
+
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+        {"↓"} Dialog shown when "Delete Role" is clicked
+      </div>
+      <div style={{position:"relative",minHeight:280,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:20}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ Permission matrix in background ]</div>
+        <Modal title="Delete Role — Office Staff" width={420}>
+          <div style={{padding:"12px 14px",background:C.redLight,border:`0.5px solid ${C.redBorder}`,borderRadius:6,marginBottom:14}}>
+            <div style={{fontSize:13,fontWeight:700,color:C.red,marginBottom:6}}>{"⚠"} This action cannot be undone</div>
+            <div style={{fontSize:11,color:C.text}}><strong>2 users</strong> are currently assigned to "Office Staff":</div>
+            <div style={{marginTop:8}}>
+              {["Priya Sharma · priya@cms.com","Sunita Patel · sunita@cms.com"].map((u,i)=>(
+                <div key={i} style={{fontSize:11,padding:"4px 0",borderBottom:`0.5px solid ${C.redBorder}`,color:C.text}}>{u}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:6,fontWeight:500}}>Reassign affected users to:</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
+              {["Production Manager","Production Staff","Manager","Godown Staff"].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",cursor:"pointer",background:i===0?C.bgSoft:C.white}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===0?C.black:C.border}`,background:i===0?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {i===0&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <span style={{fontSize:12}}>{r}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn>Cancel</Btn>
+            <Btn danger>Reassign + Delete Role</Btn>
+          </div>
+        </Modal>
       </div>
     </Content>
   </WebLayout>
-),
+  );
+},
 // M-G01: Contractor Mobile Login
 "M-G01": () => (
   <MobileFrame>
@@ -5192,8 +5511,6 @@ const screens = {
     <MBottomNav active="Payments" type="gmms"/>
   </MobileFrame>
 ),
-  "M-G06":"My Profile",
-  "G-30":"User Management (GMMS)","G-30A":"Role Permissions (GMMS)",
 "M-G06": () => (
   <MobileFrame>
     <MNav label="My Profile"/>

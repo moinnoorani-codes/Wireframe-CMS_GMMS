@@ -1,0 +1,142 @@
+// G-30: User Management (GMMS)
+"G-30": () => (
+  <WebLayout activeMenu="Admin" mode="mfg">
+    <GTopBar title="User Management (GMMS)" sub="Manage internal manufacturing users and their roles" actions={[{label:"+ Add User",primary:true}]}/>
+    <Content>
+      <div style={{border:`0.5px solid ${CO.accentBorder}`,borderRadius:6,overflow:"hidden",background:C.white,marginBottom:16}}>
+        <TH cols={[{v:"Name"},{v:"Email",w:1.4},{v:"Role"},{v:"Mobile",w:0.9},{v:"ERP Access",w:0.7},{v:"Status",w:0.6},{v:"Last Login"},{v:"Actions",w:0.8}]}/>
+        <div style={{fontSize:10,color:C.textMuted,padding:"6px 10px",background:CO.accentLight,borderTop:`0.5px solid ${CO.accentBorder}`}}>{"\uD83D\uDD12"} <strong style={{color:CO.accent}}>Owner</strong>: Full GMMS access including costing. Reserved for Mohammad Ali.</div>
+        {[
+          {name:"Mohammad Ali",email:"ali@cms.com",role:"Super Admin",mob:"+91 79905 01710",status:"Active",login:"04 Apr 09:15",erp:"Both"},
+          {name:"Vikram Singh",email:"vikram@cms.com",role:"Production Manager",mob:"+91 98765 43211",status:"Active",login:"04 Apr 09:30",erp:"Manufacturing"},
+          {name:"Suresh Patel",email:"suresh@cms.com",role:"Production Staff",mob:"+91 87654 32110",status:"Active",login:"04 Apr 08:50",erp:"Manufacturing"},
+          {name:"Amit Shah",email:"amit@cms.com",role:"Accounts",mob:"+91 76543 21099",status:"Active",login:"04 Apr 09:10",erp:"Manufacturing"},
+          {name:"Raju Contractor",email:"raju.contractor@cms.com",role:"Contractor",mob:"+91 98765 43212",status:"Active",login:"02 Apr 11:00",erp:"Manufacturing"},
+        ].map((u,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 10px",borderTop:`0.5px solid ${C.border}`,background:u.status==="Inactive"?C.bgSoft:C.white}}>
+            <div style={{flex:1,display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:28,height:28,borderRadius:"50%",background:CO.accent,display:"flex",alignItems:"center",justifyContent:"center",color:C.white,fontSize:11,fontWeight:700,flexShrink:0}}>{u.name[0]}</div>
+              <span style={{fontSize:12,fontWeight:500}}>{u.name}</span>
+            </div>
+            <div style={{flex:1.4,fontSize:11,color:C.textMuted}}>{u.email}</div>
+            <div style={{flex:1}}><Tag>{u.role}</Tag></div>
+            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:u.erp!=="Sales"?CO.accentLight:C.bgSoft,color:u.erp!=="Sales"?CO.accent:C.textMuted,border:`0.5px solid ${u.erp!=="Sales"?CO.accentBorder:C.border}`}}>{u.erp}</span></div>
+            <div style={{flex:0.9,fontSize:11,color:C.textMuted,fontFamily:"monospace"}}>{u.mob}</div>
+            <div style={{flex:0.6}}><Tag color={u.status==="Inactive"?"red":"black"}>{u.status}</Tag></div>
+            <div style={{flex:1,fontSize:11,color:C.textMuted}}>{u.login}</div>
+            <div style={{flex:0.8,display:"flex",gap:5}}><Btn small>Edit</Btn><Btn danger small>Deactivate</Btn></div>
+          </div>
+        ))}
+      </div>
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+        {"\u2193"} Dialog shown when "+ Add User" is clicked
+      </div>
+      <div style={{position:"relative",minHeight:460,border:`1.5px dashed ${CO.accentBorder}`,borderRadius:8,background:CO.accentLight,marginBottom:16}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ User list in background ]</div>
+        <Modal title="Add GMMS User">
+          <div style={{marginBottom:14,padding:"8px 10px",background:CO.accentLight,borderRadius:4,fontSize:11,color:C.textMuted,border:`0.5px solid ${CO.accentBorder}`}}>
+            Create a new manufacturing user account. A temporary password will be emailed.
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="Full Name" placeholder="e.g. Vikram Singh" required/></div>
+            <div style={{flex:1}}><Input label="Mobile Number" placeholder="+91 98765 43211" required/></div>
+          </div>
+          <Input label="Email Address" placeholder="vikram@cms.com" required/>
+          <div style={{marginBottom:9}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>GMMS Role <span style={{color:C.red}}>*</span></div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
+              {[
+                {role:"Super Admin",desc:"Full GMMS access for owner (Mohammad Ali)",icon:"\u2699"},
+                {role:"Production Manager",desc:"Challans, production, contractors, fabric, masters",icon:"\u25A3"},
+                {role:"Production Staff",desc:"Floor production  -  view challans, update piece counts",icon:"\u25C8"},
+                {role:"Accounts",desc:"Payments, reconciliation, reports (GMMS finance)",icon:"\u20B9"},
+                {role:"Contractor",desc:"Mobile app only  -  view challans, submit pieces",icon:"\u228F"},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:i===4?CO.accentLight:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===4?CO.accent:C.border}`,background:i===4?CO.accent:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
+                    {i===4&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:6}}><span>{r.icon}</span>{r.role}</div>
+                    <div style={{fontSize:10,color:C.textMuted,marginTop:1}}>{r.desc}</div>
+                  </div>
+                  <div style={{marginLeft:"auto"}}><span style={{fontSize:10,color:CO.accent,cursor:"pointer"}}>View permissions {"\u2197"}</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Account Status</div>
+            <div style={{display:"flex",gap:8}}>
+              {["Active \u25CF","Inactive"].map((s,i)=>(
+                <span key={i} style={{fontSize:11,padding:"5px 14px",border:`0.5px solid ${i===0?CO.accent:C.border}`,borderRadius:4,background:i===0?CO.accent:C.white,color:i===0?C.white:C.textMuted,cursor:"pointer"}}>{s}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn>Cancel</Btn>
+            <Btn primary>Create User + Send Invite</Btn>
+          </div>
+        </Modal>
+      </div>
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+        {"\u2193"} Dialog shown when "Edit" is clicked on a user row
+      </div>
+      <div style={{position:"relative",minHeight:440,border:`1.5px dashed ${CO.accentBorder}`,borderRadius:8,background:CO.accentLight}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ User list in background ]</div>
+        <Modal title={"Edit User  -  Vikram Singh"}>
+          <div style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",background:CO.accentLight,borderRadius:6,marginBottom:14,border:`0.5px solid ${CO.accentBorder}`}}>
+            <div style={{width:40,height:40,borderRadius:"50%",background:CO.accent,display:"flex",alignItems:"center",justifyContent:"center",color:C.white,fontSize:16,fontWeight:700,flexShrink:0}}>V</div>
+            <div>
+              <div style={{fontSize:13,fontWeight:600}}>Vikram Singh</div>
+              <div style={{fontSize:11,color:C.textMuted}}>vikram@cms.com {"\u00B7"} Last login: 04 Apr 09:30</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="Full Name" placeholder="Vikram Singh"/></div>
+            <div style={{flex:1}}><Input label="Mobile" placeholder="+91 98765 43211"/></div>
+          </div>
+          <Input label="Email" placeholder="vikram@cms.com" note="Changing email will require re-verification"/>
+          <div style={{marginBottom:9}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Change Role</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+              {[
+                {role:"Super Admin",desc:"Full GMMS access",icon:"\u2699",sel:false},
+                {role:"Production Manager",desc:"Challans, production, contractors",icon:"\u25A3",sel:true},
+                {role:"Production Staff",desc:"Floor production",icon:"\u25C8",sel:false},
+                {role:"Accounts",desc:"GMMS finance",icon:"\u20B9",sel:false},
+                {role:"Contractor",desc:"Mobile app only",icon:"\u228F",sel:false},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?CO.accentLight:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${r.sel?CO.accent:C.border}`,background:r.sel?CO.accent:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {r.sel&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <span style={{fontSize:11}}>{r.icon} {r.role}</span>
+                  <span style={{fontSize:10,color:C.textMuted}}> -  {r.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>Status</div>
+            <div style={{display:"flex",gap:8}}>
+              {["Active \u25CF","Inactive"].map((s,i)=>(
+                <span key={i} style={{fontSize:11,padding:"5px 14px",border:`0.5px solid ${i===0?CO.accent:C.border}`,borderRadius:4,background:i===0?CO.accent:C.white,color:i===0?C.white:C.textMuted,cursor:"pointer"}}>{s}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{padding:"8px 10px",background:"#fff8e1",border:`0.5px solid #f5c842`,borderRadius:4,fontSize:11,color:"#7a5c00",marginBottom:12}}>
+            {"\u26A0"} Changing this user's role will take effect on their next login.
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"space-between",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn danger>Deactivate Account</Btn>
+            <div style={{display:"flex",gap:8}}>
+              <Btn>Cancel</Btn>
+              <Btn primary>Save Changes</Btn>
+            </div>
+          </div>
+        </Modal>
+      </div>
+    </Content>
+  </WebLayout>
+),

@@ -1,0 +1,189 @@
+// G-30A: Role Permissions (GMMS)
+"G-30A": () => {
+  const [activeRole, setActiveRole] = React.useState(0);
+  const roles = [
+    "Super Admin",
+    "Production Manager",
+    "Production Staff",
+    "Accounts",
+    "Manager",
+    "Office Staff",
+    "Godown Staff",
+  ];
+  const roleDesc = [
+    "Full unrestricted access to all modules. Reserved for owners (Kadir Bhai, Ali Bhai). Cannot be edited.",
+    "Full GMMS access — challans, contractors, production, fabric, RF, masters, notifications. Read-only Sales ERP.",
+    "Manufacturing floor — view challans, update piece counts. No create/delete on masters.",
+    "GMMS finance — payments, reconciliation, reports, SMS. No production module access.",
+    "Sales ERP operational control — orders, approvals, reports, payments, CRM. Limited GMMS read-only.",
+    "General office — order processing, payment recording, dispatch tracking, basic CRM.",
+    "Warehouse operations — picking, dispatch, LR upload, mobile scanning. No sales or finance access.",
+  ];
+  const T=true,F=false;
+  const permsData = [
+    [[T,T],[T,T,T,T,T],[T,T],[T,T,T,T,T,T,T,T],[T,T,T],[T,T,T],[T,T,T],[T,T],[T,T,T,T,T],[T,T,T,T,T],[T,T,T,T],[T,T,T,T],[T,T,T],[T,T,T],[T,T,T,T],[T,T],[T],[T,T]],
+    [[T,F],[T,F,F,F,F],[T,F],[T,F,F,F,F,F,F,F],[F,F,F],[F,F,F],[F,F,F],[T,F],[F,F,F,F,F],[T,T,T,T,T],[T,T,T,T],[T,T,T,T],[T,T,T],[T,T,T],[T,T,T,T],[F,F],[T],[T,F]],
+    [[T,F],[T,F,F,F,F],[T,F],[F,F,F,F,F,F,F,F],[F,F,F],[F,F,F],[F,F,F],[F,F],[F,F,F,F,F],[T,F,F,F,F],[T,T,F,F],[T,F,F,F],[T,F,F],[T,F,F],[F,F,F,F],[F,F],[T],[T,F]],
+    [[T,F],[T,F,F,F,F],[F,F],[T,F,F,F,F,F,F,F],[F,F,F],[T,T,F],[F,F,F],[T,T],[F,F,F,F,F],[F,F,F,F,F],[F,F,F,F],[F,F,F,F],[F,F,F],[F,F,F],[F,F,F,F],[F,F],[F],[T,F]],
+    [[T,T],[T,T,T,T,T],[T,T,T],[T,T,T,T,T,T,T,T],[T,T,T],[T,T,T],[T,T,T],[T,T],[T,F,T,F,T],[T,T,T,T,T],[T,T,F,F],[T,T,F,F],[T,T,F],[T,T,F],[T,T,T,T],[F,F],[T],[T,T]],
+    [[T,F],[T,F,F,F,F],[T,F],[T,T,T,F,F,T,T,T],[T,F,F],[T,T,F],[F,F,F],[T,F],[F,F,T,F,F],[F,F,F,F,F],[F,F,F,F],[F,F,F,F],[F,F,F],[F,F,F],[F,F,F,F],[F,F],[F],[F,T]],
+    [[T,F],[T,F,F,T,F],[T,F,T],[T,F,F,F,F,F,F,T],[T,T,F],[F,F,F],[T,T,F],[F,F],[F,F,F,F,F],[F,F,F,F,F],[F,F,F,F],[F,F,F,F],[F,F,F],[F,F,F],[F,F,F,F],[F,F],[F],[T,F]],
+  ];
+  const modules = [
+    {name:"Dashboard",perms:["View dashboard & metrics","Export dashboard data"]},
+    {name:"Products & SKU",perms:["View product list","Create / edit SKU","Add stock (via SKU edit)","Print labels & barcodes","Delete SKU"]},
+    {name:"Inventory",perms:["View live inventory","View stock alerts"]},
+    {name:"Orders",perms:["View order list","Create retail order","Create wholesale order","Approve wholesale orders","Reject / cancel orders","Edit order before approval","Record payment","Print challan"]},
+    {name:"Dispatch & LR",perms:["View LR console","Upload LR document","Resend LR SMS"]},
+    {name:"Payments",perms:["View payment records","Record installment payments","Delete payment records"]},
+    {name:"CCTV",perms:["View footage library","Record dispatch video","Download footage clips"]},
+    {name:"Reports",perms:["View reports","Export reports"]},
+    {name:"Admin",perms:["User management","Role permissions","Customer master","System settings","Audit trail"]},
+    {name:"Mfg — Challans",perms:["View challan list & details","Create new challans","Edit existing challans","Track challan progress","Close / complete challans"]},
+    {name:"Mfg — Production",perms:["View production status","Update ready piece counts","Process SKU outward","Payment & piece verification"]},
+    {name:"Mfg — Contractors",perms:["View contractor list","Register new contractors","Edit contractor details","Delete contractor records"]},
+    {name:"Mfg — Fabric / Mill",perms:["View fabric inventory & mill data","Add new fabric rolls","Edit fabric roll details"]},
+    {name:"Mfg — RF / Returns",perms:["View RF / return entries","Create RF entries","Edit existing RF entries"]},
+    {name:"Mfg — Masters",perms:["Manage design master (DST files)","Configure job work types & rates","Manage color master per design","Contractor registry management"]},
+    {name:"Mfg — Costing (Owner only)",perms:["View design BOM & cost breakdown","Edit cost data"]},
+    {name:"Mfg — Notifications",perms:["View notification center"]},
+    {name:"ERP Cross-Access",perms:["Access Manufacturing ERP (GMMS)","Access Sales ERP (CMS)"]},
+  ];
+  const rp = permsData[activeRole];
+  const isSuperAdmin = activeRole === 0;
+  return (
+  <WebLayout activeMenu="Admin" mode="mfg">
+    <GTopBar title="Role Permissions (GMMS)" sub="Configure what each role can access and do" actions={[{label:"Save All Permissions",primary:true}]}/>
+    <Content>
+      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        {roles.map((role,i)=>(
+          <span key={i} onClick={()=>setActiveRole(i)} style={{fontSize:11,padding:"5px 14px",borderRadius:3,border:`0.5px solid ${i===activeRole?CO.accent:C.border}`,background:i===activeRole?CO.accent:C.white,color:i===activeRole?C.white:C.textMuted,cursor:"pointer",fontWeight:i===activeRole?600:400}}>{role}</span>
+        ))}
+        <Btn small>{"+ Add Role"}</Btn>
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          <Btn small>Duplicate Role</Btn>
+          {!isSuperAdmin&&<Btn danger small>Delete Role</Btn>}
+        </div>
+      </div>
+      <div style={{fontSize:11,color:isSuperAdmin?"#7a5c00":C.textMuted,marginBottom:12,padding:"7px 10px",background:isSuperAdmin?"#fff8e1":C.bgSoft,borderRadius:4,border:`0.5px solid ${isSuperAdmin?"#f5c842":C.border}`}}>
+        {isSuperAdmin&&<span style={{fontWeight:700,color:"#7a5c00"}}>{"🔒"} Locked — </span>}
+        <strong>{roles[activeRole]}</strong>: {roleDesc[activeRole]}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        {modules.map((section,si)=>{
+          const rowPerms = rp[si]||[];
+          const checkedCount = isSuperAdmin ? section.perms.length : rowPerms.filter(Boolean).length;
+          const total = section.perms.length;
+          return (
+          <Card key={si} style={{marginBottom:0}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+              <div style={{fontSize:12,fontWeight:600}}>{section.name}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:10,color:checkedCount===total?C.green:checkedCount===0?C.red:CO.accent,fontWeight:600}}>{checkedCount}/{total}</span>
+                {!isSuperAdmin&&<div style={{display:"flex",gap:4}}>
+                  <span style={{fontSize:10,color:CO.accent,cursor:"pointer",textDecoration:"underline"}}>All</span>
+                  <span style={{fontSize:10,color:C.textMuted,cursor:"pointer",textDecoration:"underline"}}>None</span>
+                </div>}
+              </div>
+            </div>
+            <div>
+              {section.perms.map((perm,pi)=>{
+                const checked = isSuperAdmin ? true : (rowPerms[pi]||false);
+                return (
+                <div key={pi} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:pi<section.perms.length-1?`0.5px solid ${C.border}`:"none"}}>
+                  <div style={{width:16,height:16,borderRadius:3,border:`0.5px solid ${checked?(isSuperAdmin?"#2e7d32":C.black):C.border}`,background:checked?(isSuperAdmin?"#2e7d32":C.black):C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {checked&&<span style={{color:C.white,fontSize:10,lineHeight:1}}>{"✔"}</span>}
+                  </div>
+                  <span style={{fontSize:11,color:checked?C.text:C.textMuted,flex:1}}>{perm}</span>
+                  {!checked&&<Tag color="red">Denied</Tag>}
+                </div>
+                );
+              })}
+            </div>
+          </Card>
+          );
+        })}
+      </div>
+
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",margin:"20px 0 10px"}}>
+        {"↓"} Dialog shown when "+ Add Role" is clicked
+      </div>
+      <div style={{position:"relative",minHeight:500,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:20}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ Permission matrix in background ]</div>
+        <Modal title="Create New Role" width={500}>
+          <div style={{padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted,border:`0.5px solid ${C.border}`,marginBottom:14}}>
+            Define a new role name and optionally copy permissions from an existing role as a starting point.
+          </div>
+          <Input label="Role Name" placeholder="e.g. Accountant / Supervisor / Sales Rep" required note="This name will appear in user assignment and audit logs"/>
+          <Input label="Description (optional)" placeholder="e.g. Can view orders and record payments  -  no stock access"/>
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:6,fontWeight:500}}>Copy Permissions From (optional)</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
+              {[
+                {role:"Start with blank / no permissions",desc:"All permissions off by default",sel:false},
+                {role:"Copy from: Production Manager",desc:"Full GMMS — challans, production, contractors, fabric",sel:false},
+                {role:"Copy from: Production Staff",desc:"Floor production — challan view, piece counts",sel:false},
+                {role:"Copy from: Manager",desc:"Orders, approvals, reports, payments",sel:false},
+                {role:"Copy from: Office Staff",desc:"Orders, inventory, customers — no approvals",sel:true},
+                {role:"Copy from: Godown Staff",desc:"Mobile only — scan, pick, dispatch",sel:false},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",background:r.sel?C.bgSoft:C.white,cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${r.sel?C.black:C.border}`,background:r.sel?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2}}>
+                    {r.sel&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:r.sel?600:400}}>{r.role}</div>
+                    <div style={{fontSize:10,color:C.textMuted,marginTop:1}}>{r.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{padding:"8px 10px",background:C.greenLight,border:`0.5px solid ${C.greenBorder}`,borderRadius:4,fontSize:11,color:C.green,marginBottom:14}}>
+            {"✔"} Copying from "Office Staff" — you can fine-tune individual permissions after creation.
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn>Cancel</Btn>
+            <Btn primary>{"Create Role →"}</Btn>
+          </div>
+        </Modal>
+      </div>
+
+      <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+        {"↓"} Dialog shown when "Delete Role" is clicked
+      </div>
+      <div style={{position:"relative",minHeight:280,border:`1.5px dashed ${C.border}`,borderRadius:8,background:C.bgSoft,marginBottom:20}}>
+        <div style={{padding:16,opacity:0.25,fontSize:11,color:C.textMuted,textAlign:"center"}}>[ Permission matrix in background ]</div>
+        <Modal title="Delete Role — Office Staff" width={420}>
+          <div style={{padding:"12px 14px",background:C.redLight,border:`0.5px solid ${C.redBorder}`,borderRadius:6,marginBottom:14}}>
+            <div style={{fontSize:13,fontWeight:700,color:C.red,marginBottom:6}}>{"⚠"} This action cannot be undone</div>
+            <div style={{fontSize:11,color:C.text}}><strong>2 users</strong> are currently assigned to "Office Staff":</div>
+            <div style={{marginTop:8}}>
+              {["Priya Sharma · priya@cms.com","Sunita Patel · sunita@cms.com"].map((u,i)=>(
+                <div key={i} style={{fontSize:11,padding:"4px 0",borderBottom:`0.5px solid ${C.redBorder}`,color:C.text}}>{u}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:11,color:C.textMuted,marginBottom:6,fontWeight:500}}>Reassign affected users to:</div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",background:C.white}}>
+              {["Production Manager","Production Staff","Manager","Godown Staff"].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderTop:i>0?`0.5px solid ${C.border}`:"none",cursor:"pointer",background:i===0?C.bgSoft:C.white}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",border:`0.5px solid ${i===0?C.black:C.border}`,background:i===0?C.black:C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {i===0&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
+                  </div>
+                  <span style={{fontSize:12}}>{r}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,justifyContent:"flex-end",paddingTop:10,borderTop:`0.5px solid ${C.border}`}}>
+            <Btn>Cancel</Btn>
+            <Btn danger>Reassign + Delete Role</Btn>
+          </div>
+        </Modal>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
