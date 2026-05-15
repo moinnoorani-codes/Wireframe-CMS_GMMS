@@ -5169,7 +5169,25 @@ const screens = {
 
 // G-30A: Role Permissions (GMMS)
 "G-30A": () => {
-  const SH = ["Super Admin","Prod. Manager","Prod. Staff","Accounts","Manager","Office Staff","Godown Staff"];
+  const [activeRole, setActiveRole] = useState(0);
+  const roles = [
+    "Super Admin",
+    "Production Manager",
+    "Production Staff",
+    "Accounts",
+    "Manager",
+    "Office Staff",
+    "Godown Staff",
+  ];
+  const roleDesc = [
+    "Full unrestricted access to all modules. Reserved for owners (Kadir Bhai, Ali Bhai). Cannot be edited.",
+    "Full GMMS access — challans, contractors, production, fabric, RF, masters, notifications. Read-only Sales ERP.",
+    "Manufacturing floor — view challans, update piece counts. No create/delete on masters.",
+    "GMMS finance — payments, reconciliation, reports, SMS. No production module access.",
+    "Sales ERP operational control — orders, approvals, reports, payments, CRM. Limited GMMS read-only.",
+    "General office — order processing, payment recording, dispatch tracking, basic CRM.",
+    "Warehouse operations — picking, dispatch, LR upload, mobile scanning. No sales or finance access.",
+  ];
   const T=true,F=false;
   const permsData = [
     [[T,T],[T,T,T,T,T],[T,T],[T,T,T,T,T,T,T,T],[T,T,T],[T,T,T],[T,T,T],[T,T],[T,T,T,T,T],[T,T,T,T,T],[T,T,T,T],[T,T,T,T],[T,T,T],[T,T,T],[T,T,T,T],[T,T],[T],[T,T]],
@@ -5196,59 +5214,64 @@ const screens = {
     {name:"Mfg — Fabric / Mill",perms:["View fabric inventory & mill data","Add new fabric rolls","Edit fabric roll details"]},
     {name:"Mfg — RF / Returns",perms:["View RF / return entries","Create RF entries","Edit existing RF entries"]},
     {name:"Mfg — Masters",perms:["Manage design master (DST files)","Configure job work types & rates","Manage color master per design","Contractor registry management"]},
-    {name:"Mfg — Costing (Owner)",perms:["View design BOM & cost breakdown","Edit cost data"]},
+    {name:"Mfg — Costing (Owner only)",perms:["View design BOM & cost breakdown","Edit cost data"]},
     {name:"Mfg — Notifications",perms:["View notification center"]},
     {name:"ERP Cross-Access",perms:["Access Manufacturing ERP (GMMS)","Access Sales ERP (CMS)"]},
   ];
-  const cActive = "#2e7d32";
+  const rp = permsData[activeRole];
+  const isSuperAdmin = activeRole === 0;
   return (
   <WebLayout activeMenu="Admin" mode="mfg">
-    <GTopBar title="Role Permissions (GMMS)" sub="Full comparison matrix — all roles at a glance" actions={[{label:"Save All Permissions",primary:true}]}/>
+    <GTopBar title="Role Permissions (GMMS)" sub="Configure what each role can access and do" actions={[{label:"Save All Permissions",primary:true}]}/>
     <Content>
       <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        {roles.map((role,i)=>(
+          <span key={i} onClick={()=>setActiveRole(i)} style={{fontSize:11,padding:"5px 14px",borderRadius:3,border:`0.5px solid ${i===activeRole?CO.accent:C.border}`,background:i===activeRole?CO.accent:C.white,color:i===activeRole?C.white:C.textMuted,cursor:"pointer",fontWeight:i===activeRole?600:400}}>{role}</span>
+        ))}
         <Btn small>{"+ Add Role"}</Btn>
-        <Btn small>Duplicate Role</Btn>
-        <Btn danger small>Delete Role</Btn>
-        <div style={{marginLeft:"auto",fontSize:10,color:C.textMuted}}>{"✔ = Allowed"}  {"✘ = Denied"}</div>
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          <Btn small>Duplicate Role</Btn>
+          {!isSuperAdmin&&<Btn danger small>Delete Role</Btn>}
+        </div>
       </div>
-      <div style={{overflowX:"auto",border:`0.5px solid ${C.border}`,borderRadius:6,background:C.white,marginBottom:20}}>
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:11}}>
-          <thead>
-            <tr style={{background:C.bgSoft}}>
-              <th style={{textAlign:"left",padding:"8px 10px",borderBottom:`0.5px solid ${C.border}`,fontWeight:600,position:"sticky",left:0,background:C.bgSoft,minWidth:160}}>Permission</th>
-              {SH.map((h,i)=>(
-                <th key={i} style={{textAlign:"center",padding:"8px 6px",borderBottom:`0.5px solid ${C.border}`,borderLeft:`0.5px solid ${C.border}`,fontWeight:600,fontSize:10,color:i===0?CO.accent:C.text,whiteSpace:"nowrap"}}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {modules.map((section,si)=>{
-              const rowPerms = permsData.map(r=>r[si]||[]);
-              const allChecked = rowPerms.every(r=>r.every(c=>c));
-              return (
-                <React.Fragment key={si}>
-                  <tr style={{background:C.bgSoft}}>
-                    <td style={{padding:"6px 10px",borderBottom:`0.5px solid ${C.border}`,fontWeight:700,fontSize:11,color:C.text,position:"sticky",left:0,background:C.bgSoft}}>{section.name}</td>
-                    {SH.map((_,ci)=>(
-                      <td key={ci} style={{textAlign:"center",padding:"6px 4px",borderBottom:`0.5px solid ${C.border}`,borderLeft:`0.5px solid ${C.border}`,fontSize:9,color:C.textMuted}}>{allChecked?"ALL":""}</td>
-                    ))}
-                  </tr>
-                  {section.perms.map((perm,pi)=>{
-                    const vals = rowPerms.map(r=>r[pi]||false);
-                    return (
-                      <tr key={pi}>
-                        <td style={{padding:"5px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11,color:C.text,position:"sticky",left:0,background:C.white}}>{perm}</td>
-                        {vals.map((v,ci)=>(
-                          <td key={ci} style={{textAlign:"center",padding:"5px 4px",borderBottom:`0.5px solid ${C.border}`,borderLeft:`0.5px solid ${C.border}`,fontSize:14,color:v?cActive:C.red,background:ci===0&&v?"#f1f8e9":"inherit"}}>{v?"✔":"✘"}</td>
-                        ))}
-                      </tr>
-                    );
-                  })}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+      <div style={{fontSize:11,color:isSuperAdmin?"#7a5c00":C.textMuted,marginBottom:12,padding:"7px 10px",background:isSuperAdmin?"#fff8e1":C.bgSoft,borderRadius:4,border:`0.5px solid ${isSuperAdmin?"#f5c842":C.border}`}}>
+        {isSuperAdmin&&<span style={{fontWeight:700,color:"#7a5c00"}}>{"🔒"} Locked — </span>}
+        <strong>{roles[activeRole]}</strong>: {roleDesc[activeRole]}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        {modules.map((section,si)=>{
+          const rowPerms = rp[si]||[];
+          const checkedCount = isSuperAdmin ? section.perms.length : rowPerms.filter(Boolean).length;
+          const total = section.perms.length;
+          return (
+          <Card key={si} style={{marginBottom:0}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+              <div style={{fontSize:12,fontWeight:600}}>{section.name}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:10,color:checkedCount===total?C.green:checkedCount===0?C.red:CO.accent,fontWeight:600}}>{checkedCount}/{total}</span>
+                {!isSuperAdmin&&<div style={{display:"flex",gap:4}}>
+                  <span style={{fontSize:10,color:CO.accent,cursor:"pointer",textDecoration:"underline"}}>All</span>
+                  <span style={{fontSize:10,color:C.textMuted,cursor:"pointer",textDecoration:"underline"}}>None</span>
+                </div>}
+              </div>
+            </div>
+            <div>
+              {section.perms.map((perm,pi)=>{
+                const checked = isSuperAdmin ? true : (rowPerms[pi]||false);
+                return (
+                <div key={pi} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:pi<section.perms.length-1?`0.5px solid ${C.border}`:"none"}}>
+                  <div style={{width:16,height:16,borderRadius:3,border:`0.5px solid ${checked?(isSuperAdmin?"#2e7d32":C.black):C.border}`,background:checked?(isSuperAdmin?"#2e7d32":C.black):C.white,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {checked&&<span style={{color:C.white,fontSize:10,lineHeight:1}}>{"✔"}</span>}
+                  </div>
+                  <span style={{fontSize:11,color:checked?C.text:C.textMuted,flex:1}}>{perm}</span>
+                  {!checked&&<Tag color="red">Denied</Tag>}
+                </div>
+                );
+              })}
+            </div>
+          </Card>
+          );
+        })}
       </div>
 
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",margin:"20px 0 10px"}}>
