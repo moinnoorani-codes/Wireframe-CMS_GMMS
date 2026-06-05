@@ -6,7 +6,7 @@ import { RoleBadge, FlowTag, FlowBar, FlowDiagram, FlowNavButtons } from "./flow
 const C = {
   bgSoft: "#f5f5f5", text: "#111111", textMuted: "#666666", textLight: "#999999",
   border: "#e0e0e0", red: "#c0392b", redLight: "#fdf0ef", redBorder: "#e8b4b0",
-  black: "#111111", white: "#ffffff", green: "#1a7a4a", greenLight: "#edf7f1", greenBorder: "#a8d5bc",
+  black: "#111111", white: "#ffffff", green: "#1a7a4a", greenLight: "#edf7f1", greenBorder: "#a8d5bc", tealLight: "#CCFBF1", amber: "#d97706", amberLight: "#fef3c7",
 };
 
 const Tag = ({ children, color }) => (
@@ -170,7 +170,7 @@ const SALES_MENU=[
   {icon:"☰",label:"Inventory",screens:[{id:"W-09",label:"Live Inventory"},{id:"W-13",label:"Stock Alert Center"}]},
   {icon:"◉",label:"Orders",screens:[{id:"W-14",label:"Order List"},{id:"W-15",label:"Order Detail"},{id:"W-16R",label:"Create Order - Retail"},{id:"W-16W",label:"Create Order - Wholesale"},{id:"W-34",label:"Wholesale Queue"}]},
   {icon:"⊏",label:"Dispatch",screens:[{id:"W-17",label:"LR Console"},{id:"W-18",label:"LR Detail"}]},
-  {icon:"₹",label:"Payments",screens:[{id:"W-20",label:"Payment Records"}]},
+  {icon:"\u20B9",label:"Payments",screens:[{id:"W-20",label:"Payment Records"},{id:"W-12",label:"Credit Control Dashboard"}]},
   {icon:"●",label:"CCTV",screens:[{id:"W-21",label:"CCTV Console"},{id:"W-22",label:"Video Playback"}]},
   {icon:"⊡",label:"Reports",screens:[{id:"W-23",label:"Reports Hub"},{id:"W-24",label:"Sales Report"},{id:"W-25",label:"Ageing Report"},{id:"W-26",label:"Top Designs"},{id:"W-27",label:"Customer History"}]},
   {icon:"✉",label:"SMS",screens:[{id:"W-28",label:"SMS Log"},{id:"W-29",label:"SMS Templates"}]},
@@ -933,20 +933,308 @@ const screens = {
   </WebLayout>
 ),
 
-"W-12": () => (
-  <WebLayout activeMenu="Inventory">
-    <TopBar title="Stock Movement Log  -  REMOVED"/>
-    <Content>
-      <Card red>
-        <div style={{fontSize:13,fontWeight:600,color:C.red,marginBottom:8}}>⚠ This screen has been removed</div>
-        <div style={{fontSize:11,color:C.textMuted}}>
-          The Stock Movement Log has been removed from the current scope.<br/><br/>
-          Stock history is available via <strong>Admin → Audit Trail (W-33)</strong> which logs all stock changes with timestamps, user, and reference.
-        </div>
-      </Card>
-    </Content>
-  </WebLayout>
-),
+"W-12": ({ onNavigate }) => {
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("All Customers");
+  const [dateRange, setDateRange] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [confirmCustomer, setConfirmCustomer] = useState(null);
+  const [holdOverrides, setHoldOverrides] = useState({});
+
+  const customers = [
+    {
+      name: "Neha Garments", phone: "+91 98765 43210",
+      creditLimit: 50000, outstandingBalance: 18500,
+      oldestUnpaid: "12 Mar 2026", daysOverdue: 0, onHold: false,
+      orders: [
+        { id: "#W-1007", date: "12 Mar 2026", amount: 32800, paid: 14300, balance: 18500, status: "Partial" },
+        { id: "#W-1003", date: "28 Feb 2026", amount: 22400, paid: 22400, balance: 0, status: "Paid" },
+        { id: "#W-1001", date: "15 Jan 2026", amount: 18900, paid: 18900, balance: 0, status: "Paid" },
+        { id: "#W-0995", date: "02 Jan 2026", amount: 15000, paid: 15000, balance: 0, status: "Paid" },
+        { id: "#W-0988", date: "18 Dec 2025", amount: 27500, paid: 27500, balance: 0, status: "Paid" },
+        { id: "#W-0980", date: "05 Dec 2025", amount: 12000, paid: 12000, balance: 0, status: "Paid" },
+        { id: "#W-0972", date: "22 Nov 2025", amount: 31000, paid: 31000, balance: 0, status: "Paid" },
+        { id: "#W-0965", date: "10 Nov 2025", amount: 8500, paid: 8500, balance: 0, status: "Paid" },
+        { id: "#W-0958", date: "28 Oct 2025", amount: 22000, paid: 22000, balance: 0, status: "Paid" },
+        { id: "#W-0950", date: "15 Oct 2025", amount: 16800, paid: 16800, balance: 0, status: "Paid" },
+      ]
+    },
+    {
+      name: "Ramesh Traders", phone: "+91 98765 43211",
+      creditLimit: 30000, outstandingBalance: 26400,
+      oldestUnpaid: "28 Feb 2026", daysOverdue: 0, onHold: false,
+      orders: [
+        { id: "#W-1004", date: "28 Feb 2026", amount: 18400, paid: 10000, balance: 8400, status: "Partial" },
+        { id: "#W-0998", date: "10 Feb 2026", amount: 12000, paid: 12000, balance: 0, status: "Paid" },
+        { id: "#W-0990", date: "22 Jan 2026", amount: 21000, paid: 21000, balance: 0, status: "Paid" },
+        { id: "#W-0983", date: "05 Jan 2026", amount: 16000, paid: 16000, balance: 0, status: "Paid" },
+        { id: "#W-0975", date: "15 Dec 2025", amount: 18500, paid: 18500, balance: 0, status: "Paid" },
+        { id: "#W-0968", date: "28 Nov 2025", amount: 9500, paid: 9500, balance: 0, status: "Paid" },
+        { id: "#W-0960", date: "10 Nov 2025", amount: 22000, paid: 22000, balance: 0, status: "Paid" },
+        { id: "#W-0952", date: "25 Oct 2025", amount: 14000, paid: 14000, balance: 0, status: "Paid" },
+        { id: "#W-0945", date: "08 Oct 2025", amount: 11000, paid: 11000, balance: 0, status: "Paid" },
+        { id: "#W-0938", date: "20 Sep 2025", amount: 26000, paid: 26000, balance: 0, status: "Paid" },
+      ]
+    },
+    {
+      name: "Deepak Wholesale", phone: "+91 98765 43212",
+      creditLimit: 30000, outstandingBalance: 32800,
+      oldestUnpaid: "15 Feb 2026", daysOverdue: 5, onHold: false,
+      orders: [
+        { id: "#W-1006", date: "15 Feb 2026", amount: 32800, paid: 0, balance: 32800, status: "Unpaid" },
+        { id: "#W-1000", date: "28 Jan 2026", amount: 15600, paid: 15600, balance: 0, status: "Paid" },
+        { id: "#W-0992", date: "12 Jan 2026", amount: 19800, paid: 19800, balance: 0, status: "Paid" },
+        { id: "#W-0985", date: "20 Dec 2025", amount: 24200, paid: 24200, balance: 0, status: "Paid" },
+        { id: "#W-0977", date: "05 Dec 2025", amount: 12000, paid: 12000, balance: 0, status: "Paid" },
+        { id: "#W-0970", date: "18 Nov 2025", amount: 28000, paid: 28000, balance: 0, status: "Paid" },
+        { id: "#W-0962", date: "02 Nov 2025", amount: 8500, paid: 8500, balance: 0, status: "Paid" },
+        { id: "#W-0955", date: "15 Oct 2025", amount: 19500, paid: 19500, balance: 0, status: "Paid" },
+        { id: "#W-0948", date: "28 Sep 2025", amount: 16000, paid: 16000, balance: 0, status: "Paid" },
+        { id: "#W-0940", date: "10 Sep 2025", amount: 22500, paid: 22500, balance: 0, status: "Paid" },
+      ]
+    },
+    {
+      name: "Suresh Fabrics", phone: "+91 98765 43213",
+      creditLimit: 50000, outstandingBalance: 6200,
+      oldestUnpaid: "05 Jan 2026", daysOverdue: 12, onHold: false,
+      orders: [
+        { id: "#W-1002", date: "05 Jan 2026", amount: 11200, paid: 5000, balance: 6200, status: "Partial" },
+        { id: "#W-0997", date: "18 Dec 2025", amount: 8500, paid: 8500, balance: 0, status: "Paid" },
+        { id: "#W-0989", date: "30 Nov 2025", amount: 19000, paid: 19000, balance: 0, status: "Paid" },
+        { id: "#W-0982", date: "12 Nov 2025", amount: 14500, paid: 14500, balance: 0, status: "Paid" },
+        { id: "#W-0974", date: "28 Oct 2025", amount: 7200, paid: 7200, balance: 0, status: "Paid" },
+        { id: "#W-0967", date: "10 Oct 2025", amount: 21000, paid: 21000, balance: 0, status: "Paid" },
+        { id: "#W-0959", date: "22 Sep 2025", amount: 16800, paid: 16800, balance: 0, status: "Paid" },
+        { id: "#W-0951", date: "05 Sep 2025", amount: 9500, paid: 9500, balance: 0, status: "Paid" },
+        { id: "#W-0943", date: "18 Aug 2025", amount: 24000, paid: 24000, balance: 0, status: "Paid" },
+        { id: "#W-0935", date: "01 Aug 2025", amount: 13000, paid: 13000, balance: 0, status: "Paid" },
+      ]
+    },
+    {
+      name: "Priya Garments", phone: "+91 98765 43214",
+      creditLimit: 40000, outstandingBalance: 44000,
+      oldestUnpaid: "20 Jan 2026", daysOverdue: 15, onHold: true,
+      orders: [
+        { id: "#W-1005", date: "20 Jan 2026", amount: 32000, paid: 0, balance: 32000, status: "Unpaid" },
+        { id: "#W-0999", date: "05 Jan 2026", amount: 12000, paid: 0, balance: 12000, status: "Unpaid" },
+        { id: "#W-0991", date: "15 Dec 2025", amount: 18500, paid: 18500, balance: 0, status: "Paid" },
+        { id: "#W-0984", date: "28 Nov 2025", amount: 22000, paid: 22000, balance: 0, status: "Paid" },
+        { id: "#W-0976", date: "10 Nov 2025", amount: 9500, paid: 9500, balance: 0, status: "Paid" },
+        { id: "#W-0969", date: "25 Oct 2025", amount: 16800, paid: 16800, balance: 0, status: "Paid" },
+        { id: "#W-0961", date: "08 Oct 2025", amount: 14000, paid: 14000, balance: 0, status: "Paid" },
+        { id: "#W-0954", date: "20 Sep 2025", amount: 21000, paid: 21000, balance: 0, status: "Paid" },
+        { id: "#W-0947", date: "02 Sep 2025", amount: 12500, paid: 12500, balance: 0, status: "Paid" },
+        { id: "#W-0939", date: "15 Aug 2025", amount: 27500, paid: 27500, balance: 0, status: "Paid" },
+      ]
+    },
+  ];
+
+  const totalOutstanding = customers.reduce((sum, c) => sum + c.outstandingBalance, 0);
+  const overdueCount = customers.filter(c => c.daysOverdue > 0).length;
+  const onHoldCount = customers.filter(c => c.onHold || holdOverrides[c.name]).length;
+
+  const filtered = customers.filter(c => {
+    const matchName = c.name.toLowerCase().includes(search.toLowerCase());
+    const pct = (c.outstandingBalance / c.creditLimit) * 100;
+    const matchFilter =
+      filter === "All Customers" ? true :
+      filter === "Overdue Only" ? c.daysOverdue > 0 :
+      filter === "On Credit Hold" ? (c.onHold || holdOverrides[c.name]) :
+      filter === "Within Limit" ? c.daysOverdue <= 0 && !c.onHold && pct < 80 :
+      true;
+    return matchName && matchFilter;
+  });
+
+  const sorted = [...filtered].sort((a, b) => b.daysOverdue - a.daysOverdue);
+
+  const handleToggleHold = (customerName) => { setConfirmCustomer(customerName); };
+  const handleConfirmHold = () => { setHoldOverrides(prev=>({...prev,[confirmCustomer]:true})); setConfirmCustomer(null); };
+  const handleCancelHold = () => { setConfirmCustomer(null); };
+  const handleRowClick = (customer) => { setSelectedCustomer(customer); };
+  const handleCloseDrawer = () => { setSelectedCustomer(null); };
+
+  const getStatus = (c) => {
+    const pct = (c.outstandingBalance / c.creditLimit) * 100;
+    if (c.onHold || holdOverrides[c.name]) return { label: "Credit Hold", bg: C.red, text: C.white, solid: true };
+    if (c.daysOverdue > 0) return { label: "Overdue", bg: C.redLight, text: C.red, solid: false };
+    if (pct >= 80) return { label: "Approaching Limit", bg: C.amberLight, text: C.amber, solid: false };
+    return { label: "Within Limit", bg: C.greenLight, text: C.green, solid: false };
+  };
+
+  return (
+    <WebLayout activeMenu="Payments">
+      <TopBar title="Credit Control Dashboard" sub="Monitor wholesale customer credit limits, overdue payments & credit holds"/>
+      <div style={{position:"relative",flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        <Content>
+          {/* Stat Cards */}
+          <div style={{display:"flex",gap:16,marginBottom:16}}>
+            <div style={{flex:1,border:"0.5px solid "+C.border,borderRadius:8,padding:"16px 20px",background:C.white}}>
+              <div style={{fontSize:10,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Total Outstanding</div>
+              <div style={{fontSize:24,fontWeight:700}}>{"\u20B9"}{totalOutstanding.toLocaleString("en-IN")}</div>
+            </div>
+            <div style={{flex:1,border:"0.5px solid "+(overdueCount>0?C.redBorder:C.border),borderRadius:8,padding:"16px 20px",background:overdueCount>0?C.redLight:C.white}}>
+              <div style={{fontSize:10,color:overdueCount>0?C.red:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Customers Overdue</div>
+              <div style={{fontSize:24,fontWeight:700,color:overdueCount>0?C.red:C.text}}>{overdueCount}</div>
+            </div>
+            <div style={{flex:1,border:"0.5px solid "+(onHoldCount>0?C.redBorder:C.border),borderRadius:8,padding:"16px 20px",background:onHoldCount>0?C.redLight:C.white}}>
+              <div style={{fontSize:10,color:onHoldCount>0?C.red:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Customers on Credit Hold</div>
+              <div style={{fontSize:24,fontWeight:700,color:onHoldCount>0?C.red:C.text}}>{onHoldCount}</div>
+            </div>
+          </div>
+          {/* Filter Bar */}
+          <div style={{display:"flex",gap:12,marginBottom:16,alignItems:"center"}}>
+            <input
+              type="text" placeholder="Search customer name..."
+              value={search} onChange={e=>setSearch(e.target.value)}
+              style={{flex:1,border:"0.5px solid "+C.border,borderRadius:6,padding:"8px 12px",fontSize:12,color:C.text,background:C.white,outline:"none",fontFamily:"inherit"}}
+            />
+            <select
+              value={filter} onChange={e=>setFilter(e.target.value)}
+              style={{border:"0.5px solid "+C.border,borderRadius:6,padding:"8px 12px",fontSize:11,color:C.text,background:C.white,outline:"none",fontFamily:"inherit",cursor:"pointer"}}
+            >
+              <option>All Customers</option>
+              <option>Overdue Only</option>
+              <option>On Credit Hold</option>
+              <option>Within Limit</option>
+            </select>
+            <input
+              type="date" value={dateRange} onChange={e=>setDateRange(e.target.value)}
+              style={{border:"0.5px solid "+C.border,borderRadius:6,padding:"8px 12px",fontSize:11,color:C.textMuted,background:C.white,outline:"none",fontFamily:"inherit",cursor:"pointer",minWidth:150}}
+            />
+          </div>
+          {/* Table */}
+          {sorted.length > 0 ? (
+            <div style={{border:"0.5px solid "+C.border,borderRadius:8,overflow:"hidden",background:C.white}}>
+              {/* Header */}
+              <div style={{display:"flex",gap:8,padding:"8px 10px",background:C.bgSoft,borderBottom:"0.5px solid "+C.border}}>
+                <div style={{flex:1.2,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Customer Name</div>
+                <div style={{flex:0.8,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Credit Limit</div>
+                <div style={{flex:0.9,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Outstanding</div>
+                <div style={{flex:1.1,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Limit Used</div>
+                <div style={{flex:1,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Oldest Unpaid</div>
+                <div style={{flex:0.7,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Days Overdue</div>
+                <div style={{flex:1,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em"}}>Status</div>
+                <div style={{flex:0.5,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em",textAlign:"center"}}>Hold</div>
+              </div>
+              {/* Rows */}
+              {sorted.map((c,i)=>{
+                const pct = (c.outstandingBalance / c.creditLimit) * 100;
+                const barColor = pct <= 60 ? C.green : pct <= 80 ? C.amber : C.red;
+                const overLimit = pct > 100;
+                const status = getStatus(c);
+                const dayColor = c.daysOverdue <= 0 ? C.textMuted : c.daysOverdue <= 7 ? C.amber : C.red;
+                return (
+                  <div
+                    key={i}
+                    onClick={()=>handleRowClick(c)}
+                    onMouseEnter={e=>e.currentTarget.style.background=C.tealLight}
+                    onMouseLeave={e=>e.currentTarget.style.background=C.white}
+                    style={{display:"flex",gap:8,padding:"8px 10px",borderTop:"0.5px solid "+C.border,minHeight:48,alignItems:"center",cursor:"pointer",background:C.white,transition:"background 0.15s"}}
+                  >
+                    <div style={{flex:1.2,fontSize:12,fontWeight:500,color:C.text,textDecoration:"underline",cursor:"pointer"}}>{c.name}</div>
+                    <div style={{flex:0.8,fontSize:12,fontWeight:500}}>{"\u20B9"}{c.creditLimit.toLocaleString("en-IN")}</div>
+                    <div style={{flex:0.9,fontSize:12,fontWeight:600,color:C.red}}>{"\u20B9"}{c.outstandingBalance.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1.1,display:"flex",alignItems:"center",gap:6}}>
+                      <div style={{flex:1,height:8,background:C.bgSoft,borderRadius:4,overflow:"hidden"}}>
+                        <div style={{width:Math.min(pct,100)+"%",height:"100%",background:barColor,borderRadius:4,transition:"width 0.3s"}}/>
+                      </div>
+                      <span style={{fontSize:11,fontWeight:600,color:barColor,whiteSpace:"nowrap"}}>{overLimit?"Over Limit":Math.round(pct)+"%"}</span>
+                    </div>
+                    <div style={{flex:1,fontSize:11,color:C.textMuted}}>{c.oldestUnpaid}</div>
+                    <div style={{flex:0.7,fontSize:12,fontWeight:c.daysOverdue>7?600:400,color:dayColor}}>{c.daysOverdue>0?c.daysOverdue+" days":"-"}</div>
+                    <div style={{flex:1}}>
+                      {status.solid ? (
+                        <span style={{display:"inline-block",fontSize:10,fontWeight:600,letterSpacing:"0.05em",padding:"3px 8px",borderRadius:3,background:status.bg,color:status.text,textTransform:"uppercase",whiteSpace:"nowrap"}}>{status.label}</span>
+                      ) : (
+                        <span style={{display:"inline-block",fontSize:10,fontWeight:600,letterSpacing:"0.05em",padding:"3px 8px",borderRadius:3,background:status.bg,color:status.text,border:"0.5px solid "+(status.label==="Overdue"?C.redBorder:status.label==="Approaching Limit"?C.amberBorder:C.greenBorder),textTransform:"uppercase",whiteSpace:"nowrap"}}>{status.label}</span>
+                      )}
+                    </div>
+                    <div style={{flex:0.5,display:"flex",justifyContent:"center"}}>
+                      <div
+                        onClick={e=>{e.stopPropagation();handleToggleHold(c.name);}}
+                        style={{width:36,height:20,borderRadius:10,background:c.onHold||holdOverrides[c.name]?C.red:C.border,padding:2,display:"flex",alignItems:"center",justifyContent:c.onHold||holdOverrides[c.name]?"flex-end":"flex-start",cursor:"pointer",transition:"all 0.2s"}}
+                      >
+                        <div style={{width:16,height:16,borderRadius:"50%",background:C.white,boxShadow:"0 1px 2px rgba(0,0,0,0.15)"}}/>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"48px 0",gap:16}}>
+              <div style={{fontSize:48,color:C.textLight}}>{"\u26E8"}</div>
+              <div style={{fontSize:13,color:C.textMuted}}>No customers match this filter</div>
+            </div>
+          )}
+        </Content>
+        {/* Drawer */}
+        {selectedCustomer && (
+          <>
+            <div onClick={handleCloseDrawer} style={{position:"absolute",inset:0,background:"transparent",zIndex:15}}/>
+            <div style={{position:"absolute",right:0,top:0,bottom:0,width:480,background:C.white,borderLeft:"1px solid "+C.border,zIndex:16,display:"flex",flexDirection:"column",boxShadow:"-4px 0 16px rgba(0,0,0,0.06)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 20px",borderBottom:"0.5px solid "+C.border,flexShrink:0}}>
+                <div>
+                  <div style={{fontSize:14,fontWeight:700}}>{selectedCustomer.name}</div>
+                  <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>{selectedCustomer.phone}</div>
+                </div>
+                <span onClick={handleCloseDrawer} style={{fontSize:18,color:C.textLight,cursor:"pointer",lineHeight:1}}>{"\u2715"}</span>
+              </div>
+              <div style={{display:"flex",gap:16,padding:"16px 20px",borderBottom:"0.5px solid "+C.border}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:10,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Credit Limit</div>
+                  <div style={{fontSize:20,fontWeight:700}}>{"\u20B9"}{selectedCustomer.creditLimit.toLocaleString("en-IN")}</div>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:10,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Outstanding Balance</div>
+                  <div style={{fontSize:20,fontWeight:700,color:C.red}}>{"\u20B9"}{selectedCustomer.outstandingBalance.toLocaleString("en-IN")}</div>
+                </div>
+              </div>
+              <div style={{flex:1,overflowY:"auto",padding:"12px 20px"}}>
+                <div style={{fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>Last 10 Orders</div>
+                <div style={{display:"flex",gap:6,padding:"6px 0",borderBottom:"0.5px solid "+C.border,marginBottom:4}}>
+                  {["Order ID","Date","Amount","Paid","Balance","Status"].map((h,hi)=>(
+                    <div key={hi} style={{flex:1,fontSize:9,fontWeight:700,color:C.textLight,textTransform:"uppercase",letterSpacing:"0.04em"}}>{h}</div>
+                  ))}
+                </div>
+                {selectedCustomer.orders.map((o,oi)=>(
+                  <div key={oi} style={{display:"flex",gap:6,padding:"7px 0",borderBottom:"0.5px solid "+C.border,alignItems:"center"}}>
+                    <div style={{flex:1,fontSize:11,fontFamily:"monospace",color:C.text}}>{o.id}</div>
+                    <div style={{flex:1,fontSize:10,color:C.textMuted}}>{o.date}</div>
+                    <div style={{flex:1,fontSize:11,fontWeight:500}}>{"\u20B9"}{o.amount.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1,fontSize:11,color:C.green,fontWeight:500}}>{"\u20B9"}{o.paid.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1,fontSize:11,fontWeight:600,color:o.balance>0?C.red:C.green}}>{"\u20B9"}{o.balance.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1}}>
+                      <span style={{fontSize:9,fontWeight:600,padding:"2px 6px",borderRadius:2,background:o.status==="Paid"?C.greenLight:C.redLight,color:o.status==="Paid"?C.green:C.red,border:"0.5px solid "+(o.status==="Paid"?C.greenBorder:C.redBorder),textTransform:"uppercase",letterSpacing:"0.04em",whiteSpace:"nowrap"}}>{o.status}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{padding:"14px 20px",borderTop:"0.5px solid "+C.border,flexShrink:0}}>
+                <button onClick={()=>onNavigate&&onNavigate("W-10")} style={{width:"100%",padding:"9px 0",borderRadius:6,border:"0.5px solid "+C.border,background:C.white,color:C.text,fontSize:12,fontWeight:600,cursor:"pointer"}}>View Full History {"\u2197"}</button>
+              </div>
+            </div>
+          </>
+        )}
+        {/* Confirmation Modal */}
+        {confirmCustomer && (
+          <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:25}}>
+            <div style={{width:480,background:C.white,borderRadius:10,boxShadow:"0 8px 32px rgba(0,0,0,0.18)",overflow:"hidden"}}>
+              <div style={{padding:"20px 24px"}}>
+                <div style={{fontSize:15,fontWeight:700,marginBottom:12}}>Put {confirmCustomer} on Credit Hold?</div>
+                <div style={{fontSize:12,color:C.textMuted,lineHeight:1.6}}>No new orders can be created for this customer until the hold is lifted. This action is logged.</div>
+              </div>
+              <div style={{display:"flex",gap:10,justifyContent:"flex-end",padding:"14px 24px",borderTop:"0.5px solid "+C.border,background:C.bgSoft}}>
+                <button onClick={handleCancelHold} style={{padding:"8px 20px",borderRadius:6,border:"0.5px solid "+C.border,background:C.white,color:C.text,fontSize:12,fontWeight:600,cursor:"pointer"}}>Cancel</button>
+                <button onClick={handleConfirmHold} style={{padding:"8px 20px",borderRadius:6,border:"0.5px solid "+C.red,background:C.red,color:C.white,fontSize:12,fontWeight:600,cursor:"pointer"}}>Confirm Hold</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </WebLayout>
+  );
+},
 
 "W-13": () => (
   <WebLayout activeMenu="Inventory">
@@ -5558,13 +5846,13 @@ const screenGroups = [
     {label:"Inventory",screens:["W-09","W-13"]},
     {label:"Orders",screens:["W-14","W-15","W-16R","W-16W","W-34"]},
     {label:"Dispatch",screens:["W-17","W-18"]},
-    {label:"Payments",screens:["W-20","W-36"]},
+    {label:"Payments",screens:["W-20","W-12","W-36"]},
     {label:"Reports",screens:["W-23","W-24","W-25","W-26","W-27"]},
     {label:"CCTV",screens:["W-21","W-22"]},
     {label:"SMS",screens:["W-28","W-29"]},
     {label:"Admin",screens:["W-30","W-30A","W-31","W-35","W-32","W-33"]},
     {label:"Challan Print",screens:["W-39"]},
-    {label:"Deprecated",screens:["W-10","W-11","W-12","W-19"]},
+    {label:"Deprecated",screens:["W-10","W-11","W-19"]},
   ]},
   {platform:"Manufacturing ERP - GMMS",icon:"🏭",erp:"mfg",groups:[
     {label:"Dashboard",screens:["G-12"]},
@@ -5602,7 +5890,7 @@ const screenLabels = {
   "W-01":"Login","W-02":"Forgot Password","W-03":"Main Dashboard",
   "W-04":"SKU List","W-05":"Create / Edit SKU + Rate Entry","W-06":"SKU Detail","W-07":"Label & Barcode Print",
   "W-09":"Live Inventory","W-13":"Stock Alert Center",
-  "W-10":"[MERGED] Add Stock → W-05","W-11":"[REMOVED] Stock Adjustment","W-12":"[REMOVED] Stock Movement Log",
+  "W-10":"[MERGED] Add Stock \u2192 W-05","W-11":"[REMOVED] Stock Adjustment","W-12":"Credit Control Dashboard",
   "W-14":"Order List","W-15":"Order Detail + Payments",
   "W-16R":"Create Order  -  Retail","W-16W":"Create Order  -  Wholesale",
   "W-34":"Wholesale Approval Queue",
