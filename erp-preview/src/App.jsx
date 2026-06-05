@@ -1211,7 +1211,7 @@ const screens = {
                 ))}
               </div>
               <div style={{padding:"14px 20px",borderTop:"0.5px solid "+C.border,flexShrink:0}}>
-                <button onClick={()=>onNavigate&&onNavigate("W-10")} style={{width:"100%",padding:"9px 0",borderRadius:6,border:"0.5px solid "+C.border,background:C.white,color:C.text,fontSize:12,fontWeight:600,cursor:"pointer"}}>View Full History {"\u2197"}</button>
+              <button onClick={()=>onNavigate&&onNavigate("W-27")} style={{width:"100%",padding:"9px 0",borderRadius:6,border:"0.5px solid "+C.border,background:C.white,color:C.text,fontSize:12,fontWeight:600,cursor:"pointer"}}>View Full History {"\u2197"}</button>
               </div>
             </div>
           </>
