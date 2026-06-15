@@ -181,7 +181,7 @@ const SALES_MENU=[
 // ─── Manufacturing ERP sidebar (GMMS) ───────────────────────────────────────
 const MFG_MENU=[
   {icon:"⊞",label:"Dashboard",screens:[{id:"G-12",label:"Production Dashboard"}]},
-  {icon:"📋",label:"Challans",screens:[{id:"G-01",label:"Challan List"},{id:"G-02",label:"Create Challan"},{id:"G-03",label:"Challan Tracking"},{id:"G-13",label:"Reprocess Challan"}]},
+  {icon:"📋",label:"Challans",screens:[{id:"G-01",label:"Challan List"},{id:"G-02",label:"Create Challan"},{id:"G-23",label:"Traditional Challan"},{id:"G-03",label:"Challan Tracking"},{id:"G-13",label:"Reprocess Challan"}]},
   {icon:"👷",label:"Contractors",screens:[{id:"G-04",label:"Contractor List"},{id:"G-05",label:"Contractor Detail"}]},
   {icon:"✔",label:"Production",screens:[{id:"G-06",label:"Ready Piece Count"},{id:"G-07",label:"Payment & Checking"},{id:"G-21",label:"SKU Outward"}]},
   {icon:"☰",label:"Inventory",screens:[{id:"G-22",label:"Live Inventory"}]},
@@ -4198,7 +4198,7 @@ const screens = {
   </WebLayout>
 ),
 
-"G-02": () => {
+"G-02": ({ onNavigate }) => {
   const [showDesignHistory, setShowDesignHistory] = useState(false);
   const createdAt = "11 May 2026, 15:42";
   const totalTimelineDays = jobTimelineDefaults.reduce((sum, job) => sum + job.targetDays, 0);
@@ -4230,6 +4230,9 @@ const screens = {
           </div>
         </div>
       )}
+      <div style={{display:"flex",justifyContent:"flex-end",marginBottom:8}}>
+        <button onClick={()=>onNavigate("G-23")} style={{padding:"4px 10px",border:"0.5px solid #f5cba7",background:"#fef3e2",borderRadius:3,fontSize:10,fontWeight:600,color:"#e67e22",cursor:"pointer"}}>{"\u{1F4CB}"} View Traditional Challan Layout {"\u2192"}</button>
+      </div>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
           <Card>
@@ -4401,6 +4404,242 @@ const screens = {
           </Card>
         </div>
       </div>
+    </div>
+  </WebLayout>
+  );
+},
+"G-23": ({ onNavigate }) => {
+  const [showDesignHistory, setShowDesignHistory] = useState(false);
+  const [colorOptions, setColorOptions] = useState(["Deep Pink","Royal Blue","Cream White","Mint Green","Gold","Pink","Blue","Cream"]);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [newColorInput, setNewColorInput] = useState("");
+  const [rows, setRows] = useState([
+    {colour:"Pink",desc:"Georgette Front",cons:"0.80",pcs:200,remarks:""},
+    {colour:"Blue",desc:"Net Sleeve",cons:"0.50",pcs:200,remarks:""},
+    {colour:"Cream",desc:"Cotton Lawn",cons:"2.16",pcs:200,remarks:""},
+  ]);
+  const [buffer, setBuffer] = useState(2);
+  const [partySearch, setPartySearch] = useState("Ramesh Kadkiya");
+  const [showPartyDropdown, setShowPartyDropdown] = useState(false);
+  const [selectedJobType, setSelectedJobType] = useState("EMB");
+  const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
+  const contractors = ["Ramesh Kadkiya","Suresh Bhai","Anil Thakkar","Mohan Das","Priya Sharma","Deepak Bhai"];
+  const jobTypes = [
+    {code:"EMB",name:"Embroidery"},{code:"STH",name:"Stitching"},{code:"DIA",name:"Diamond Work"},
+    {code:"LAC",name:"Lace Work"},{code:"WASH",name:"Washing"},{code:"CUT",name:"Cutting"},
+    {code:"FIN",name:"Finishing"},{code:"HND",name:"Hand Work"},{code:"PRT",name:"Printing"},
+    {code:"ZAR",name:"Zardozi"},
+  ];
+  const filteredContractors = showPartyDropdown ? contractors.filter(c=>c.toLowerCase().startsWith(partySearch.toLowerCase())) : [];
+  const createdAt = "11 May 2026, 15:42";
+  const totalPcs = rows.reduce((s,r)=>s+(r.pcs||0),0);
+  const uniqueCols = new Set(rows.map(r=>r.colour).filter(Boolean)).size;
+  const grandTotal = rows.reduce((s,r)=>s+(parseFloat(r.cons||"0")*(r.pcs||0)),0);
+  const issuedTotal = grandTotal + parseFloat(buffer||0);
+  function updateRow(i,f,v){setRows(rows.map((r,j)=>j===i?{...r,[f]:v}:r));}
+  function handleSelectColor(i,colour){updateRow(i,"colour",colour);setOpenDropdown(null);setNewColorInput("");}
+  function handleAddNewColor(i){if(newColorInput.trim()&&!colorOptions.includes(newColorInput.trim())){setColorOptions([...colorOptions,newColorInput.trim()])}handleSelectColor(i,newColorInput.trim());}
+  const handlePrint = () => {
+    const el = document.getElementById("cs");
+    if (!el) return;
+    const w = window.open("","_blank");
+    w.document.write("<html><head><title>Challan #3211</title><style>body{font-family:'Courier New',monospace;padding:20px;margin:0;font-size:12px}@media print{@page{margin:5mm}}table{width:100%;border-collapse:collapse}td,th{border:0.5px solid #ccc;padding:4px 6px;text-align:left}</style></head><body>");
+    w.document.write(el.innerHTML);
+    w.document.write("</body></html>");
+    w.document.close();
+    w.focus();
+    setTimeout(()=>{ w.print(); }, 300);
+  };
+  return (
+  <WebLayout activeMenu="Challans" mode="mfg">
+    <GTopBar title="Traditional Challan Entry" sub="Paper challan style data entry" actions={[{label:"Save Draft"},{label:"Confirm & Notify",primary:true}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460,display:"flex",flexDirection:"column",alignItems:"center"}}>
+      {showDesignHistory&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowDesignHistory(false)}>
+          <div style={{background:C.white,borderRadius:8,padding:20,width:420,maxHeight:"70vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
+              <div style={{fontSize:13,fontWeight:700}}>Design History - D-730</div>
+              <span onClick={()=>setShowDesignHistory(false)} style={{cursor:"pointer",fontSize:16,color:C.textMuted}}>{"\u00D7"}</span>
+            </div>
+            {[
+              {challan:"3209",date:"06 May",pcs:600,note:"2 dupattas missing lace. Lace contractor 3 days late."},
+              {challan:"3198",date:"28 Apr",pcs:500,note:"Fabric overconsumption at embroidery - 6 pieces short."},
+              {challan:"3185",date:"12 Apr",pcs:600,note:"Completed on time. No issues."},
+            ].map((r,i)=>(
+              <div key={i} style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                  <span style={{fontSize:11,fontWeight:700,fontFamily:"monospace"}}>#{r.challan}</span>
+                  <span style={{fontSize:10,color:C.textMuted}}>{r.date} {"\u00B7"} {r.pcs} pcs</span>
+                </div>
+                <div style={{fontSize:11,color:C.text}}>{r.note}</div>
+                <button style={{marginTop:6,fontSize:10,padding:"3px 8px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,color:CO.accent,cursor:"pointer"}}>Prefill from this run</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      <div id="cs" style={{width:720,maxWidth:"100%",border:`1.5px dashed ${C.textLight}`,borderRadius:4,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:16,fontFamily:"'Courier New',monospace"}}>
+        <div style={{background:"#b71c1c",color:C.white,padding:"14px 20px 10px",textAlign:"center"}}>
+          <div style={{fontSize:20,fontWeight:900,letterSpacing:6,textTransform:"uppercase"}}>C H A L L A N</div>
+          <div style={{fontSize:9,opacity:0.7,marginTop:2,letterSpacing:2}}>GMMS Manufacturing ERP {"\u00B7"} Surat</div>
+        </div>
+        <div style={{padding:"12px 20px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+            <div style={{fontSize:12,fontWeight:700,fontFamily:"'Courier New',monospace"}}>CHALLAN NO: 3211</div>
+            <div style={{fontSize:12,fontWeight:700,fontFamily:"'Courier New',monospace",textAlign:"right"}}>
+              <div>DATE: 07-05-2026</div>
+              <div style={{fontSize:9,fontWeight:400,color:C.textMuted,marginTop:1}}>TS: {createdAt}</div>
+            </div>
+          </div>
+          <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+          <div style={{marginBottom:4,fontSize:11,position:"relative"}}>
+            <strong>PARTY NAME:</strong>
+            <input value={partySearch} onChange={e=>{setPartySearch(e.target.value);setShowPartyDropdown(true);}} onFocus={()=>setShowPartyDropdown(true)} onBlur={()=>setTimeout(()=>setShowPartyDropdown(false),200)} placeholder="Type contractor name..." style={{marginLeft:6,border:"none",borderBottom:`1px solid ${C.textLight}`,padding:"0 4px",minWidth:280,fontSize:11,fontFamily:"'Courier New',monospace",background:"transparent",outline:"none"}}/>
+            {showPartyDropdown&&filteredContractors.length>0&&(
+              <div style={{position:"absolute",top:"100%",left:100,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,minWidth:240,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:180,overflowY:"auto"}}>
+                {filteredContractors.map((c,i)=>(
+                  <div key={i} onMouseDown={()=>{setPartySearch(c);setShowPartyDropdown(false);}} style={{padding:"5px 8px",cursor:"pointer",fontSize:10,background:partySearch===c?CO.accentLight:"transparent",fontWeight:partySearch===c?700:400}}>{c}</div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div style={{marginBottom:4,fontSize:11}}>
+            <strong>MOBILE:</strong> <span style={{borderBottom:`1px solid ${C.textLight}`,padding:"0 20px",minWidth:280,display:"inline-block"}}>+91 98765 43210</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4,fontSize:11}}>
+            <strong>DESIGN NO:</strong> D-730
+            <button onClick={()=>setShowDesignHistory(true)} style={{fontSize:8,padding:"2px 6px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:2,color:CO.accent,cursor:"pointer",fontWeight:600}}>History {"\u25BE"}</button>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4,fontSize:11}}>
+            <strong>JOB TYPE:</strong>
+            <div style={{position:"relative"}}>
+              <div onClick={()=>setShowJobTypeDropdown(!showJobTypeDropdown)} style={{padding:"2px 8px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:2,background:CO.accentLight,cursor:"pointer",fontSize:10,fontWeight:700,color:CO.accent,display:"flex",alignItems:"center",gap:4,fontFamily:"'Courier New',monospace"}}>
+                {selectedJobType} {"\u25BE"}
+              </div>
+              {showJobTypeDropdown&&(
+                <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,minWidth:140,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:200,overflowY:"auto"}}>
+                  {jobTypes.map((j,i)=>(
+                    <div key={j.code} onMouseDown={()=>{setSelectedJobType(j.code);setShowJobTypeDropdown(false);}} style={{padding:"4px 8px",cursor:"pointer",fontSize:10,background:selectedJobType===j.code?CO.accentLight:"transparent",fontWeight:selectedJobType===j.code?700:400,display:"flex",justifyContent:"space-between"}}>
+                      <span style={{fontFamily:"'Courier New',monospace",fontWeight:700}}>{j.code}</span>
+                      <span style={{color:C.textMuted}}>{j.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div style={{border:`1px solid ${C.redBorder}`,borderRadius:3,padding:"5px 8px",background:C.redLight,marginTop:6,fontSize:10}}>
+            <div style={{fontWeight:700,color:C.red,marginBottom:3}}>{"\u26A0"} Repeat Design Found - D-730 (2 prior runs)</div>
+            <div><strong>#3209 (06 May):</strong> 2 dupattas missing lace</div>
+            <div><strong>#3198 (28 Apr):</strong> Fabric overconsumption - 6 pieces short</div>
+          </div>
+        </div>
+        <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+        <div style={{padding:"4px 20px 10px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Fabric & Design Details</div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:3,overflow:"visible",position:"relative"}}>
+            <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
+              <div style={{flex:1.2}}>Colour</div>
+              <div style={{flex:1.8}}>Fabric Description</div>
+              <div style={{flex:0.8,textAlign:"right"}}>Cons/pc</div>
+              <div style={{flex:0.6,textAlign:"right"}}>Pcs</div>
+              <div style={{flex:0.9,textAlign:"right"}}>Total (m)</div>
+              <div style={{flex:1,textAlign:"center"}}>Remarks</div>
+              <div style={{flex:0.3,textAlign:"center"}}>{"\u00D7"}</div>
+            </div>
+            {rows.map((r,i)=>{
+              const rowTotal = (parseFloat(r.cons||"0")*(r.pcs||0)).toFixed(2);
+              return (
+              <div key={i} style={{position:"relative",display:"flex",alignItems:"center",gap:4,padding:"4px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10,background:i%2===0?"#faf8f5":C.white}}>
+                <div style={{flex:1.2,position:"relative"}}>
+                  {openDropdown===i?(
+                    <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"3px 0",minWidth:120,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:160,overflowY:"auto"}}>
+                      {newColorInput===""&&colorOptions.map((c,j)=>(
+                        <div key={j} onClick={()=>handleSelectColor(i,c)} style={{padding:"4px 8px",cursor:"pointer",fontSize:10,background:r.colour===c?CO.accentLight:"transparent",fontWeight:r.colour===c?700:400}}>{c}</div>
+                      ))}
+                      <div style={{borderTop:`0.5px solid ${C.border}`,padding:"4px 6px"}}>
+                        {newColorInput===null?(
+                          <div onClick={()=>setNewColorInput("")} style={{color:CO.accent,fontWeight:600,cursor:"pointer",fontSize:9}}>+ Add New Color...</div>
+                        ):(
+                          <div style={{display:"flex",gap:4}}>
+                            <input value={newColorInput} onChange={e=>setNewColorInput(e.target.value)} placeholder="Type color..." style={{width:70,border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:9}} autoFocus/>
+                            <button onClick={()=>handleAddNewColor(i)} style={{background:CO.accent,color:C.white,border:"none",borderRadius:2,padding:"2px 6px",fontSize:8,cursor:"pointer",fontWeight:600}}>Add</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ):null}
+                  <div onClick={()=>{setOpenDropdown(openDropdown===i?null:i);setNewColorInput("");}} style={{cursor:"pointer",padding:"2px 4px",border:`0.5px solid ${C.border}`,borderRadius:2,background:C.white,fontWeight:600,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span>{r.colour||"Select"}</span>
+                    <span style={{fontSize:7,color:C.textMuted}}>{"\u25BE"}</span>
+                  </div>
+                </div>
+                <div style={{flex:1.8}}><input value={r.desc} onChange={e=>updateRow(i,"desc",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,background:C.white,fontFamily:"inherit"}}/></div>
+                <div style={{flex:0.8,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.cons} onChange={e=>updateRow(i,"cons",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
+                <div style={{flex:0.6,textAlign:"right"}}><input type="number" step="1" min="0" value={r.pcs} onChange={e=>updateRow(i,"pcs",parseInt(e.target.value)||0)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
+                <div style={{flex:0.9,textAlign:"right",fontWeight:700,fontFamily:"'Courier New',monospace",color:C.text}}>{rowTotal}</div>
+                <div style={{flex:1,textAlign:"center"}}><input value={r.remarks} onChange={e=>updateRow(i,"remarks",e.target.value)} placeholder="--" style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:9,textAlign:"center",background:C.white,fontFamily:"inherit",color:C.textMuted}}/></div>
+                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setRows(rows.filter((_,j)=>j!==i))}>{"\u00D7"}</div>
+              </div>
+              );
+            })}
+            <div style={{borderTop:`0.5px solid ${C.border}`,padding:"5px 8px",background:"#f5f0ea",display:"flex",justifyContent:"space-between",fontSize:10,fontWeight:700}}>
+              <span>Grand Total:</span>
+              <span style={{fontFamily:"'Courier New',monospace"}}>{grandTotal.toFixed(2)} m</span>
+            </div>
+          </div>
+          <button onClick={()=>setRows([...rows,{colour:"",desc:"",cons:"0.00",pcs:0,remarks:""}])} style={{marginTop:4,padding:"3px 10px",border:`1px dashed ${CO.accentBorder}`,background:CO.accentLight,borderRadius:2,fontSize:9,color:CO.accent,fontWeight:600,cursor:"pointer",width:"100%"}}>+ Add Row</button>
+          <div style={{marginTop:6,display:"flex",gap:8,alignItems:"center",justifyContent:"flex-end"}}>
+            <div style={{fontSize:9,color:C.textMuted}}>Wastage / Buffer:</div>
+            <div style={{display:"flex",alignItems:"center",gap:4}}>
+              <input type="number" step="0.5" min="0" value={buffer} onChange={e=>setBuffer(parseFloat(e.target.value)||0)} style={{width:60,border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 6px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/>
+              <span style={{fontSize:9,color:C.textMuted}}>m</span>
+            </div>
+            <div style={{flex:1}}/>
+            <div style={{padding:"4px 10px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,fontSize:10,fontWeight:700,color:CO.accent}}>
+              Issued to Contractor: <span style={{fontSize:13,fontFamily:"'Courier New',monospace"}}>{issuedTotal.toFixed(2)} m</span>
+            </div>
+          </div>
+        </div>
+        <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+        <div style={{padding:"4px 20px 10px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Lot Summary</div>
+          <div style={{display:"flex",gap:8}}>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.border}`,borderRadius:3,padding:"6px",background:"#faf8f5"}}>
+              <div style={{fontSize:8,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Pieces</div>
+              <div style={{fontSize:14,fontWeight:700}}>{totalPcs}</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.border}`,borderRadius:3,padding:"6px",background:"#faf8f5"}}>
+              <div style={{fontSize:8,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em"}}>Colours</div>
+              <div style={{fontSize:14,fontWeight:700}}>{uniqueCols}</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,padding:"6px",background:CO.accentLight}}>
+              <div style={{fontSize:8,color:CO.accent,textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600}}>Total Fabric</div>
+              <div style={{fontSize:14,fontWeight:700,color:CO.accent}}>{grandTotal.toFixed(2)}m</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.redBorder}`,borderRadius:3,padding:"6px",background:C.redLight}}>
+              <div style={{fontSize:8,color:C.red,textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600}}>Issued to Contractor</div>
+              <div style={{fontSize:14,fontWeight:700,color:C.red}}>{issuedTotal.toFixed(2)}m</div>
+            </div>
+          </div>
+        </div>
+        <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+        <div style={{padding:"4px 20px 10px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Special Instructions / Remarks</div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:2,overflow:"hidden"}}>
+            <div style={{borderBottom:`0.5px dashed ${C.border}`,padding:"4px 8px",fontSize:10,fontFamily:"'Courier New',monospace",color:C.textLight,minHeight:16}}>Add specific instructions for this production run...</div>
+            <div style={{borderBottom:`0.5px dashed ${C.border}`,padding:"4px 8px",fontSize:10,fontFamily:"'Courier New',monospace",color:C.textLight,minHeight:16}}>{" "}</div>
+            <div style={{padding:"4px 8px",fontSize:10,fontFamily:"'Courier New',monospace",color:C.textLight,minHeight:16}}>{" "}</div>
+          </div>
+        </div>
+        <div style={{borderTop:`0.5px solid ${C.border}`,padding:"6px 20px",display:"flex",justifyContent:"space-between",fontSize:8,color:C.textMuted,background:C.bgSoft}}>
+          <span>Challan #3211 {"\u00B7"} {createdAt}</span>
+          <span>Page 1/1</span>
+        </div>
+      </div>
+      <button onClick={handlePrint} style={{padding:"7px 18px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+        {"\u{1F5A8}"} Print Challan
+      </button>
     </div>
   </WebLayout>
   );
@@ -5856,7 +6095,7 @@ const screenGroups = [
   ]},
   {platform:"Manufacturing ERP - GMMS",icon:"🏭",erp:"mfg",groups:[
     {label:"Dashboard",screens:["G-12"]},
-    {label:"Challans",screens:["G-01","G-02","G-03","G-13"]},
+    {label:"Challans",screens:["G-01","G-02","G-23","G-03","G-13"]},
     {label:"Contractors",screens:["G-04","G-05"]},
     {label:"Production",screens:["G-06","G-07","G-21"]},
     {label:"RF / Returns",screens:["G-08","G-20"]},
@@ -5917,13 +6156,13 @@ const screenLabels = {
   "G-11":"[MOVED] Content moved to G-14",
   "G-13":"Reprocess Challan","G-14":"Design Master","G-15":"Job Work Types","G-16":"Color Master",
   "G-17":"Contractor Registry","G-18":"Notifications Center","G-19":"GMMS Reports Hub",
-  "G-20":"Create RF Entry","G-21":"SKU Outward","G-22":"Live Inventory",
+  "G-20":"Create RF Entry","G-21":"SKU Outward","G-22":"Live Inventory","G-23":"Traditional Challan Entry",
   "M-G01":"Contractor Login","M-G02":"My Challans","M-G03":"Challan Detail",
   "M-G04":"Confirm Pieces Sent","M-G05":"My Payment Ledger","M-G06":"My Profile",
   "G-30":"User Management (GMMS)","G-30A":"Role Permissions (GMMS)",
 };
 
-const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","G-30","G-30A","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
+const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","G-23","G-30","G-30A","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
 
 export default function App() {
   const [active, setActive] = useState("W-03");
