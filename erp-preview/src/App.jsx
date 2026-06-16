@@ -41,8 +41,8 @@ const Input = ({label,placeholder,required,wide,mono,note}) => (
   </div>
 );
 
-const Btn = ({children,primary,danger,success,small,full,outline}) => (
-  <button style={{
+const Btn = ({children,primary,danger,success,small,full,outline,onClick}) => (
+  <button onClick={onClick} style={{
     padding:small?"5px 12px":"8px 16px",borderRadius:4,fontSize:small?11:12,fontWeight:600,
     width:full?"100%":"auto",
     border:`0.5px solid ${danger?C.red:primary?C.black:success?C.green:C.border}`,
@@ -55,8 +55,8 @@ const Card = ({children,style,red}) => (
   <div style={{border:`0.5px solid ${red?C.redBorder:C.border}`,borderRadius:6,padding:"12px 14px",background:red?C.redLight:C.white,marginBottom:10,...style}}>{children}</div>
 );
 
-const Metric = ({label,value,sub,alert,green}) => (
-  <div style={{border:`0.5px solid ${alert?C.redBorder:green?C.greenBorder:C.border}`,borderRadius:6,padding:"10px 12px",background:alert?C.redLight:green?C.greenLight:C.bgSoft,flex:1}}>
+const Metric = ({label,value,sub,alert,green,onClick}) => (
+  <div onClick={onClick} style={{border:`0.5px solid ${alert?C.redBorder:green?C.greenBorder:C.border}`,borderRadius:6,padding:"10px 12px",background:alert?C.redLight:green?C.greenLight:C.bgSoft,flex:1,cursor:onClick?"pointer":"default"}}>
     <div style={{fontSize:10,color:alert?C.red:green?C.green:C.textMuted,marginBottom:4,textTransform:"uppercase",letterSpacing:"0.05em"}}>{label}</div>
     <div style={{fontSize:20,fontWeight:700,color:alert?C.red:green?C.green:C.text}}>{value}</div>
     {sub&&<div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{sub}</div>}
@@ -3749,7 +3749,7 @@ const screens = {
 // ------------------------------------------------------------------------
 
 // G-12: Production Dashboard
-"G-12": () => {
+"G-12": ({ onNavigate }) => {
   const [erpMode,setErpMode]=useState("Manufacturing ERP");
   return(
   <WebLayout activeMenu="Dashboard" mode="mfg">
@@ -3770,18 +3770,17 @@ const screens = {
             {label:"RF / Alter",nav:"G-20",col:"#e67e22"},
             {label:"Remarks",nav:"G-18",col:"#2980b9"},
           ].map((a,i)=>(
-            <div key={i} style={{padding:"4px 10px",background:a.col+"18",border:`0.5px solid ${a.col}40`,borderRadius:4,fontSize:10,fontWeight:600,color:a.col,cursor:"pointer"}}>{a.label}</div>
+            <div key={i} onClick={()=>onNavigate(a.nav)} style={{padding:"4px 10px",background:a.col+"18",border:`0.5px solid ${a.col}40`,borderRadius:4,fontSize:10,fontWeight:600,color:a.col,cursor:"pointer"}}>{a.label}</div>
           ))}
         </div>
       </div>
     </div>
     <Content>
       <div style={{display:"flex",gap:10,marginBottom:14}}>
-        <Metric label="Active Challans" value="42" sub="12 started today"/>
-        <Metric label="Overdue Challans" value="7" sub="Needs attention" alert/>
-        <Metric label="Pieces in Production" value="3,840" sub="Across 42 challans"/>
-        <Metric label="Pending Payments" value={"₹18.5L"} sub="12 contractors" alert/>
-        <Metric label="RF Alerts" value="3" sub="Challans in RF state" alert/>
+        <Metric label="Lots in Progress" value="42" sub="Active challans" onClick={()=>onNavigate("G-01")}/>
+        <Metric label="RF List" value="3" sub="Pending RF entries" onClick={()=>onNavigate("G-08")} alert/>
+        <Metric label="Reports" value={"\u2192"} sub="Challan / Contractor / Design" onClick={()=>onNavigate("G-19")}/>
+        <Metric label="Today's Incoming Ready Pcs" value="1,240" sub="From all contractors" onClick={()=>onNavigate("G-06")} green/>
       </div>
       <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
         {[["EMB",12,"#e67e22"],["STH",8,"#2980b9"],["DIA",6,"#8e44ad"],["WASH",4,"#1abc9c"],["CUT",3,"#95a5a6"],["FIN",2,"#27ae60"]].map(([stage,cnt,color],i)=>(
@@ -3836,6 +3835,21 @@ const screens = {
 },
 "G-01": () => {
   const [statusFilter,setStatusFilter]=useState("All");
+  const [rows,setRows]=useState([
+    {cn:"CH-3221",dn:"D-730",contractor:"M/s Rajan Fabrics",pcs:600,readyPcs:350,flow:["EMB","STH","DIA"],status:"Active",date:"07 May",days:10},
+    {cn:"CH-3210",dn:"D-710",contractor:"M/s Sharma Exports",pcs:450,readyPcs:0,flow:["EMB","LAC"],status:"Overdue",date:"04 May",days:13},
+    {cn:"CH-3200",dn:"D-695",contractor:"M/s Patel Traders",pcs:300,readyPcs:50,flow:["EMB","WASH"],status:"Active",date:"02 May",days:15},
+    {cn:"CH-3189",dn:"D-688",contractor:"M/s Ali Brothers",pcs:800,readyPcs:800,flow:["PRN","FIN"],status:"Completed",date:"28 Apr",days:19},
+    {cn:"CH-3175",dn:"D-672",contractor:"M/s Kumar Textiles",pcs:200,readyPcs:100,flow:["EMB","ZAR"],status:"Active",date:"25 Apr",days:22},
+    {cn:"CH-3160",dn:"D-655",contractor:"M/s National Cloth",pcs:1200,readyPcs:0,flow:["CUT","STH"],status:"On Hold",date:"20 Apr",days:27},
+  ]);
+  const markComplete=(idx)=>{
+    setRows(prev=>{
+      const next=[...prev];
+      next[idx]={...next[idx],readyPcs:next[idx].pcs,status:"Completed"};
+      return next;
+    });
+  };
   return(
   <WebLayout activeMenu="Challans" mode="mfg">
     <GTopBar title="Challan List" sub="All production challans" actions={[{label:"New Challan",primary:true}]}/>
@@ -3847,24 +3861,23 @@ const screens = {
         ))}
       </div>
       <Card>
-        <TH cols={[{v:"Challan No",w:0.8},{v:"Design No",w:0.6},{v:"Design Name",w:1.4},{v:"Party"},{v:"Pcs",w:0.4},{v:"Flow"},{v:"Status",w:0.7},{v:"Date",w:0.6},{v:"Action",w:0.5}]}/>
-        {[
-          {cn:"CH-3221",dn:"D-730",name:"Floral Embroidery Set",party:"M/s Rajan Fabrics",pcs:600,flow:["EMB","STH","DIA"],status:"Active",date:"07 May"},
-          {cn:"CH-3210",dn:"D-710",name:"Silk Anarkali Premium",party:"M/s Sharma Exports",pcs:450,flow:["EMB","LAC"],status:"Overdue",date:"04 May"},
-          {cn:"CH-3200",dn:"D-695",name:"Chikankari Kurta",party:"M/s Patel Traders",pcs:300,flow:["EMB","WASH"],status:"Active",date:"02 May"},
-          {cn:"CH-3189",dn:"D-688",name:"Block Print Dupatta",party:"M/s Ali Brothers",pcs:800,flow:["PRN","FIN"],status:"Completed",date:"28 Apr"},
-          {cn:"CH-3175",dn:"D-672",name:"Zardozi Lehenga",party:"M/s Kumar Textiles",pcs:200,flow:["EMB","ZAR"],status:"Active",date:"25 Apr"},
-          {cn:"CH-3160",dn:"D-655",name:"Cotton Salwar Set",party:"M/s National Cloth",pcs:1200,flow:["CUT","STH"],status:"On Hold",date:"20 Apr"},
-        ].map((r,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-            <div style={{flex:0.8,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{r.cn}</div>
-            <div style={{flex:0.6,fontFamily:"monospace",color:C.textMuted}}>{r.dn}</div>
-            <div style={{flex:1.4,fontWeight:500}}>{r.name}</div>
-            <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.party}</div>
+        <TH cols={[{v:"Date",w:0.5},{v:"Days",w:0.35},{v:"Challan No",w:0.7},{v:"Design No",w:0.55},{v:"Contractor"},{v:"Pcs",w:0.4},{v:"Ready Pcs",w:0.55},{v:"Flow"},{v:"Status",w:0.7},{v:"Action",w:0.5}]}/>
+        {rows.filter(r=>statusFilter==="All"||r.status===statusFilter).map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"7px 8px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{r.date}</div>
+            <div style={{flex:0.35,fontWeight:600,color:r.days>20?C.red:r.days>14?"#b45309":C.text,fontSize:10}}>{r.days}d</div>
+            <div style={{flex:0.7,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{r.cn}</div>
+            <div style={{flex:0.55,fontFamily:"monospace",color:C.textMuted,fontSize:10}}>{r.dn}</div>
+            <div style={{flex:1,fontWeight:700,fontSize:10}}>{r.contractor}</div>
             <div style={{flex:0.4,fontWeight:600}}>{r.pcs}</div>
-            <div style={{flex:1}}>{r.flow.map((s,j)=><span key={j} style={{marginRight:3,background:CO.accentLight,color:CO.accent,padding:"1px 6px",borderRadius:3,fontSize:9,fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>{s}</span>)}</div>
+            <div style={{flex:0.55,display:"flex",alignItems:"center",gap:4}}>
+              <span style={{fontWeight:600,fontSize:11}}>{r.readyPcs}</span>
+              {r.status!=="Completed"&&(
+                <span onClick={()=>markComplete(i)} style={{fontSize:9,padding:"2px 6px",borderRadius:3,background:"#e8f5e9",color:"#2e7d32",cursor:"pointer",fontWeight:600,border:"0.5px solid #a5d6a7",whiteSpace:"nowrap"}}>{"\u2713"} Complete</span>
+              )}
+            </div>
+            <div style={{flex:1}}>{r.flow.map((s,j)=><span key={j} style={{marginRight:2,background:CO.accentLight,color:CO.accent,padding:"1px 5px",borderRadius:3,fontSize:9,fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>{s}</span>)}</div>
             <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Active"?"#e8f5e9":r.status==="Completed"?"#e3f2fd":r.status==="Overdue"?"#ffebee":"#fff8e1",color:r.status==="Active"?"#2e7d32":r.status==="Completed"?"#1565c0":r.status==="Overdue"?"#c62828":"#f57f17"}}>{r.status}</span></div>
-            <div style={{flex:0.6,color:C.textMuted}}>{r.date}</div>
             <div style={{flex:0.5}}><Btn small>View</Btn></div>
           </div>
         ))}
@@ -3949,37 +3962,159 @@ const screens = {
 ),
 
 "G-06": () => {
-  const challans = [
-    {cn:"CH-3189",dn:"D-688",name:"Block Print Dupatta",colours:[{col:"Red",exp:400,act:null},{col:"Blue",exp:400,act:null}]},
-    {cn:"CH-3175",dn:"D-672",name:"Zardozi Lehenga",colours:[{col:"Gold",exp:100,act:null},{col:"Silver",exp:100,act:null}]},
-  ];
+  const [expandedIdx,setExpandedIdx]=useState(null);
+  const [statusF,setStatusF]=useState("All");
+  const [searchQ,setSearchQ]=useState("");
+  const [data,setData]=useState([
+    {cn:"CH-3221",dn:"D-730",contractor:"M/s Rajan Fabrics",pcs:600,date:"07 May",status:"Active",colours:[
+      {col:"Red",exp:400,items:[{label:"Top",rec:150,def:2},{label:"Bottom",rec:148,def:5},{label:"Dupatta",rec:150,def:0}]},
+      {col:"Blue",exp:200,items:[{label:"Top",rec:100,def:0},{label:"Bottom",rec:100,def:0},{label:"Dupatta",rec:0,def:0}]},
+    ]},
+    {cn:"CH-3210",dn:"D-710",contractor:"M/s Sharma Exports",pcs:450,date:"04 May",status:"Pending",colours:[
+      {col:"Gold",exp:250,items:[{label:"Top",rec:0,def:0},{label:"Bottom",rec:0,def:0},{label:"Dupatta",rec:0,def:0}]},
+      {col:"Silver",exp:200,items:[{label:"Top",rec:0,def:0},{label:"Bottom",rec:0,def:0},{label:"Dupatta",rec:0,def:0}]},
+    ]},
+    {cn:"CH-3200",dn:"D-695",contractor:"M/s Patel Traders",pcs:300,date:"02 May",status:"Pending",colours:[
+      {col:"Teal",exp:300,items:[{label:"Top",rec:0,def:0},{label:"Bottom",rec:0,def:0},{label:"Dupatta",rec:0,def:0}]},
+    ]},
+    {cn:"CH-3189",dn:"D-688",contractor:"M/s Ali Brothers",pcs:800,date:"28 Apr",status:"Completed",colours:[
+      {col:"Red",exp:400,items:[{label:"Top",rec:200,def:1},{label:"Bottom",rec:198,def:2},{label:"Dupatta",rec:200,def:0}]},
+      {col:"Blue",exp:400,items:[{label:"Top",rec:198,def:0},{label:"Bottom",rec:200,def:1},{label:"Dupatta",rec:200,def:0}]},
+    ]},
+  ]);
+  const netGood=(item)=>Math.max(0,(item.rec||0)-(item.def||0));
+  const colTotal=(colour)=>colour.items.reduce((s,i)=>s+netGood(i),0);
+  const readySets=(colour)=>Math.min(...colour.items.map(i=>netGood(i)));
+  const sentBack=(colour)=>{
+    const r=readySets(colour);
+    const sum=colour.items.reduce((s,i)=>s+netGood(i),0);
+    return sum-r*colour.items.length;
+  };
+  const totalReady=(ch)=>ch.colours.reduce((s,c)=>s+readySets(c),0);
+  const totalExp=(ch)=>ch.colours.reduce((s,c)=>s+c.exp,0);
+  const updateItem=(chIdx,coIdx,itIdx,field,val)=>{
+    const v=Math.max(0,parseInt(val)||0);
+    setData(prev=>{
+      const next=prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:c.items.map((it,k)=>k===itIdx?{...it,[field]:v}:it)}:c)}:ch);
+      return next;
+    });
+  };
+  const addCustomItem=(chIdx,coIdx)=>{
+    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:[...c.items,{label:"Custom",rec:0,def:0}]}:c)}:ch));
+  };
+  const removeCustom=(chIdx,coIdx,itIdx)=>{
+    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:c.items.filter((_,k)=>k!==itIdx)}:c)}:ch));
+  };
+  const renameCustom=(chIdx,coIdx,itIdx,label)=>{
+    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:c.items.map((it,k)=>k===itIdx?{...it,label}:it)}:c)}:ch));
+  };
+  const confirmClose=(chIdx)=>{
+    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,status:"Completed"}:ch));
+  };
+  const filtered=data.filter(r=>statusF==="All"||r.status===statusF).filter(r=>!searchQ||r.cn.toLowerCase().includes(searchQ.toLowerCase())||r.dn.toLowerCase().includes(searchQ.toLowerCase())||r.contractor.toLowerCase().includes(searchQ.toLowerCase()));
   return(
   <WebLayout activeMenu="Production" mode="mfg">
-    <GTopBar title="Ready Piece Count" sub="Confirm pieces received at final stage before closing challan" actions={[{label:"Confirm & Close Selected",primary:true}]}/>
+    <GTopBar title="Ready Piece Count" sub="Record actual pieces received back to warehouse" actions={[{label:"Export Report"}]}/>
     <Content>
-      {challans.map((ch,ci)=>(
-        <Card key={ci}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,paddingBottom:8,borderBottom:`0.5px solid ${C.border}`}}>
-            <div>
-              <span style={{fontFamily:"monospace",fontWeight:700,color:CO.accent,marginRight:8}}>{ch.cn}</span>
-              <span style={{fontWeight:600}}>{ch.dn} - {ch.name}</span>
+      <div style={{display:"flex",gap:8,marginBottom:10,alignItems:"center",flexWrap:"wrap"}}>
+        <input value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Search challan / design / contractor..." style={{flex:1,minWidth:180,padding:"6px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
+        {["All","Pending","Active","Completed"].map(s=>(
+          <div key={s} onClick={()=>setStatusF(s)} style={{padding:"4px 10px",fontSize:10,borderRadius:4,cursor:"pointer",fontWeight:600,background:statusF===s?CO.accent:C.bgSoft,color:statusF===s?C.white:C.textMuted,border:`0.5px solid ${statusF===s?CO.accentBorder:C.border}`}}>{s}</div>
+        ))}
+      </div>
+      <Card>
+        <TH cols={[{v:"Date",w:0.5},{v:"Challan No",w:0.7},{v:"Design",w:0.5},{v:"Contractor"},{v:"Colours",w:1.2},{v:"Pcs",w:0.4},{v:"Ready",w:0.5},{v:"Status",w:0.6},{v:"",w:0.3}]}/>
+        {filtered.map((ch,ci)=>{
+          const isExp=expandedIdx===ci;
+          return(
+          <div key={ci}>
+            <div onClick={()=>setExpandedIdx(isExp?null:ci)} style={{display:"flex",alignItems:"center",gap:4,padding:"7px 8px",borderBottom:isExp?`1.5px solid ${CO.accent}`:`0.5px solid ${C.border}`,fontSize:11,cursor:"pointer",background:isExp?CO.accentLight:"transparent"}}>
+              <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{ch.date}</div>
+              <div style={{flex:0.7,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{ch.cn}</div>
+              <div style={{flex:0.5,fontFamily:"monospace",color:C.textMuted,fontSize:10}}>{ch.dn}</div>
+              <div style={{flex:1,fontSize:10,fontWeight:600}}>{ch.contractor}</div>
+              <div style={{flex:1.2,fontSize:9,color:C.textMuted}}>{ch.colours.map(c=>c.col+" "+readySets(c)+"/"+c.exp).join("  ")}</div>
+              <div style={{flex:0.4,fontWeight:600}}>{totalExp(ch)}</div>
+              <div style={{flex:0.5,fontWeight:600,color:totalReady(ch)===totalExp(ch)?"#2e7d32":C.text}}>{totalReady(ch)}/{totalExp(ch)}</div>
+              <div style={{flex:0.6}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:ch.status==="Completed"?"#e3f2fd":"#fff8e1",color:ch.status==="Completed"?"#1565c0":"#f57f17"}}>{ch.status}</span></div>
+              <div style={{flex:0.3,textAlign:"center",fontSize:14,color:CO.accent,fontWeight:700}}>{isExp?"\u25B2":"\u25BC"}</div>
             </div>
-            <Btn small primary>Confirm & Close Challan</Btn>
-          </div>
-          <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
-            <TH cols={[{v:"Colour"},{v:"Expected Pcs",w:0.8},{v:"Actual Count",w:0.8},{v:"Difference",w:0.6},{v:"Remark"}]}/>
-            {ch.colours.map((c,i)=>(
-              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-                <div style={{flex:1,fontWeight:500}}>{c.col}</div>
-                <div style={{flex:0.8,color:C.textMuted}}>{c.exp} pcs</div>
-                <div style={{flex:0.8}}><input type="number" defaultValue={c.exp} style={{width:70,padding:"3px 6px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,fontSize:11,textAlign:"right"}}/></div>
-                <div style={{flex:0.6,color:C.textMuted}}>-</div>
-                <div style={{flex:1}}><input placeholder="Optional note..." style={{width:"100%",padding:"3px 6px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:10}}/></div>
+            {isExp&&(
+              <div style={{padding:"10px 12px",borderBottom:`0.5px solid ${C.border}`,background:C.bgSoft}}>
+                {ch.colours.map((co,coi)=>{
+                  const total=colTotal(co);
+                  const diff=co.exp-total;
+                  const defaultLen=3;
+                  return(
+                  <div key={coi} style={{marginBottom:coi<ch.colours.length-1?10:0,border:`0.5px solid ${C.border}`,borderRadius:6,background:C.white,overflow:"hidden"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 10px",background:C.bgSoft,borderBottom:`0.5px solid ${C.border}`}}>
+                      <span style={{fontWeight:700,fontSize:12}}>{co.col}</span>
+                      <span style={{fontSize:11,color:C.textMuted}}>Expected: {co.exp} pcs</span>
+                    </div>
+                    <div style={{padding:"4px 10px 0"}}>
+                      <div style={{display:"flex",fontSize:10,fontWeight:600,color:C.textMuted,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`}}>
+                        <div style={{flex:1}}>Item</div>
+                        <div style={{flex:0.7,textAlign:"center"}}>Received</div>
+                        <div style={{flex:0.7,textAlign:"center"}}>Defect</div>
+                        <div style={{flex:0.7,textAlign:"center"}}>Net Good</div>
+                        <div style={{flex:0.3}}></div>
+                      </div>
+                      {co.items.map((it,iti)=>{
+                        const isDefault=iti<defaultLen;
+                        return(
+                        <div key={iti} style={{display:"flex",alignItems:"center",gap:2,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`}}>
+                          {isDefault?(
+                            <div style={{flex:1,fontSize:11,fontWeight:500}}>{it.label}</div>
+                          ):(
+                            <div style={{flex:1,display:"flex",alignItems:"center",gap:4}}>
+                              <span onClick={()=>removeCustom(ci,coi,iti)} style={{color:C.red,cursor:"pointer",fontSize:13,fontWeight:700,lineHeight:1}}>{"\u00D7"}</span>
+                              <input value={it.label} onChange={e=>renameCustom(ci,coi,iti,e.target.value)} style={{flex:1,border:"none",borderBottom:`0.5px solid ${C.border}`,fontSize:11,padding:"2px 4px",background:"transparent",outline:"none"}}/>
+                            </div>
+                          )}
+                          <input type="number" value={it.rec||""} onChange={e=>updateItem(ci,coi,iti,"rec",e.target.value)} style={{flex:0.7,width:"100%",padding:"3px 4px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:11,textAlign:"center"}}/>
+                          <input type="number" value={it.def||""} onChange={e=>updateItem(ci,coi,iti,"def",e.target.value)} style={{flex:0.7,width:"100%",padding:"3px 4px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:11,textAlign:"center"}}/>
+                          <div style={{flex:0.7,textAlign:"center",fontWeight:700,fontSize:12,color:netGood(it)===it.rec?"#2e7d32":C.text}}>{netGood(it)}</div>
+                          <div style={{flex:0.3}}></div>
+                        </div>
+                      )})}
+                    </div>
+                    <div style={{padding:"0 10px",borderTop:`0.5px dashed ${C.border}`}}>
+                      <div style={{display:"flex",fontSize:10,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`}}>
+                        <div style={{flex:1,fontWeight:700,color:CO.accent}}>Ready Sets</div>
+                        <div style={{flex:0.7,textAlign:"center"}}></div>
+                        <div style={{flex:0.7,textAlign:"center"}}></div>
+                        <div style={{flex:0.7,textAlign:"center",fontWeight:700,fontSize:13,color:CO.accent}}>{readySets(co)}</div>
+                        <div style={{flex:0.3}}></div>
+                      </div>
+                      <div style={{display:"flex",fontSize:10,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`}}>
+                        <div style={{flex:1,color:C.textMuted}}>Sent Back to Contractor</div>
+                        <div style={{flex:0.7,textAlign:"center"}}></div>
+                        <div style={{flex:0.7,textAlign:"center"}}></div>
+                        <div style={{flex:0.7,textAlign:"center",fontWeight:600,color:C.red}}>{sentBack(co)}</div>
+                        <div style={{flex:0.3}}></div>
+                      </div>
+                    </div>
+                    <div style={{padding:"4px 10px 6px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                      <span onClick={()=>addCustomItem(ci,coi)} style={{fontSize:10,fontWeight:600,color:CO.accent,cursor:"pointer",padding:"3px 8px",borderRadius:3,border:`0.5px dashed ${CO.accentBorder}`}}>{"\u002B"} Add Custom Item</span>
+                      <div style={{display:"flex",gap:12,fontSize:11}}>
+                        <span>Exp: <strong>{co.exp}</strong></span>
+                        <span style={{fontWeight:700}}>Ready: <strong style={{color:CO.accent}}>{readySets(co)}</strong></span>
+                        <span style={{color:diff===0?"#2e7d32":C.red}}>Short: <strong>{Math.max(0,co.exp-readySets(co))}</strong></span>
+                      </div>
+                    </div>
+                  </div>
+                  );
+                })}
+                <div style={{display:"flex",gap:8,marginTop:8,justifyContent:"flex-end"}}>
+                  <Btn small onClick={()=>setExpandedIdx(null)}>Collapse</Btn>
+                  {ch.status!=="Completed"&&<Btn small primary onClick={()=>confirmClose(ci)}>Confirm & Close Challan</Btn>}
+                </div>
               </div>
-            ))}
+            )}
           </div>
-        </Card>
-      ))}
+          );
+        })}
+      </Card>
     </Content>
   </WebLayout>
   );
@@ -4029,34 +4164,72 @@ const screens = {
 
 "G-08": () => {
   const [typeFilter,setTypeFilter]=useState("All");
+  const [daysFilter,setDaysFilter]=useState("All");
+  const [viewRf,setViewRf]=useState(null);
+  const rfData = [
+    {date:"06 May",rf:"RF-2031",ch:"CH-3210",inv:"INV-1042",design:"D-710",type:"Excess",pcs:12,cont:"Salim Works",phone:"+91 98765 43210",days:10,status:"Received"},
+    {date:"05 May",rf:"RF-2028",ch:"CH-3200",inv:"INV-1038",design:"D-695",type:"Damage",pcs:5,cont:"Mohan Stitching",phone:"+91 98765 43211",days:11,status:"Pending"},
+    {date:"03 May",rf:"RF-2024",ch:"CH-3189",inv:"INV-1025",design:"D-688",type:"Sample",pcs:8,cont:"In-house",phone:"+91 98765 43212",days:13,status:"Received"},
+    {date:"28 Apr",rf:"RF-2020",ch:"CH-3175",inv:"INV-1011",design:"D-672",type:"Shortage",pcs:3,cont:"Hari Gems",phone:"+91 98765 43213",days:18,status:"Disputed"},
+    {date:"20 Apr",rf:"RF-2015",ch:"CH-3160",inv:"INV-0998",design:"D-654",type:"Excess",pcs:7,cont:"Ramesh Kadkiya",phone:"+91 98765 43214",days:26,status:"Pending"},
+    {date:"10 Apr",rf:"RF-2010",ch:"CH-3145",inv:"INV-0982",design:"D-639",type:"Damage",pcs:4,cont:"Suresh Bhai",phone:"+91 98765 43215",days:36,status:"Received"},
+  ].filter(r=>typeFilter==="All"||r.type===typeFilter).filter(r=>daysFilter==="All"||(daysFilter==="10"&&r.days<=10)||(daysFilter==="20"&&r.days<=20)||(daysFilter==="30"&&r.days<=30)||(daysFilter==="30+"&&r.days>30));
   return(
   <WebLayout activeMenu="RF / Returns" mode="mfg">
     <GTopBar title="RF Management" sub="Return Fabric entries and tracking" actions={[{label:"Create RF Entry"},{label:"Create RF → G-20",primary:true}]}/>
     <Content>
-      <div style={{display:"flex",gap:6,marginBottom:10,alignItems:"center"}}>
-        <input placeholder="Search RF no / challan..." style={{flex:1,padding:"5px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
+      {viewRf&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setViewRf(null)}>
+          <div style={{background:C.white,borderRadius:8,padding:24,width:420,maxHeight:"70vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+              <div style={{fontSize:14,fontWeight:700}}>RF Details — {viewRf.rf}</div>
+              <span onClick={()=>setViewRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"\u00D7"}</span>
+            </div>
+            <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,padding:"12px 14px",marginBottom:12}}>
+              <div style={{fontSize:11,fontWeight:600,color:C.textMuted,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.05em"}}>RF Information</div>
+              {[["RF No",viewRf.rf],["Challan No",viewRf.ch],["Invoice No",viewRf.inv],["Design No",viewRf.design],["Type",viewRf.type],["Pieces Affected",viewRf.pcs],["Created Date",viewRf.date],["Status",viewRf.status]].map(([l,v],i)=>(
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:i<7?`0.5px solid ${C.border}`:"none",fontSize:12}}>
+                  <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:600}}>{v}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{border:`0.5px solid ${CO.accentBorder}`,borderRadius:6,padding:"12px 14px",background:CO.accentLight}}>
+              <div style={{fontSize:11,fontWeight:600,color:CO.accent,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.05em"}}>Contractor Details</div>
+              {[["Name",viewRf.cont],["Phone",viewRf.phone],["Days Since RF",viewRf.days+" days"]].map(([l,v],i)=>(
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:i<2?`0.5px solid ${CO.accentBorder}`:"none",fontSize:12}}>
+                  <span style={{color:CO.accent}}>{l}</span><span style={{fontWeight:600}}>{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      <div style={{display:"flex",gap:6,marginBottom:8,alignItems:"center",flexWrap:"wrap"}}>
+        <input placeholder="Search RF no / challan..." style={{flex:1,minWidth:160,padding:"5px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
         {["All","Excess","Damage","Sample","Shortage"].map(t=>(
           <div key={t} onClick={()=>setTypeFilter(t)} style={{padding:"3px 9px",fontSize:10,borderRadius:3,cursor:"pointer",fontWeight:600,background:typeFilter===t?CO.accent:C.bgSoft,color:typeFilter===t?C.white:C.textMuted,border:`0.5px solid ${typeFilter===t?CO.accentBorder:C.border}`}}>{t}</div>
         ))}
       </div>
+      <div style={{display:"flex",gap:6,marginBottom:10,alignItems:"center"}}>
+        <span style={{fontSize:10,fontWeight:600,color:C.textMuted}}>Days:</span>
+        {[["All","All"],["10","\u226410 days"],["20","\u226420 days"],["30","\u226430 days"],["30+","30+ days"]].map(([v,l])=>(
+          <div key={v} onClick={()=>setDaysFilter(v)} style={{padding:"3px 9px",fontSize:10,borderRadius:3,cursor:"pointer",fontWeight:600,background:daysFilter===v?CO.accent:C.bgSoft,color:daysFilter===v?C.white:C.textMuted,border:`0.5px solid ${daysFilter===v?CO.accentBorder:C.border}`}}>{l}</div>
+        ))}
+      </div>
       <Card>
-        <TH cols={[{v:"RF No",w:0.7},{v:"Challan",w:0.8},{v:"Design"},{v:"Type",w:0.7},{v:"Pieces",w:0.5},{v:"Contractor"},{v:"Status",w:0.7},{v:"Date",w:0.6},{v:"Action",w:0.5}]}/>
-        {[
-          {rf:"RF-2031",ch:"CH-3210",design:"D-710",type:"Excess",pcs:12,cont:"Salim Works",status:"Received",date:"06 May"},
-          {rf:"RF-2028",ch:"CH-3200",design:"D-695",type:"Damage",pcs:5,cont:"Mohan Stitching",status:"Pending",date:"05 May"},
-          {rf:"RF-2024",ch:"CH-3189",design:"D-688",type:"Sample",pcs:8,cont:"In-house",status:"Received",date:"03 May"},
-          {rf:"RF-2020",ch:"CH-3175",design:"D-672",type:"Shortage",pcs:3,cont:"Hari Gems",status:"Disputed",date:"01 May"},
-        ].filter(r=>typeFilter==="All"||r.type===typeFilter).map((r,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-            <div style={{flex:0.7,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.rf}</div>
-            <div style={{flex:0.8,fontFamily:"monospace"}}>{r.ch}</div>
-            <div style={{flex:1,fontWeight:500}}>{r.design}</div>
-            <div style={{flex:0.7}}><span style={{background:CO.accentLight,color:CO.accent,padding:"2px 6px",borderRadius:3,fontSize:10}}>{r.type}</span></div>
-            <div style={{flex:0.5,fontWeight:600}}>{r.pcs}</div>
-            <div style={{flex:1,color:C.textMuted}}>{r.cont}</div>
-            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:r.status==="Received"?"#e8f5e9":r.status==="Disputed"?"#ffebee":"#fff8e1",color:r.status==="Received"?"#2e7d32":r.status==="Disputed"?C.red:"#f57f17"}}>{r.status}</span></div>
-            <div style={{flex:0.6,color:C.textMuted}}>{r.date}</div>
-            <div style={{flex:0.5}}><Btn small>View</Btn></div>
+        <TH cols={[{v:"Date",w:0.5},{v:"RF No",w:0.6},{v:"Challan",w:0.6},{v:"Inv No",w:0.6},{v:"D.No",w:0.5},{v:"Pcs",w:0.4},{v:"Contractor"},{v:"Days",w:0.4},{v:"Status",w:0.6},{v:"Action",w:0.5}]}/>
+        {rfData.map((r,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"7px 8px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{r.date}</div>
+            <div style={{flex:0.6,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.rf}</div>
+            <div style={{flex:0.6,fontFamily:"monospace",fontSize:10}}>{r.ch}</div>
+            <div style={{flex:0.6,fontFamily:"monospace",fontSize:10,color:C.textMuted}}>{r.inv}</div>
+            <div style={{flex:0.5,fontWeight:500}}>{r.design}</div>
+            <div style={{flex:0.4,fontWeight:600}}>{r.pcs}</div>
+            <div style={{flex:1,fontSize:10}}>{r.cont}</div>
+            <div style={{flex:0.4,fontWeight:600,color:r.days>30?C.red:r.days>20?"#b45309":C.text}}>{r.days}d</div>
+            <div style={{flex:0.6}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:r.status==="Received"?"#e8f5e9":r.status==="Disputed"?"#ffebee":"#fff8e1",color:r.status==="Received"?"#2e7d32":r.status==="Disputed"?C.red:"#f57f17"}}>{r.status}</span></div>
+            <div style={{flex:0.5}}><Btn small onClick={()=>setViewRf(r)}>View</Btn></div>
           </div>
         ))}
       </Card>
@@ -4413,16 +4586,23 @@ const screens = {
   const [colorOptions, setColorOptions] = useState(["Deep Pink","Royal Blue","Cream White","Mint Green","Gold","Pink","Blue","Cream"]);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [newColorInput, setNewColorInput] = useState("");
-  const [rows, setRows] = useState([
-    {colour:"Pink",desc:"Georgette Front",cons:"0.80",pcs:200,remarks:""},
-    {colour:"Blue",desc:"Net Sleeve",cons:"0.50",pcs:200,remarks:""},
-    {colour:"Cream",desc:"Cotton Lawn",cons:"2.16",pcs:200,remarks:""},
+  const [colorRows, setColorRows] = useState([
+    {colour:"Pink",remarks:""},
+    {colour:"Blue",remarks:""},
+    {colour:"Cream",remarks:""},
   ]);
-  const [buffer, setBuffer] = useState(2);
+  const [fabricRows, setFabricRows] = useState([
+    {desc:"Georgette Front",cons:"0.80",qty:"",buffer:""},
+    {desc:"Net Sleeve",cons:"0.50",qty:"",buffer:""},
+    {desc:"Cotton Lawn",cons:"2.16",qty:"",buffer:""},
+  ]);
   const [partySearch, setPartySearch] = useState("Ramesh Kadkiya");
   const [showPartyDropdown, setShowPartyDropdown] = useState(false);
   const [selectedJobType, setSelectedJobType] = useState("EMB");
   const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
+  const [sampleTop, setSampleTop] = useState(true);
+  const [sampleBottom, setSampleBottom] = useState(true);
+  const [sampleDupatta, setSampleDupatta] = useState(false);
   const contractors = ["Ramesh Kadkiya","Suresh Bhai","Anil Thakkar","Mohan Das","Priya Sharma","Deepak Bhai"];
   const jobTypes = [
     {code:"EMB",name:"Embroidery"},{code:"STH",name:"Stitching"},{code:"DIA",name:"Diamond Work"},
@@ -4432,13 +4612,16 @@ const screens = {
   ];
   const filteredContractors = showPartyDropdown ? contractors.filter(c=>c.toLowerCase().startsWith(partySearch.toLowerCase())) : [];
   const createdAt = "11 May 2026, 15:42";
-  const totalPcs = rows.reduce((s,r)=>s+(r.pcs||0),0);
-  const uniqueCols = new Set(rows.map(r=>r.colour).filter(Boolean)).size;
-  const grandTotal = rows.reduce((s,r)=>s+(parseFloat(r.cons||"0")*(r.pcs||0)),0);
-  const issuedTotal = grandTotal + parseFloat(buffer||0);
-  function updateRow(i,f,v){setRows(rows.map((r,j)=>j===i?{...r,[f]:v}:r));}
-  function handleSelectColor(i,colour){updateRow(i,"colour",colour);setOpenDropdown(null);setNewColorInput("");}
+  const uniqueCols = new Set(colorRows.map(r=>r.colour).filter(Boolean)).size;
+  const totalQty = fabricRows.reduce((s,r)=>s+(parseFloat(r.qty||"0")||0),0);
+  const totalBuffer = fabricRows.reduce((s,r)=>s+(parseFloat(r.buffer||"0")||0),0);
+  const totalCons = fabricRows.reduce((s,r)=>s+(parseFloat(r.cons||"0")||0),0);
+  const totalFabricMeters = fabricRows.reduce((s,r)=>s+((parseFloat(r.cons||"0")||0)*(parseFloat(r.qty||"0")||0)),0);
+  const issuedTotal = totalFabricMeters + totalBuffer;
+  function updateColorRow(i,f,v){setColorRows(colorRows.map((r,j)=>j===i?{...r,[f]:v}:r));}
+  function handleSelectColor(i,colour){updateColorRow(i,"colour",colour);setOpenDropdown(null);setNewColorInput("");}
   function handleAddNewColor(i){if(newColorInput.trim()&&!colorOptions.includes(newColorInput.trim())){setColorOptions([...colorOptions,newColorInput.trim()])}handleSelectColor(i,newColorInput.trim());}
+  function updateFabricRow(i,f,v){setFabricRows(fabricRows.map((r,j)=>j===i?{...r,[f]:v}:r));}
   const handlePrint = () => {
     const el = document.getElementById("cs");
     if (!el) return;
@@ -4536,22 +4719,16 @@ const screens = {
         </div>
         <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
         <div style={{padding:"4px 20px 10px"}}>
-          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Fabric & Design Details</div>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Colors</div>
           <div style={{border:`0.5px solid ${C.border}`,borderRadius:3,overflow:"visible",position:"relative"}}>
             <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
-              <div style={{flex:1.2}}>Colour</div>
-              <div style={{flex:1.8}}>Fabric Description</div>
-              <div style={{flex:0.8,textAlign:"right"}}>Cons/pc</div>
-              <div style={{flex:0.6,textAlign:"right"}}>Pcs</div>
-              <div style={{flex:0.9,textAlign:"right"}}>Total (m)</div>
-              <div style={{flex:1,textAlign:"center"}}>Remarks</div>
+              <div style={{flex:2}}>Colour</div>
+              <div style={{flex:1.8,textAlign:"center"}}>Remarks</div>
               <div style={{flex:0.3,textAlign:"center"}}>{"\u00D7"}</div>
             </div>
-            {rows.map((r,i)=>{
-              const rowTotal = (parseFloat(r.cons||"0")*(r.pcs||0)).toFixed(2);
-              return (
+            {colorRows.map((r,i)=>(
               <div key={i} style={{position:"relative",display:"flex",alignItems:"center",gap:4,padding:"4px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10,background:i%2===0?"#faf8f5":C.white}}>
-                <div style={{flex:1.2,position:"relative"}}>
+                <div style={{flex:1.5,position:"relative"}}>
                   {openDropdown===i?(
                     <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,padding:"3px 0",minWidth:120,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:160,overflowY:"auto"}}>
                       {newColorInput===""&&colorOptions.map((c,j)=>(
@@ -4574,31 +4751,53 @@ const screens = {
                     <span style={{fontSize:7,color:C.textMuted}}>{"\u25BE"}</span>
                   </div>
                 </div>
-                <div style={{flex:1.8}}><input value={r.desc} onChange={e=>updateRow(i,"desc",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,background:C.white,fontFamily:"inherit"}}/></div>
-                <div style={{flex:0.8,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.cons} onChange={e=>updateRow(i,"cons",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
-                <div style={{flex:0.6,textAlign:"right"}}><input type="number" step="1" min="0" value={r.pcs} onChange={e=>updateRow(i,"pcs",parseInt(e.target.value)||0)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
-                <div style={{flex:0.9,textAlign:"right",fontWeight:700,fontFamily:"'Courier New',monospace",color:C.text}}>{rowTotal}</div>
-                <div style={{flex:1,textAlign:"center"}}><input value={r.remarks} onChange={e=>updateRow(i,"remarks",e.target.value)} placeholder="--" style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:9,textAlign:"center",background:C.white,fontFamily:"inherit",color:C.textMuted}}/></div>
-                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setRows(rows.filter((_,j)=>j!==i))}>{"\u00D7"}</div>
+                <div style={{flex:1.8,textAlign:"center"}}><input value={r.remarks} onChange={e=>updateColorRow(i,"remarks",e.target.value)} placeholder="--" style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:9,textAlign:"center",background:C.white,fontFamily:"inherit",color:C.textMuted}}/></div>
+                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setColorRows(colorRows.filter((_,j)=>j!==i))}>{"\u00D7"}</div>
               </div>
-              );
-            })}
+            ))}
+          </div>
+          <button onClick={()=>setColorRows([...colorRows,{colour:"",remarks:""}])} style={{marginTop:4,marginBottom:10,padding:"3px 10px",border:`1px dashed ${CO.accentBorder}`,background:CO.accentLight,borderRadius:2,fontSize:9,color:CO.accent,fontWeight:600,cursor:"pointer",width:"100%"}}>+ Add Color</button>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Fabric & Qty</div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:3,overflow:"hidden",marginBottom:6}}>
+            <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
+              <div style={{flex:1.5}}>Fabric Description</div>
+              <div style={{flex:0.7,textAlign:"right"}}>Cons/pc (m)</div>
+              <div style={{flex:0.7,textAlign:"right"}}>Qty (pcs)</div>
+              <div style={{flex:0.7,textAlign:"right"}}>Buffer (m)</div>
+              <div style={{flex:0.3,textAlign:"center"}}>{"\u00D7"}</div>
+            </div>
+            {fabricRows.map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"3px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10}}>
+                <div style={{flex:1.5}}><input value={r.desc} onChange={e=>updateFabricRow(i,"desc",e.target.value)} placeholder="Fabric name..." style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,background:C.white,fontFamily:"inherit"}}/></div>
+                <div style={{flex:0.7,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.cons} onChange={e=>updateFabricRow(i,"cons",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
+                <div style={{flex:0.7,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.qty} onChange={e=>updateFabricRow(i,"qty",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
+                <div style={{flex:0.7,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.buffer} onChange={e=>updateFabricRow(i,"buffer",e.target.value)} placeholder="0" style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
+                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setFabricRows(fabricRows.filter((_,j)=>j!==i))}>{"\u00D7"}</div>
+              </div>
+            ))}
+            <div style={{borderTop:`0.5px solid ${C.border}`,padding:"4px 6px",background:"#f5f0ea",display:"flex",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
+              <div style={{flex:1.5}}>Cons/pc Total: {fabricRows.map(r=>r.cons||"0").join(" + ")} = {totalCons.toFixed(2)}m</div>
+              <div style={{flex:0.7,textAlign:"right"}}/>
+              <div style={{flex:0.7,textAlign:"right"}}>{totalQty.toFixed(0)} pcs</div>
+              <div style={{flex:0.7,textAlign:"right"}}>{totalBuffer.toFixed(2)} m</div>
+              <div style={{flex:0.3}}/>
+            </div>
             <div style={{borderTop:`0.5px solid ${C.border}`,padding:"5px 8px",background:"#f5f0ea",display:"flex",justifyContent:"space-between",fontSize:10,fontWeight:700}}>
-              <span>Grand Total:</span>
-              <span style={{fontFamily:"'Courier New',monospace"}}>{grandTotal.toFixed(2)} m</span>
+              <span>Grand Total: Fabric {totalFabricMeters.toFixed(2)}m + Buffer {totalBuffer.toFixed(2)}m = {issuedTotal.toFixed(2)}m</span>
             </div>
           </div>
-          <button onClick={()=>setRows([...rows,{colour:"",desc:"",cons:"0.00",pcs:0,remarks:""}])} style={{marginTop:4,padding:"3px 10px",border:`1px dashed ${CO.accentBorder}`,background:CO.accentLight,borderRadius:2,fontSize:9,color:CO.accent,fontWeight:600,cursor:"pointer",width:"100%"}}>+ Add Row</button>
-          <div style={{marginTop:6,display:"flex",gap:8,alignItems:"center",justifyContent:"flex-end"}}>
-            <div style={{fontSize:9,color:C.textMuted}}>Wastage / Buffer:</div>
-            <div style={{display:"flex",alignItems:"center",gap:4}}>
-              <input type="number" step="0.5" min="0" value={buffer} onChange={e=>setBuffer(parseFloat(e.target.value)||0)} style={{width:60,border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 6px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/>
-              <span style={{fontSize:9,color:C.textMuted}}>m</span>
-            </div>
-            <div style={{flex:1}}/>
-            <div style={{padding:"4px 10px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,fontSize:10,fontWeight:700,color:CO.accent}}>
-              Issued to Contractor: <span style={{fontSize:13,fontFamily:"'Courier New',monospace"}}>{issuedTotal.toFixed(2)} m</span>
-            </div>
+          <button onClick={()=>setFabricRows([...fabricRows,{desc:"",cons:"",qty:"",buffer:""}])} style={{marginBottom:10,padding:"3px 10px",border:`1px dashed ${CO.accentBorder}`,background:CO.accentLight,borderRadius:2,fontSize:9,color:CO.accent,fontWeight:600,cursor:"pointer",width:"100%"}}>+ Add Fabric Row</button>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Sample Provided</div>
+          <div style={{display:"flex",gap:12,fontSize:10,fontFamily:"'Courier New',monospace"}}>
+            <label style={{display:"flex",alignItems:"center",gap:4,cursor:"pointer"}}>
+              <input type="checkbox" checked={sampleTop} onChange={e=>setSampleTop(e.target.checked)}/> Top (with sleeves & daman)
+            </label>
+            <label style={{display:"flex",alignItems:"center",gap:4,cursor:"pointer"}}>
+              <input type="checkbox" checked={sampleBottom} onChange={e=>setSampleBottom(e.target.checked)}/> Bottom
+            </label>
+            <label style={{display:"flex",alignItems:"center",gap:4,cursor:"pointer"}}>
+              <input type="checkbox" checked={sampleDupatta} onChange={e=>setSampleDupatta(e.target.checked)}/> Dupatta
+            </label>
           </div>
         </div>
         <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
@@ -4606,16 +4805,12 @@ const screens = {
           <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Lot Summary</div>
           <div style={{display:"flex",gap:8}}>
             <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.border}`,borderRadius:3,padding:"6px",background:"#faf8f5"}}>
-              <div style={{fontSize:8,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Pieces</div>
-              <div style={{fontSize:14,fontWeight:700}}>{totalPcs}</div>
-            </div>
-            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.border}`,borderRadius:3,padding:"6px",background:"#faf8f5"}}>
               <div style={{fontSize:8,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em"}}>Colours</div>
               <div style={{fontSize:14,fontWeight:700}}>{uniqueCols}</div>
             </div>
             <div style={{flex:1,textAlign:"center",border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,padding:"6px",background:CO.accentLight}}>
               <div style={{fontSize:8,color:CO.accent,textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600}}>Total Fabric</div>
-              <div style={{fontSize:14,fontWeight:700,color:CO.accent}}>{grandTotal.toFixed(2)}m</div>
+              <div style={{fontSize:14,fontWeight:700,color:CO.accent}}>{totalFabricMeters.toFixed(2)}m</div>
             </div>
             <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.redBorder}`,borderRadius:3,padding:"6px",background:C.redLight}}>
               <div style={{fontSize:8,color:C.red,textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600}}>Issued to Contractor</div>
@@ -5283,7 +5478,18 @@ const screens = {
 "G-20": () => {
   const [lookupBy, setLookupBy] = useState("invoice");
   const [found, setFound] = useState(true);
+  const [selectedContractor, setSelectedContractor] = useState(null);
+  const [savedRfTypes, setSavedRfTypes] = useState(["Fabric Short","Quality Reject","Stitching Error","Missing Pieces","Late Delivery"]);
+  const [selectedRfType, setSelectedRfType] = useState(null);
+  const [showNewRfType, setShowNewRfType] = useState(false);
+  const [newRfTypeVal, setNewRfTypeVal] = useState("");
   const rfCreatedAt = "11 May 2026, 15:44";
+  const contractors = [
+    {name:"Ramesh Kadkiya",stage:"EMB",phone:"+91 98765 43210",completed:true},
+    {name:"Suresh Bhai",stage:"STH",phone:"+91 98765 43211",completed:true},
+    {name:"Anil Thakkar",stage:"DIA",phone:"+91 98765 43212",completed:false},
+    {name:"Mohan Das",stage:"LAC",phone:"+91 98765 43213",completed:true},
+  ];
   return (
   <WebLayout activeMenu="RF" mode="mfg">
     <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. · raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
@@ -5303,17 +5509,29 @@ const screens = {
             </div>
             {found&&(
               <div style={{border:`0.5px solid ${CO.accentBorder}`,borderRadius:6,padding:"10px 14px",background:CO.accentLight,marginTop:4}}>
-                <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
                   <div style={{fontSize:12,fontWeight:700}}>Challan #3202 · D-710 Floral Anarkali</div>
                   <span style={{fontSize:10,padding:"2px 8px",background:C.greenLight,color:C.green,borderRadius:3,fontWeight:600}}>Found</span>
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                  {[["Design","D-710"],["Pieces","240 pcs"],["Contractor","Ramesh Kadkiya"],["Stage","STH · Completed"],["Invoice","INV-2024-1042"],["Date","03 May 2026"]].map(([l,v],i)=>(
-                    <div key={i} style={{fontSize:11}}>
-                      <span style={{color:C.textMuted}}>{l}: </span><span style={{fontWeight:600}}>{v}</span>
+                <div style={{fontSize:10,color:C.textMuted,marginBottom:8}}>Invoice: INV-2024-1042 · 240 pcs · 03 May 2026</div>
+                <div style={{fontSize:10,fontWeight:600,color:C.text,marginBottom:6}}>Select Contractor who raised this RF:</div>
+                {contractors.map((c,i)=>(
+                  <div key={i} onClick={()=>{setSelectedContractor(c);setFound(true);}} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 8px",borderRadius:4,cursor:"pointer",marginBottom:4,background:selectedContractor?.name===c.name?CO.accent:"#fafafa",border:`0.5px solid ${selectedContractor?.name===c.name?CO.accentBorder:C.border}`,fontSize:11}}>
+                    <div style={{width:14,height:14,borderRadius:"50%",border:`1.5px solid ${selectedContractor?.name===c.name?C.white:C.border}`,display:"flex",alignItems:"center",justifyContent:"center",background:selectedContractor?.name===c.name?C.white:"transparent"}}>
+                      {selectedContractor?.name===c.name&&<div style={{width:8,height:8,borderRadius:"50%",background:CO.accent}}/>}
                     </div>
-                  ))}
-                </div>
+                    <span style={{flex:1,fontWeight:selectedContractor?.name===c.name?700:500,color:selectedContractor?.name===c.name?C.white:C.text}}>{c.name}</span>
+                    <span style={{fontSize:9,color:selectedContractor?.name===c.name?"rgba(255,255,255,0.7)":C.textMuted}}>{c.stage}</span>
+                    <span style={{fontSize:9,fontWeight:600,color:selectedContractor?.name===c.name?C.white:c.completed?C.green:C.textMuted}}>{c.completed?"Completed":"In Progress"}</span>
+                  </div>
+                ))}
+                {selectedContractor&&(
+                  <div style={{marginTop:6,padding:"6px 10px",background:C.white,border:`0.5px solid ${C.border}`,borderRadius:4,display:"flex",gap:12,fontSize:10}}>
+                    <span>Phone: <strong>{selectedContractor.phone}</strong></span>
+                    <span>Stage: <strong>{selectedContractor.stage}</strong></span>
+                    <span>Status: <strong style={{color:selectedContractor.completed?C.green:C.textMuted}}>{selectedContractor.completed?"Completed":"In Progress"}</strong></span>
+                  </div>
+                )}
               </div>
             )}
           </Card>
@@ -5321,32 +5539,39 @@ const screens = {
             <SectionLabel>RF / Alteration Details</SectionLabel>
             <div style={{marginBottom:10}}>
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>RF Type <span style={{color:C.red}}>*</span></div>
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {["Fabric Short","Quality Reject","Stitching Error","Missing Pieces","Late Delivery","Other"].map((t,i)=>(
-                  <div key={i} style={{padding:"4px 10px",border:`0.5px solid ${i===5?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===5?C.redLight:"#fafafa",color:i===5?C.red:C.textMuted,fontWeight:i===5?600:400}}>{t}</div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:6}}>
+                {savedRfTypes.map((t,i)=>(
+                  <div key={i} onClick={()=>{setSelectedRfType(t);setShowNewRfType(false);}} style={{padding:"4px 10px",border:`0.5px solid ${selectedRfType===t?CO.accentBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:selectedRfType===t?CO.accentLight:"#fafafa",color:selectedRfType===t?CO.accent:C.textMuted,fontWeight:selectedRfType===t?600:400}}>{t}</div>
                 ))}
+                {showNewRfType?(
+                  <div style={{display:"flex",gap:4,alignItems:"center"}}>
+                    <input value={newRfTypeVal} onChange={e=>setNewRfTypeVal(e.target.value)} placeholder="Type new RF type..." style={{width:120,padding:"4px 8px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,fontSize:11}} autoFocus/>
+                    <button onClick={()=>{if(newRfTypeVal.trim()&&!savedRfTypes.includes(newRfTypeVal.trim())){setSavedRfTypes([...savedRfTypes,newRfTypeVal.trim()])}setSelectedRfType(newRfTypeVal.trim());setShowNewRfType(false);setNewRfTypeVal("");}} style={{padding:"4px 8px",background:CO.accent,color:C.white,border:"none",borderRadius:3,fontSize:10,cursor:"pointer",fontWeight:600}}>Add</button>
+                    <span onClick={()=>{setShowNewRfType(false);setNewRfTypeVal("");}} style={{fontSize:12,color:C.textMuted,cursor:"pointer"}}>{"\u00D7"}</span>
+                  </div>
+                ):(
+                  <div onClick={()=>{setShowNewRfType(true);setSelectedRfType(null);}} style={{padding:"4px 10px",border:`1px dashed ${C.redBorder}`,borderRadius:3,fontSize:11,cursor:"pointer",background:C.redLight,color:C.red,fontWeight:600}}>+ Other</div>
+                )}
               </div>
             </div>
             <Input label="Pieces Affected" placeholder="e.g. 24" required/>
-            <Input label="Description" placeholder="Describe the issue in detail" required/>
-            <div style={{display:"flex",gap:10}}>
-              <div style={{flex:1}}><Input label="RF Created Timestamp (Auto)" placeholder={rfCreatedAt} mono note="Recorded when the user submits RF"/></div>
-              <div style={{flex:1}}><Input label="Created By" placeholder="Moin Noorani" note="Stored in RF audit trail"/></div>
-            </div>
             <div style={{marginBottom:8}}>
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Assign to Contractor?</div>
               <div style={{display:"flex",gap:6}}>
-                {["Yes — Raise against Ramesh","No — Internal only"].map((opt,i)=>(
+                {["Yes — Raise against selected","No — Internal only"].map((opt,i)=>(
                   <div key={i} style={{padding:"4px 12px",border:`0.5px solid ${i===0?C.redBorder:C.border}`,borderRadius:3,fontSize:11,cursor:"pointer",background:i===0?C.redLight:"#fafafa",color:i===0?C.red:C.textMuted,fontWeight:i===0?600:400}}>{opt}</div>
                 ))}
               </div>
+            </div>
+            <div style={{fontSize:9,color:C.textMuted,borderTop:`0.5px solid ${C.border}`,paddingTop:6,marginTop:4}}>
+              RF created {rfCreatedAt} by Moin Noorani {"\u00B7"} Stored in RF audit trail
             </div>
           </Card>
         </div>
         <div style={{flex:1}}>
           <Card style={{background:C.redLight,border:`0.5px solid ${C.redBorder}`}}>
             <SectionLabel>RF Summary</SectionLabel>
-            {[["Challan","#3202"],["Design","D-710"],["Type","Stitching Error"],["Pieces","24"],["Created At",rfCreatedAt],["Created By","Moin Noorani"],["Assigned to","Ramesh Kadkiya"],["Status","Pending"]].map(([l,v],i)=>(
+            {[["Challan","#3202"],["Design","D-710"],["Type",selectedRfType||"-"],["Pieces","24"],["Created At",rfCreatedAt],["Created By","Moin Noorani"],["Assigned to",selectedContractor?selectedContractor.name:"-"],["Status","Pending"]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.redBorder}`,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
               </div>
@@ -5361,9 +5586,9 @@ const screens = {
               <div key={i} style={{padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
                 <div style={{display:"flex",justifyContent:"space-between"}}>
                   <span style={{fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{id}</span>
-                  <span style={{fontSize:10,color:st==="Open"?C.red:st==="Resolved"?C.green:C.textMuted,fontWeight:600}}>{st}</span>
+                  <span style={{fontSize:10,padding:"1px 6px",borderRadius:3,fontWeight:600,background:st==="Resolved"?C.greenLight:st==="Open"?C.redLight:"#f5f5f5",color:st==="Resolved"?C.green:st==="Open"?C.red:C.textMuted}}>{st}</span>
                 </div>
-                <div style={{fontSize:10,color:C.textMuted}}>{d} · {t}</div>
+                <div style={{fontSize:10,color:C.textMuted}}>{d} {t?"· "+t:""}</div>
               </div>
             ))}
           </Card>
@@ -5969,7 +6194,14 @@ const screens = {
   </MobileFrame>
 ),
 // M-G04: Confirm Pieces Sent
-"M-G04": () => (
+"M-G04": () => {
+  const [colorItems, setColorItems] = useState([
+    {col:"Pink",issued:200,items:["","",""]},
+    {col:"Blue",issued:200,items:["","",""]},
+    {col:"Cream",issued:200,items:["","",""]},
+  ]);
+  function updateItem(cIdx,iIdx,val){setColorItems(colorItems.map((r,i)=>i===cIdx?{...r,items:r.items.map((it,j)=>j===iIdx?val:it)}:r));}
+  return (
   <MobileFrame>
     <MNav label="Confirm Pieces Sent"/>
     <div style={{padding:14}}>
@@ -5980,11 +6212,21 @@ const screens = {
       <Card>
         <SectionLabel>Enter Pieces Returned</SectionLabel>
         <div style={{fontSize:11,color:C.textMuted,marginBottom:10}}>Enter count of finished pieces being sent back. Any discrepancy will trigger a dispute.</div>
-        {[{col:"Pink",issued:200},{col:"Blue",issued:200},{col:"Cream",issued:200}].map((r,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-            <div style={{flex:1,fontSize:12}}>{r.col}</div>
-            <div style={{fontSize:11,color:C.textMuted}}>of {r.issued}</div>
-            <div style={{width:70,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"6px 8px",fontSize:14,fontWeight:700,textAlign:"center",background:C.white}}>{r.issued}</div>
+        {colorItems.map((r,i)=>(
+          <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:10}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#e65100",marginBottom:6}}>{r.col}</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
+              {r.items.map((it,j)=>(
+                <input key={j} value={it} onChange={e=>updateItem(i,j,e.target.value)} placeholder={["Top","Bottom","Dupatta"][j]} style={{flex:"1 1 calc(50% - 6px)",minWidth:80,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"6px 8px",fontSize:12,textAlign:"center",background:"#fafafa"}}/>
+              ))}
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:`0.5px solid ${C.border}`,paddingTop:6}}>
+              <span style={{fontSize:11,color:C.textMuted}}>Issued: <strong>{r.issued}</strong> pcs</span>
+              <div style={{display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:11,color:C.textMuted}}>Returned:</span>
+                <div style={{width:60,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,padding:"5px 6px",fontSize:14,fontWeight:700,textAlign:"center",background:C.white}}>{r.issued}</div>
+              </div>
+            </div>
           </div>
         ))}
         <div style={{marginTop:4,padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted}}>
@@ -6000,7 +6242,8 @@ const screens = {
       </div>
     </div>
   </MobileFrame>
-),
+  );
+},
 // M-G05: My Payment Ledger
 "M-G05": () => (
   <MobileFrame>
