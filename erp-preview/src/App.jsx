@@ -3765,7 +3765,7 @@ const screens = {
         </div>
         <div style={{display:"flex",gap:6}}>
           {[
-            {label:"New Challan",nav:"G-02",col:CO.accent},
+            {label:"New Challan",nav:"G-23",col:CO.accent},
             {label:"Reprocess",nav:"G-13",col:"#8e44ad"},
             {label:"RF / Alter",nav:"G-20",col:"#e67e22"},
             {label:"Remarks",nav:"G-18",col:"#2980b9"},
@@ -4997,65 +4997,170 @@ const screens = {
 },
 // G-13: Reprocess Challan
 "G-13": () => {
-  const [jobType, setJobType] = useState("Embroidery");
+  const contractorData = [
+    {name:"Ramesh Kadkiya",code:"C-006",mobile:"+91 98765 43210",jobTypes:["EMB"]},
+    {name:"Suresh Bhai",code:"C-011",mobile:"+91 98765 43211",jobTypes:["STH"]},
+    {name:"Anil Thakkar",code:"C-023",mobile:"+91 98765 43212",jobTypes:["DIA"]},
+    {name:"Mohan Das",code:"C-045",mobile:"+91 98765 43213",jobTypes:["LAC","WASH"]},
+    {name:"Priya Sharma",code:"C-078",mobile:"+91 98765 43214",jobTypes:["HND","FIN"]},
+    {name:"Deepak Bhai",code:"C-102",mobile:"+91 98765 43215",jobTypes:["STH","CUT"]},
+  ];
+  const jobTypes = [
+    {code:"EMB",name:"Embroidery"},{code:"STH",name:"Stitching"},{code:"DIA",name:"Diamond Work"},
+    {code:"LAC",name:"Lace Work"},{code:"WASH",name:"Washing"},{code:"CUT",name:"Cutting"},
+    {code:"FIN",name:"Finishing"},{code:"HND",name:"Hand Work"},{code:"PRT",name:"Printing"},
+    {code:"ZAR",name:"Zardozi"},
+  ];
+  const [selectedSource, setSelectedSource] = useState("3202");
+  const sources = [
+    {cn:"3202",design:"D-710",designName:"Floral Anarkali",date:"07-05-2026",jobType:"STH",contractor:"Suresh Bhai",colors:["Pink","Blue","Cream"],fabric:[{desc:"Georgette Front",cons:"0.80",qty:"200",buffer:"2"},{desc:"Net Sleeve",cons:"0.50",qty:"200",buffer:"2"},{desc:"Cotton Lawn",cons:"2.16",qty:"200",buffer:"3"}],sampleTop:true,sampleBottom:true,sampleDupatta:false},
+    {cn:"3210",design:"D-688",designName:"Lehenga Set",date:"05-05-2026",jobType:"EMB",contractor:"Ramesh Kadkiya",colors:["Gold","Maroon","Teal"],fabric:[{desc:"Silk Body",cons:"1.20",qty:"150",buffer:"1"},{desc:"Net Overlay",cons:"0.80",qty:"150",buffer:"1"}],sampleTop:true,sampleBottom:false,sampleDupatta:true},
+  ];
+  const original = sources.find(s=>s.cn===selectedSource)||sources[0];
+  const [newJobType, setNewJobType] = useState(original.jobType);
+  const [contractorSearch, setContractorSearch] = useState("");
+  const [showContractorDropdown, setShowContractorDropdown] = useState(false);
+  const [selectedContractor, setSelectedContractor] = useState(null);
+  const [reason, setReason] = useState("");
+  const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
+  const contractorsForJob = contractorData.filter(c=>c.jobTypes.includes(newJobType));
+  const filteredContractors = showContractorDropdown ? contractorsForJob.filter(c=>c.name.toLowerCase().startsWith(contractorSearch.toLowerCase())) : [];
+  const totalFabricMeters = original.fabric.reduce((s,r)=>s+((parseFloat(r.cons||"0")||0)*(parseFloat(r.qty||"0")||0)),0);
+  const totalBuffer = original.fabric.reduce((s,r)=>s+(parseFloat(r.buffer||"0")||0),0);
+  const issuedTotal = totalFabricMeters + totalBuffer;
   return (
   <WebLayout activeMenu="Challans" mode="mfg">
-    <GTopBar title="Reprocess Challan" sub="Same design, same items · change job type, party, and date" actions={[{label:"Confirm Reprocess",primary:true},{label:"Cancel"}]}/>
-    <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
-      <div style={{padding:"8px 12px",background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:4,marginBottom:12,fontSize:11,color:"#e65100"}}>
-        Reprocessing Challan #3202 · Design D-710 · Same pieces and quantities will be carried over.
-      </div>
-      <div style={{display:"flex",gap:12}}>
-        <div style={{flex:2}}>
-          <Card>
-            <SectionLabel>Carry-Over Details (Locked)</SectionLabel>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-              {[["Original Challan","#3202"],["Design No.","D-710"],["Design Name","Floral Anarkali"],["Total Pieces","240 pcs"],["Colours","Pink × 80, Blue × 80, Cream × 80"],["Original Job Type","Stitching (STH)"]].map(([l,v],i)=>(
-                <div key={i} style={{background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"7px 10px"}}>
-                  <div style={{fontSize:9,color:C.textMuted,marginBottom:2}}>{l}</div>
-                  <div style={{fontSize:12,fontWeight:600,color:C.text}}>{v}</div>
-                </div>
-              ))}
-            </div>
-          </Card>
-          <Card>
-            <SectionLabel>New Job Parameters</SectionLabel>
-            <div style={{marginBottom:10}}>
-              <div style={{fontSize:11,color:C.textMuted,marginBottom:6}}>New Job Work Type <span style={{color:C.red}}>*</span></div>
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {["Embroidery","Stitching","Diamond","Lace Work","Washing","Cutting","Finishing"].map((t,i)=>(
-                  <div key={i} onClick={()=>setJobType(t)} style={{padding:"4px 12px",border:`0.5px solid ${jobType===t?CO.accentBorder:C.border}`,borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:jobType===t?CO.accentLight:"#fafafa",color:jobType===t?CO.accent:C.textMuted}}>{t}</div>
-                ))}
-              </div>
-            </div>
-            <Input label="New Contractor" placeholder="Search or select contractor..." required/>
-            <div style={{display:"flex",gap:10}}>
-              <div style={{flex:1}}><Input label="New Date" placeholder="09 May 2026" required/></div>
-              <div style={{flex:1}}><Input label="Expected Return (days)" placeholder="7" required/></div>
-            </div>
-            <Input label="Reason for Reprocess" placeholder="e.g. Previous work rejected, quality issue" required/>
-          </Card>
+    <GTopBar title="Reprocess Challan" sub="Carry over items, change job type & contractor" actions={[{label:"Confirm Reprocess",primary:true},{label:"Cancel"}]}/>
+    <div style={{padding:16,background:C.bgSoft,minHeight:460,display:"flex",flexDirection:"column",alignItems:"center"}}>
+      <div style={{width:720,maxWidth:"100%",marginBottom:10}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,fontSize:11,marginBottom:8}}>
+          <strong>Select Source Challan:</strong>
+          <select value={selectedSource} onChange={e=>{const s=sources.find(x=>x.cn===e.target.value);setSelectedSource(e.target.value);setNewJobType(s.jobType);setContractorSearch("");setSelectedContractor(null);}} style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:11,fontFamily:"'Courier New',monospace",fontWeight:600}}>
+            {sources.map(s=><option key={s.cn} value={s.cn}>#{s.cn} — {s.design} ({s.designName})</option>)}
+          </select>
         </div>
-        <div style={{flex:1}}>
-          <Card>
-            <SectionLabel>Piece Summary</SectionLabel>
-            {[{col:"Pink",pcs:80},{col:"Blue",pcs:80},{col:"Cream",pcs:80}].map((r,i)=>(
-              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-                <span>{r.col}</span><span style={{fontWeight:600}}>{r.pcs} pcs</span>
-              </div>
-            ))}
-            <div style={{display:"flex",justifyContent:"space-between",padding:"8px 0",fontSize:12,fontWeight:700}}>
-              <span>Total</span><span>240 pcs</span>
+        <div style={{padding:"7px 12px",background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:4,fontSize:11,color:"#e65100",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span>{"\u26A0"} Reprocessing Challan #{original.cn} · {original.design} {original.designName} · Original: {jobTypes.find(j=>j.code===original.jobType)?.name||original.jobType}</span>
+          <span style={{fontSize:10,color:"#bf360c"}}>Same items carry over</span>
+        </div>
+      </div>
+      <div id="cs" style={{width:720,maxWidth:"100%",border:`1.5px dashed ${C.textLight}`,borderRadius:4,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:16,fontFamily:"'Courier New',monospace"}}>
+        <div style={{background:"#b71c1c",color:C.white,padding:"14px 20px 10px",textAlign:"center"}}>
+          <div style={{fontSize:20,fontWeight:900,letterSpacing:6,textTransform:"uppercase"}}>CHALLAN — REPROCESS</div>
+          <div style={{fontSize:9,opacity:0.7,marginTop:2,letterSpacing:2}}>GMMS Manufacturing ERP · Surat</div>
+        </div>
+        <div style={{padding:"12px 20px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+            <div style={{fontSize:12,fontWeight:700,fontFamily:"'Courier New',monospace"}}>CHALLAN NO: 3211 <span style={{fontSize:9,fontWeight:400,color:C.textMuted}}>(Reprocess of #{original.cn})</span></div>
+            <div style={{fontSize:12,fontWeight:700,fontFamily:"'Courier New',monospace",textAlign:"right"}}>
+              <div>DATE: 09-05-2026</div>
+              <div style={{fontSize:9,fontWeight:400,color:C.textMuted,marginTop:1}}>TS: 09 May 2026, 10:15</div>
             </div>
-          </Card>
-          <Card style={{background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`}}>
-            <SectionLabel>On Confirm</SectionLabel>
-            {["New Challan #3211 created","Linked to original #3202","SMS to new contractor","Audit trail updated","G-12 dashboard refreshed"].map((a,i)=>(
-              <div key={i} style={{fontSize:11,color:C.text,padding:"3px 0",display:"flex",alignItems:"center",gap:6}}>
-                <span style={{color:C.green,fontWeight:700}}>✔</span>{a}
+          </div>
+          <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+          <div style={{marginBottom:4,fontSize:11,position:"relative"}}>
+            <strong>PARTY NAME:</strong>
+            <input value={contractorSearch} onChange={e=>{setContractorSearch(e.target.value);setShowContractorDropdown(true);setSelectedContractor(null);}} onFocus={()=>setShowContractorDropdown(true)} onBlur={()=>setTimeout(()=>setShowContractorDropdown(false),200)} placeholder="Search contractor by job type..." style={{marginLeft:6,border:"none",borderBottom:`1px solid ${C.textLight}`,padding:"0 4px",minWidth:280,fontSize:11,fontFamily:"'Courier New',monospace",background:"transparent",outline:"none"}}/>
+            {showContractorDropdown&&(
+              <div style={{position:"absolute",top:"100%",left:100,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,minWidth:280,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:180,overflowY:"auto"}}>
+                {contractorsForJob.length===0?(<div style={{padding:"8px",fontSize:10,color:C.textMuted}}>No contractors for this job type</div>):(filteredContractors.map((c,i)=>(
+                  <div key={i} onMouseDown={()=>{setSelectedContractor(c);setContractorSearch(c.name);setShowContractorDropdown(false);}} style={{padding:"5px 8px",cursor:"pointer",fontSize:10,background:selectedContractor?.name===c.name?CO.accentLight:"transparent",fontWeight:selectedContractor?.name===c.name?700:400,display:"flex",justifyContent:"space-between"}}>
+                    <span>{c.name}</span>
+                    <span style={{color:C.textMuted,fontSize:9}}>{c.code}</span>
+                  </div>
+                )))}
+              </div>
+            )}
+          </div>
+          <div style={{marginBottom:4,fontSize:11}}>
+            <strong>MOBILE:</strong> <span style={{borderBottom:`1px solid ${C.textLight}`,padding:"0 20px",minWidth:280,display:"inline-block",color:selectedContractor?C.text:C.textLight}}>{selectedContractor?selectedContractor.mobile:"Select contractor above..."}</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4,fontSize:11}}>
+            <strong>DESIGN NO:</strong> {original.design}
+            <span style={{fontSize:9,color:C.textMuted}}>({original.designName})</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4,fontSize:11}}>
+            <strong>JOB TYPE:</strong>
+            <div style={{position:"relative"}}>
+              <div onClick={()=>setShowJobTypeDropdown(!showJobTypeDropdown)} style={{padding:"2px 8px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:2,background:CO.accentLight,cursor:"pointer",fontSize:10,fontWeight:700,color:CO.accent,display:"flex",alignItems:"center",gap:4,fontFamily:"'Courier New',monospace"}}>
+                {newJobType} {"\u25BE"}
+              </div>
+              {showJobTypeDropdown&&(
+                <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,minWidth:140,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:200,overflowY:"auto"}}>
+                  {jobTypes.map((j,i)=>(
+                    <div key={j.code} onMouseDown={()=>{setNewJobType(j.code);setShowJobTypeDropdown(false);setContractorSearch("");setSelectedContractor(null);}} style={{padding:"4px 8px",cursor:"pointer",fontSize:10,background:newJobType===j.code?CO.accentLight:"transparent",fontWeight:newJobType===j.code?700:400,display:"flex",justifyContent:"space-between"}}>
+                      <span style={{fontFamily:"'Courier New',monospace",fontWeight:700}}>{j.code}</span>
+                      <span style={{color:C.textMuted}}>{j.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div style={{border:`1px solid #ffcc80`,borderRadius:3,padding:"5px 8px",background:"#fff8e1",marginTop:6,fontSize:10}}>
+            <div style={{fontWeight:700,color:"#e65100",marginBottom:3}}>{"\u26A0"} Reprocessing from Challan #{original.cn} ({jobTypes.find(j=>j.code===original.jobType)?.name})</div>
+            <div style={{display:"flex",gap:16,color:"#bf360c"}}>
+              <span>Original Contractor: <strong>{original.contractor}</strong></span>
+              <span>Colors: <strong>{original.colors.join(", ")}</strong></span>
+            </div>
+          </div>
+        </div>
+        <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+        <div style={{padding:"4px 20px 10px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Colors <span style={{fontWeight:400,textTransform:"none",color:"#888"}}>(carried over)</span></div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+            {original.colors.map((c,i)=>(
+              <div key={i} style={{padding:"3px 10px",background:"#f5f0ea",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:10,fontWeight:600}}>{c}</div>
+            ))}
+          </div>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4,marginTop:8}}>Fabric & Qty <span style={{fontWeight:400,textTransform:"none",color:"#888"}}>(carried over)</span></div>
+          <div style={{border:`0.5px solid ${C.border}`,borderRadius:3,overflow:"hidden",marginBottom:6}}>
+            <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
+              <div style={{flex:1.5}}>Fabric Description</div>
+              <div style={{flex:0.7,textAlign:"right"}}>Cons/pc (m)</div>
+              <div style={{flex:0.7,textAlign:"right"}}>Qty (pcs)</div>
+              <div style={{flex:0.7,textAlign:"right"}}>Buffer (m)</div>
+            </div>
+            {original.fabric.map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"3px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10,background:i%2===0?"#faf8f5":C.white}}>
+                <div style={{flex:1.5,fontWeight:600}}>{r.desc}</div>
+                <div style={{flex:0.7,textAlign:"right",fontFamily:"'Courier New',monospace",fontWeight:600}}>{r.cons}</div>
+                <div style={{flex:0.7,textAlign:"right",fontFamily:"'Courier New',monospace",fontWeight:600}}>{r.qty}</div>
+                <div style={{flex:0.7,textAlign:"right",fontFamily:"'Courier New',monospace",fontWeight:600,color:C.textMuted}}>{r.buffer}</div>
               </div>
             ))}
-          </Card>
+            <div style={{borderTop:`0.5px solid ${C.border}`,padding:"5px 8px",background:"#f5f0ea",display:"flex",justifyContent:"space-between",fontSize:10,fontWeight:700}}>
+              <span>Grand Total: Fabric {totalFabricMeters.toFixed(2)}m + Buffer {totalBuffer.toFixed(2)}m = {issuedTotal.toFixed(2)}m</span>
+            </div>
+          </div>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Sample Provided <span style={{fontWeight:400,textTransform:"none",color:"#888"}}>(carried over)</span></div>
+          <div style={{display:"flex",gap:12,fontSize:10,fontFamily:"'Courier New',monospace",opacity:0.7}}>
+            <label style={{display:"flex",alignItems:"center",gap:4}}><input type="checkbox" checked={original.sampleTop} disabled/> Top (with sleeves & daman)</label>
+            <label style={{display:"flex",alignItems:"center",gap:4}}><input type="checkbox" checked={original.sampleBottom} disabled/> Bottom</label>
+            <label style={{display:"flex",alignItems:"center",gap:4}}><input type="checkbox" checked={original.sampleDupatta} disabled/> Dupatta</label>
+          </div>
+        </div>
+        <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+        <div style={{padding:"4px 20px 10px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Lot Summary</div>
+          <div style={{display:"flex",gap:8}}>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.border}`,borderRadius:3,padding:"6px",background:"#faf8f5"}}>
+              <div style={{fontSize:8,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em"}}>Colours</div>
+              <div style={{fontSize:14,fontWeight:700}}>{original.colors.length}</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,padding:"6px",background:CO.accentLight}}>
+              <div style={{fontSize:8,color:CO.accent,textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600}}>Total Fabric</div>
+              <div style={{fontSize:14,fontWeight:700,color:CO.accent}}>{totalFabricMeters.toFixed(2)}m</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",border:`0.5px solid ${C.redBorder}`,borderRadius:3,padding:"6px",background:C.redLight}}>
+              <div style={{fontSize:8,color:C.red,textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600}}>Issued to Contractor</div>
+              <div style={{fontSize:14,fontWeight:700,color:C.red}}>{issuedTotal.toFixed(2)}m</div>
+            </div>
+          </div>
+        </div>
+        <div style={{borderTop:`0.5px solid ${C.border}`,padding:"6px 20px",display:"flex",justifyContent:"space-between",fontSize:8,color:C.textMuted,background:C.bgSoft}}>
+          <span>Reprocess of #{original.cn} · New Challan #3211</span>
+          <span>Page 1/1</span>
         </div>
       </div>
     </div>

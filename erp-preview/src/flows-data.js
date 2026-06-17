@@ -127,7 +127,7 @@ export const FLOWS = [
     description: "End-to-end challan from creation to payment",
     steps: [
       { screen: "G-12", label: "Production Dashboard", role: "Owner/Manager", desc: "Overview of all production activity" },
-      { screen: "G-02", label: "Create Challan", role: "Production Manager", desc: "Issue new job challan to contractor" },
+      { screen: "G-23", label: "Traditional Challan Entry", role: "Production Manager", desc: "Issue new job challan to contractor (paper challan style)" },
       { screen: "G-01", label: "Challan List", role: "All", desc: "View all active challans" },
       { screen: "G-03", label: "Challan Tracking", role: "All", desc: "Track challan progress by design" },
       { screen: "G-06", label: "Ready Piece Count", role: "Production Staff", desc: "Record completed pieces" },
@@ -136,12 +136,21 @@ export const FLOWS = [
   },
   {
     id: "mfg-reprocess",
-    name: "Reprocess / Returns",
+    name: "Reprocess",
     erp: "mfg",
-    description: "Handle reprocessing, alterations, and rejected fabric returns",
+    description: "Start a new process for returned material — change job type & contractor, carry over items",
     steps: [
-      { screen: "G-12", label: "Production Dashboard", role: "Manager", desc: "Navigate to reprocess or RF" },
-      { screen: "G-13", label: "Reprocess Challan", role: "Production Manager", desc: "Create reprocess challan for fixes" },
+      { screen: "G-12", label: "Production Dashboard", role: "Manager", desc: "Navigate to reprocess" },
+      { screen: "G-13", label: "Reprocess Challan", role: "Production Manager", desc: "Carry over items, change job type & contractor" },
+    ],
+  },
+  {
+    id: "mfg-rf",
+    name: "RF / Returns",
+    erp: "mfg",
+    description: "Mark received short/defect pieces — raise and track rejection/return to fabric mill",
+    steps: [
+      { screen: "G-12", label: "Production Dashboard", role: "Manager", desc: "Navigate to RF" },
       { screen: "G-20", label: "Create RF Entry", role: "Production Manager", desc: "Log rejection/return to fabric mill" },
       { screen: "G-08", label: "RF Management", role: "Production Manager", desc: "Track all rejection/return requests" },
     ],
@@ -187,7 +196,7 @@ export const FLOWS = [
     description: "Manage fabric inventory from mill to challan",
     steps: [
       { screen: "G-09", label: "Mill / Fabric Management", role: "Production Manager", desc: "Track fabric stock and mill orders" },
-      { screen: "G-02", label: "Create Challan", role: "Production Manager", desc: "Issue fabric to contractor via challan" },
+      { screen: "G-23", label: "Traditional Challan Entry", role: "Production Manager", desc: "Issue fabric to contractor via challan" },
     ],
   },
   {
@@ -197,6 +206,7 @@ export const FLOWS = [
     description: "Daily production operations from dashboard",
     steps: [
       { screen: "G-12", label: "Production Dashboard", role: "Owner/Manager", desc: "KPI tiles, overdue challans, leaderboard" },
+      { screen: "G-23", label: "Traditional Challan Entry", role: "Production Manager", desc: "Quick-create challan from dashboard" },
       { screen: "G-18", label: "Notifications Center", role: "All", desc: "View production alerts and updates" },
       { screen: "G-22", label: "Live Inventory (GMMS)", role: "Production Manager", desc: "Monitor GMMS stock levels" },
       { screen: "G-19", label: "Reports Hub (GMMS)", role: "Owner/Manager", desc: "Generate manufacturing reports" },
