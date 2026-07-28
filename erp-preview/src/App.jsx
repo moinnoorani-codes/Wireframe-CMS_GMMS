@@ -2,13 +2,11 @@ import { useState, useMemo } from "react";
 import { jobTimelineDefaults } from "./gmmsJobTimeline";
 import { FLOWS, ROLE_COLORS, ERP_COLORS, getFlowsForScreen, getFlowById, getFlowNavigation, getStepIndexByScreen, getScreenRole, getScreenFlows } from "./flows-data";
 import { RoleBadge, FlowTag, FlowBar, FlowDiagram, FlowNavButtons } from "./flows-ui";
-
 const C = {
   bgSoft: "#f5f5f5", text: "#111111", textMuted: "#666666", textLight: "#999999",
   border: "#e0e0e0", red: "#c0392b", redLight: "#fdf0ef", redBorder: "#e8b4b0",
   black: "#111111", white: "#ffffff", green: "#1a7a4a", greenLight: "#edf7f1", greenBorder: "#a8d5bc", tealLight: "#CCFBF1", amber: "#d97706", amberLight: "#fef3c7",
 };
-
 const Tag = ({ children, color }) => (
   <span style={{
     display:"inline-block",fontSize:10,fontWeight:600,letterSpacing:"0.05em",padding:"2px 7px",borderRadius:3,
@@ -18,21 +16,18 @@ const Tag = ({ children, color }) => (
     textTransform:"uppercase",whiteSpace:"nowrap",
   }}>{children}</span>
 );
-
 const Divider = ({label}) => (
   <div style={{display:"flex",alignItems:"center",gap:8,margin:"12px 0"}}>
     {label && <span style={{fontSize:10,color:C.textMuted,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",whiteSpace:"nowrap"}}>{label}</span>}
     <div style={{flex:1,borderTop:`0.5px solid ${C.border}`}}/>
   </div>
 );
-
 const FR = ({label,value,accent,bold}) => (
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`}}>
     <span style={{fontSize:11,color:C.textMuted}}>{label}</span>
     <span style={{fontSize:12,fontWeight:bold?700:500,color:accent?C.red:C.text}}>{value}</span>
   </div>
 );
-
 const Input = ({label,placeholder,required,wide,mono,note}) => (
   <div style={{marginBottom:9}}>
     {label&&<div style={{fontSize:11,color:C.textMuted,marginBottom:3,fontWeight:500}}>{label}{required&&<span style={{color:C.red}}> *</span>}</div>}
@@ -40,7 +35,6 @@ const Input = ({label,placeholder,required,wide,mono,note}) => (
     {note&&<div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{note}</div>}
   </div>
 );
-
 const Btn = ({children,primary,danger,success,small,full,outline,onClick}) => (
   <button onClick={onClick} style={{
     padding:small?"5px 12px":"8px 16px",borderRadius:4,fontSize:small?11:12,fontWeight:600,
@@ -50,11 +44,9 @@ const Btn = ({children,primary,danger,success,small,full,outline,onClick}) => (
     color:primary||danger||success?C.white:C.text,cursor:"pointer",letterSpacing:"0.02em",
   }}>{children}</button>
 );
-
 const Card = ({children,style,red}) => (
   <div style={{border:`0.5px solid ${red?C.redBorder:C.border}`,borderRadius:6,padding:"12px 14px",background:red?C.redLight:C.white,marginBottom:10,...style}}>{children}</div>
 );
-
 const Metric = ({label,value,sub,alert,green,onClick}) => (
   <div onClick={onClick} style={{border:`0.5px solid ${alert?C.redBorder:green?C.greenBorder:C.border}`,borderRadius:6,padding:"10px 12px",background:alert?C.redLight:green?C.greenLight:C.bgSoft,flex:1,cursor:onClick?"pointer":"default"}}>
     <div style={{fontSize:10,color:alert?C.red:green?C.green:C.textMuted,marginBottom:4,textTransform:"uppercase",letterSpacing:"0.05em"}}>{label}</div>
@@ -62,19 +54,16 @@ const Metric = ({label,value,sub,alert,green,onClick}) => (
     {sub&&<div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{sub}</div>}
   </div>
 );
-
 const TH = ({cols}) => (
   <div style={{display:"flex",gap:6,padding:"6px 10px",background:C.bgSoft,borderBottom:`0.5px solid ${C.border}`}}>
     {cols.map((c,i)=><div key={i} style={{flex:c.w||1,fontSize:10,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.04em",overflow:"hidden",whiteSpace:"nowrap"}}>{c.v}</div>)}
   </div>
 );
-
 const TR = ({cols,alert,green,muted}) => (
   <div style={{display:"flex",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,background:alert?C.redLight:green?C.greenLight:C.white}}>
     {cols.map((c,i)=><div key={i} style={{flex:c.w||1,fontSize:12,color:muted?C.textMuted:c.red?C.red:c.green?C.green:c.mono?C.textMuted:C.text,fontFamily:c.mono?"monospace":"inherit",fontWeight:c.bold?600:400,overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}>{c.v}</div>)}
   </div>
 );
-
 const Toggle = ({options,active}) => (
   <div style={{display:"flex",border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",width:"fit-content"}}>
     {options.map((o,i)=>(
@@ -82,7 +71,6 @@ const Toggle = ({options,active}) => (
     ))}
   </div>
 );
-
 const Tabs = ({tabs,active,onChange}) => (
   <div style={{display:"flex",borderBottom:`0.5px solid ${C.border}`,marginBottom:14,background:C.white}}>
     {tabs.map((t,i)=>(
@@ -90,11 +78,9 @@ const Tabs = ({tabs,active,onChange}) => (
     ))}
   </div>
 );
-
 const SectionLabel = ({children}) => (
   <div style={{fontSize:10,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:8,marginTop:4}}>{children}</div>
 );
-
 const MobileFrame = ({children,menuOpen}) => (
   <div style={{width:300,margin:"0 auto",border:`1px solid ${C.border}`,borderRadius:14,overflow:"hidden",background:C.bgSoft,boxShadow:"0 2px 12px rgba(0,0,0,0.08)",position:"relative"}}>
     <div style={{background:C.black,color:C.white,padding:"8px 16px",display:"flex",justifyContent:"space-between",fontSize:10}}>
@@ -104,14 +90,12 @@ const MobileFrame = ({children,menuOpen}) => (
     {menuOpen&&<MSlideMenu/>}
   </div>
 );
-
 const MNav = ({label,action}) => (
   <div style={{background:C.black,color:C.white,padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
     <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:16}}>←</span><span style={{fontSize:13,fontWeight:600}}>{label}</span></div>
     {action&&<span style={{fontSize:11,color:"#aaa"}}>{action}</span>}
   </div>
 );
-
 const MBottomNav = ({active,type}) => {
   const gmmsItems=[{icon:"📋",label:"Challans"},{icon:"💰",label:"Payments"},{icon:"👤",label:"Profile"}];
   const items=type==="gmms"?gmmsItems:[{icon:"🏠",label:"Home"},{icon:"⛶",label:"Scan"},{icon:"📦",label:"Orders"},{icon:"☰",label:"Menu"},{icon:"👤",label:"Profile"}];
@@ -125,7 +109,6 @@ const MBottomNav = ({active,type}) => {
     </div>
   );
 };
-
 // Sliding drawer menu shown when ☰ Menu is tapped
 const MSlideMenu = ({active}) => {
   const sections = [
@@ -162,7 +145,6 @@ const MSlideMenu = ({active}) => {
     </div>
   );
 };
-
 // ─── Sales ERP sidebar (CMS) ───────────────────────────────────────────
 const SALES_MENU=[
   {icon:"⊞",label:"Dashboard",screens:[{id:"W-03",label:"Main Dashboard"}]},
@@ -170,30 +152,28 @@ const SALES_MENU=[
   {icon:"☰",label:"Inventory",screens:[{id:"W-09",label:"Live Inventory"},{id:"W-13",label:"Stock Alert Center"}]},
   {icon:"◉",label:"Orders",screens:[{id:"W-14",label:"Order List"},{id:"W-15",label:"Order Detail"},{id:"W-16R",label:"Create Order - Retail"},{id:"W-16W",label:"Create Order - Wholesale"},{id:"W-34",label:"Wholesale Queue"}]},
   {icon:"⊏",label:"Dispatch",screens:[{id:"W-17",label:"LR Console"},{id:"W-18",label:"LR Detail"}]},
-  {icon:"\u20B9",label:"Payments",screens:[{id:"W-20",label:"Payment Records"},{id:"W-12",label:"Credit Control Dashboard"}]},
+  {icon:"₹",label:"Payments",screens:[{id:"W-20",label:"Payment Records"},{id:"W-12",label:"Credit Control Dashboard"}]},
   {icon:"●",label:"CCTV",screens:[{id:"W-21",label:"CCTV Console"},{id:"W-22",label:"Video Playback"}]},
   {icon:"⊡",label:"Reports",screens:[{id:"W-23",label:"Reports Hub"},{id:"W-24",label:"Sales Report"},{id:"W-25",label:"Ageing Report"},{id:"W-26",label:"Top Designs"},{id:"W-27",label:"Customer History"}]},
   {icon:"✉",label:"SMS",screens:[{id:"W-28",label:"SMS Log"},{id:"W-29",label:"SMS Templates"}]},
   {icon:"📊",label:"Daily Ops",screens:[{id:"W-36",label:"Daily Reconciliation"},{id:"W-39",label:"Challan Print Preview"}]},
-  {icon:"\u2699",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-30A",label:"Role Permissions"},{id:"W-31",label:"Customer Master"},{id:"W-35",label:"Edit Customer"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
+  {icon:"⚙",label:"Admin",screens:[{id:"W-30",label:"User Management"},{id:"W-30A",label:"Role Permissions"},{id:"W-31",label:"Customer Master"},{id:"W-35",label:"Edit Customer"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
 ];
-
 // ─── Manufacturing ERP sidebar (GMMS) ───────────────────────────────────────
 const MFG_MENU=[
   {icon:"⊞",label:"Dashboard",screens:[{id:"G-12",label:"Production Dashboard"}]},
   {icon:"📋",label:"Challans",screens:[{id:"G-01",label:"Challan List"},{id:"G-02",label:"Create Challan"},{id:"G-23",label:"Traditional Challan"},{id:"G-03",label:"Challan Tracking"},{id:"G-13",label:"Reprocess Challan"}]},
+  {icon:"✔",label:"Production",screens:[{id:"G-06",label:"Ready Piece Count"},{id:"G-07",label:"Payment & Checking"},{id:"G-22",label:"Live Inventory"},{id:"G-21",label:"SKU Outward"}]},
   {icon:"👷",label:"Contractors",screens:[{id:"G-04",label:"Contractor List"},{id:"G-05",label:"Contractor Detail"}]},
-  {icon:"✔",label:"Production",screens:[{id:"G-06",label:"Ready Piece Count"},{id:"G-07",label:"Payment & Checking"},{id:"G-21",label:"SKU Outward"}]},
-  {icon:"☰",label:"Inventory",screens:[{id:"G-22",label:"Live Inventory"}]},
+  {icon:"🧵",label:"Fabric",screens:[{id:"G-09",label:"Mill / Fabric Management"},{id:"G-24",label:"Fabric Dashboard"},{id:"G-25",label:"Fabric List"},{id:"G-26",label:"Add Fabric"},{id:"G-27",label:"Fabric Detail"},{id:"G-28",label:"Purchase Ledger"}]},
   {icon:"↩",label:"RF / Returns",screens:[{id:"G-08",label:"RF Management"},{id:"G-20",label:"Create RF Entry"}]},
-  {icon:"🧵",label:"Fabric / Mill",screens:[{id:"G-09",label:"Mill / Fabric Management"}]},
-  {icon:"₹",label:"Costing (Owner Only)",screens:[{id:"G-10",label:"Design Costing [OWNER ONLY]"}]},
+  {icon:"💰",label:"Payments",screens:[{id:"G-31",label:"Payment Dashboard"},{id:"G-32",label:"Invoice Verification"},{id:"G-33",label:"Contractor Ledger"},{id:"G-34",label:"Contractor Statement"},{id:"G-35",label:"Payment Processing"},{id:"G-36",label:"Payment History"},{id:"G-37",label:"QR Payment"},{id:"G-38",label:"Contractor Performance"},{id:"G-39",label:"Payment Timeline"}]},
+  {icon:"₹",label:"Costing",screens:[{id:"G-40",label:"Costing Dashboard"},{id:"G-41",label:"Challan Costing List"},{id:"G-10",label:"Design Costing [OWNER ONLY]"},{id:"G-42",label:"Challan Cost Detail"},{id:"G-43",label:"Process Cost Breakdown"},{id:"G-44",label:"Cost Analysis Report"},{id:"G-45",label:"Cost Comparison"}]},
+  {icon:"📊",label:"Reports",screens:[{id:"G-19",label:"GMMS Reports Hub"}]},
   {icon:"🎨",label:"Masters",screens:[{id:"G-14",label:"Design Master"},{id:"G-15",label:"Job Work Types"},{id:"G-16",label:"Color Master"},{id:"G-17",label:"Contractor Registry"}]},
   {icon:"🔔",label:"Notifications",screens:[{id:"G-18",label:"Notifications Center"}]},
-  {icon:"📊",label:"Reports",screens:[{id:"G-19",label:"GMMS Reports Hub"}]},
-  {icon:"\u2699",label:"Admin",screens:[{id:"G-30",label:"User Management (GMMS)"},{id:"G-30A",label:"Role Permissions (GMMS)"},{id:"W-32",label:"System Settings"},{id:"W-33",label:"Audit Trail"}]},
+  {icon:"🔑",label:"Admin",screens:[{id:"G-30",label:"User Management"},{id:"G-30A",label:"Role Permissions"}]},
 ];
-
 const SidebarMenu = ({menu,activeMenu,accentColor,logo,subtitle,user}) => {
   return(
     <div style={{width:190,background:C.black,flexShrink:0,overflowY:"auto",maxHeight:540,display:"flex",flexDirection:"column"}}>
@@ -227,7 +207,6 @@ const SidebarMenu = ({menu,activeMenu,accentColor,logo,subtitle,user}) => {
     </div>
   );
 };
-
 const WebLayout = ({children,activeMenu,mode}) => {
   const isMfg = mode==="mfg";
   const menu = isMfg ? MFG_MENU : SALES_MENU;
@@ -245,17 +224,14 @@ const WebLayout = ({children,activeMenu,mode}) => {
     </div>
   );
 };
-
 // Orange accent for Manufacturing ERP
 const CO = { accent:"#e67e22", accentLight:"#fef3e2", accentBorder:"#f5cba7" };
-
 const TopBar = ({title,actions,sub}) => (
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 16px",borderBottom:`0.5px solid ${C.border}`,background:C.white}}>
     <div><div style={{fontSize:14,fontWeight:600}}>{title}</div>{sub&&<div style={{fontSize:10,color:C.textMuted,marginTop:1}}>{sub}</div>}</div>
     <div style={{display:"flex",gap:8}}>{actions && actions.map((a,i)=><Btn key={i} primary={a.primary} danger={a.danger} small>{a.label}</Btn>)}</div>
   </div>
 );
-
 // Manufacturing ERP TopBar  -  orange accent
 const GTopBar = ({title,sub,actions,ownerOnly}) => (
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 16px",borderBottom:`0.5px solid ${CO.accentBorder}`,background:CO.accentLight}}>
@@ -271,11 +247,9 @@ const GTopBar = ({title,sub,actions,ownerOnly}) => (
     ))}</div>
   </div>
 );
-
 const Content = ({children,pad}) => (
   <div style={{padding:pad===false?0:16,background:C.bgSoft,minHeight:460}}>{children}</div>
 );
-
 const Modal = ({title,onClose,width,children}) => (
   <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:20}}>
     <div style={{width:width||460,background:C.white,borderRadius:8,boxShadow:"0 8px 32px rgba(0,0,0,0.18)",overflow:"hidden",maxHeight:"90%",display:"flex",flexDirection:"column"}}>
@@ -287,15 +261,10 @@ const Modal = ({title,onClose,width,children}) => (
     </div>
   </div>
 );
-
-
-
 // ------------------------------------------------------------------------
 // AUTH
 // ------------------------------------------------------------------------
-
 const screens = {
-
 "W-01": () => (
   <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:540,background:C.bgSoft}}>
     <div style={{width:320,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:8,padding:32}}>
@@ -317,7 +286,6 @@ const screens = {
     </div>
   </div>
 ),
-
 "W-02": () => (
   <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:540,background:C.bgSoft}}>
     <div style={{width:320,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:8,padding:32}}>
@@ -338,11 +306,9 @@ const screens = {
     </div>
   </div>
 ),
-
 // ------------------------------------------------------------------------
 // DASHBOARD
 // ------------------------------------------------------------------------
-
 "W-03": () => {
   const [erpMode, setErpMode] = useState("Sales ERP");
   return (
@@ -493,11 +459,9 @@ const screens = {
   </WebLayout>
   );
 },
-
 // ------------------------------------------------------------------------
 // PRODUCTS & SKU
 // ------------------------------------------------------------------------
-
 "W-04": () => (
   <WebLayout activeMenu="Products">
     <TopBar title="SKU List" actions={[{label:"+ Add SKU",primary:true},{label:"Print Labels"}]}/>
@@ -537,7 +501,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-05": () => {
   const [mode, setMode] = useState("gmms");
   return (
@@ -672,7 +635,6 @@ const screens = {
   </WebLayout>
   );
 },
-
 "W-06": () => {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
   const [printSelections, setPrintSelections] = useState({
@@ -786,7 +748,6 @@ const screens = {
   </WebLayout>
   );
 },
-
 "W-07": () => (
   <WebLayout activeMenu="Products">
     <TopBar title="Label & Barcode Print Center" actions={[{label:"Print",primary:true}]}/>
@@ -847,11 +808,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // INVENTORY
 // ------------------------------------------------------------------------
-
 "W-09": () => (
   <WebLayout activeMenu="Inventory">
     <TopBar title="Live Inventory" sub="Last sync: just now ●" actions={[{label:"+ Add Stock (→ Create SKU)",primary:true},{label:"Export"}]}/>
@@ -901,7 +860,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-10": () => (
   <WebLayout activeMenu="Inventory">
     <TopBar title="Add Stock  -  MERGED INTO CREATE/EDIT SKU"/>
@@ -917,7 +875,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-11": () => (
   <WebLayout activeMenu="Inventory">
     <TopBar title="Manual Stock Adjustment  -  REMOVED"/>
@@ -932,7 +889,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-12": ({ onNavigate }) => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All Customers");
@@ -940,7 +896,6 @@ const screens = {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [confirmCustomer, setConfirmCustomer] = useState(null);
   const [holdOverrides, setHoldOverrides] = useState({});
-
   const customers = [
     {
       name: "Neha Garments", phone: "+91 98765 43210",
@@ -1028,11 +983,9 @@ const screens = {
       ]
     },
   ];
-
   const totalOutstanding = customers.reduce((sum, c) => sum + c.outstandingBalance, 0);
   const overdueCount = customers.filter(c => c.daysOverdue > 0).length;
   const onHoldCount = customers.filter(c => c.onHold || holdOverrides[c.name]).length;
-
   const filtered = customers.filter(c => {
     const matchName = c.name.toLowerCase().includes(search.toLowerCase());
     const pct = (c.outstandingBalance / c.creditLimit) * 100;
@@ -1044,15 +997,12 @@ const screens = {
       true;
     return matchName && matchFilter;
   });
-
   const sorted = [...filtered].sort((a, b) => b.daysOverdue - a.daysOverdue);
-
   const handleToggleHold = (customerName) => { setConfirmCustomer(customerName); };
   const handleConfirmHold = () => { setHoldOverrides(prev=>({...prev,[confirmCustomer]:true})); setConfirmCustomer(null); };
   const handleCancelHold = () => { setConfirmCustomer(null); };
   const handleRowClick = (customer) => { setSelectedCustomer(customer); };
   const handleCloseDrawer = () => { setSelectedCustomer(null); };
-
   const getStatus = (c) => {
     const pct = (c.outstandingBalance / c.creditLimit) * 100;
     if (c.onHold || holdOverrides[c.name]) return { label: "Credit Hold", bg: C.red, text: C.white, solid: true };
@@ -1060,7 +1010,6 @@ const screens = {
     if (pct >= 80) return { label: "Approaching Limit", bg: C.amberLight, text: C.amber, solid: false };
     return { label: "Within Limit", bg: C.greenLight, text: C.green, solid: false };
   };
-
   return (
     <WebLayout activeMenu="Payments">
       <TopBar title="Credit Control Dashboard" sub="Monitor wholesale customer credit limits, overdue payments & credit holds"/>
@@ -1070,7 +1019,7 @@ const screens = {
           <div style={{display:"flex",gap:16,marginBottom:16}}>
             <div style={{flex:1,border:"0.5px solid "+C.border,borderRadius:8,padding:"16px 20px",background:C.white}}>
               <div style={{fontSize:10,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Total Outstanding</div>
-              <div style={{fontSize:24,fontWeight:700}}>{"\u20B9"}{totalOutstanding.toLocaleString("en-IN")}</div>
+              <div style={{fontSize:24,fontWeight:700}}>{"₹"}{totalOutstanding.toLocaleString("en-IN")}</div>
             </div>
             <div style={{flex:1,border:"0.5px solid "+(overdueCount>0?C.redBorder:C.border),borderRadius:8,padding:"16px 20px",background:overdueCount>0?C.redLight:C.white}}>
               <div style={{fontSize:10,color:overdueCount>0?C.red:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Customers Overdue</div>
@@ -1132,8 +1081,8 @@ const screens = {
                     style={{display:"flex",gap:8,padding:"8px 10px",borderTop:"0.5px solid "+C.border,minHeight:48,alignItems:"center",cursor:"pointer",background:C.white,transition:"background 0.15s"}}
                   >
                     <div style={{flex:1.2,fontSize:12,fontWeight:500,color:C.text,textDecoration:"underline",cursor:"pointer"}}>{c.name}</div>
-                    <div style={{flex:0.8,fontSize:12,fontWeight:500}}>{"\u20B9"}{c.creditLimit.toLocaleString("en-IN")}</div>
-                    <div style={{flex:0.9,fontSize:12,fontWeight:600,color:C.red}}>{"\u20B9"}{c.outstandingBalance.toLocaleString("en-IN")}</div>
+                    <div style={{flex:0.8,fontSize:12,fontWeight:500}}>{"₹"}{c.creditLimit.toLocaleString("en-IN")}</div>
+                    <div style={{flex:0.9,fontSize:12,fontWeight:600,color:C.red}}>{"₹"}{c.outstandingBalance.toLocaleString("en-IN")}</div>
                     <div style={{flex:1.1,display:"flex",alignItems:"center",gap:6}}>
                       <div style={{flex:1,height:8,background:C.bgSoft,borderRadius:4,overflow:"hidden"}}>
                         <div style={{width:Math.min(pct,100)+"%",height:"100%",background:barColor,borderRadius:4,transition:"width 0.3s"}}/>
@@ -1163,7 +1112,7 @@ const screens = {
             </div>
           ) : (
             <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"48px 0",gap:16}}>
-              <div style={{fontSize:48,color:C.textLight}}>{"\u26E8"}</div>
+              <div style={{fontSize:48,color:C.textLight}}>{"⛨"}</div>
               <div style={{fontSize:13,color:C.textMuted}}>No customers match this filter</div>
             </div>
           )}
@@ -1178,16 +1127,16 @@ const screens = {
                   <div style={{fontSize:14,fontWeight:700}}>{selectedCustomer.name}</div>
                   <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>{selectedCustomer.phone}</div>
                 </div>
-                <span onClick={handleCloseDrawer} style={{fontSize:18,color:C.textLight,cursor:"pointer",lineHeight:1}}>{"\u2715"}</span>
+                <span onClick={handleCloseDrawer} style={{fontSize:18,color:C.textLight,cursor:"pointer",lineHeight:1}}>{"✕"}</span>
               </div>
               <div style={{display:"flex",gap:16,padding:"16px 20px",borderBottom:"0.5px solid "+C.border}}>
                 <div style={{flex:1}}>
                   <div style={{fontSize:10,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Credit Limit</div>
-                  <div style={{fontSize:20,fontWeight:700}}>{"\u20B9"}{selectedCustomer.creditLimit.toLocaleString("en-IN")}</div>
+                  <div style={{fontSize:20,fontWeight:700}}>{"₹"}{selectedCustomer.creditLimit.toLocaleString("en-IN")}</div>
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:10,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Outstanding Balance</div>
-                  <div style={{fontSize:20,fontWeight:700,color:C.red}}>{"\u20B9"}{selectedCustomer.outstandingBalance.toLocaleString("en-IN")}</div>
+                  <div style={{fontSize:20,fontWeight:700,color:C.red}}>{"₹"}{selectedCustomer.outstandingBalance.toLocaleString("en-IN")}</div>
                 </div>
               </div>
               <div style={{flex:1,overflowY:"auto",padding:"12px 20px"}}>
@@ -1201,9 +1150,9 @@ const screens = {
                   <div key={oi} style={{display:"flex",gap:6,padding:"7px 0",borderBottom:"0.5px solid "+C.border,alignItems:"center"}}>
                     <div style={{flex:1,fontSize:11,fontFamily:"monospace",color:C.text}}>{o.id}</div>
                     <div style={{flex:1,fontSize:10,color:C.textMuted}}>{o.date}</div>
-                    <div style={{flex:1,fontSize:11,fontWeight:500}}>{"\u20B9"}{o.amount.toLocaleString("en-IN")}</div>
-                    <div style={{flex:1,fontSize:11,color:C.green,fontWeight:500}}>{"\u20B9"}{o.paid.toLocaleString("en-IN")}</div>
-                    <div style={{flex:1,fontSize:11,fontWeight:600,color:o.balance>0?C.red:C.green}}>{"\u20B9"}{o.balance.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1,fontSize:11,fontWeight:500}}>{"₹"}{o.amount.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1,fontSize:11,color:C.green,fontWeight:500}}>{"₹"}{o.paid.toLocaleString("en-IN")}</div>
+                    <div style={{flex:1,fontSize:11,fontWeight:600,color:o.balance>0?C.red:C.green}}>{"₹"}{o.balance.toLocaleString("en-IN")}</div>
                     <div style={{flex:1}}>
                       <span style={{fontSize:9,fontWeight:600,padding:"2px 6px",borderRadius:2,background:o.status==="Paid"?C.greenLight:C.redLight,color:o.status==="Paid"?C.green:C.red,border:"0.5px solid "+(o.status==="Paid"?C.greenBorder:C.redBorder),textTransform:"uppercase",letterSpacing:"0.04em",whiteSpace:"nowrap"}}>{o.status}</span>
                     </div>
@@ -1211,7 +1160,7 @@ const screens = {
                 ))}
               </div>
               <div style={{padding:"14px 20px",borderTop:"0.5px solid "+C.border,flexShrink:0}}>
-              <button onClick={()=>onNavigate&&onNavigate("W-27")} style={{width:"100%",padding:"9px 0",borderRadius:6,border:"0.5px solid "+C.border,background:C.white,color:C.text,fontSize:12,fontWeight:600,cursor:"pointer"}}>View Full History {"\u2197"}</button>
+              <button onClick={()=>onNavigate&&onNavigate("W-27")} style={{width:"100%",padding:"9px 0",borderRadius:6,border:"0.5px solid "+C.border,background:C.white,color:C.text,fontSize:12,fontWeight:600,cursor:"pointer"}}>View Full History {"↗"}</button>
               </div>
             </div>
           </>
@@ -1235,7 +1184,6 @@ const screens = {
     </WebLayout>
   );
 },
-
 "W-13": () => (
   <WebLayout activeMenu="Inventory">
     <TopBar title="Stock Alert Center" sub="Low stock & ageing alerts  -  thresholds configured in System Settings"/>
@@ -1276,11 +1224,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // ORDERS
 // ------------------------------------------------------------------------
-
 "W-14": () => (
   <WebLayout activeMenu="Orders">
     <TopBar title="Order List" actions={[{label:"+ New Order",primary:true},{label:"Export"}]}/>
@@ -1322,7 +1268,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-15": () => (
   <WebLayout activeMenu="Orders">
     <TopBar title="Order #W-1007  -  Neha Garments" actions={[{label:"Resend LR SMS"},{label:"Record Payment",primary:true},{label:"Print Challan"}]}/>
@@ -1452,7 +1397,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ── RETAIL ORDER ──────────────────────────────
 "W-16R": () => (
   <WebLayout activeMenu="Orders" activeScreen="W-16R">
@@ -1460,7 +1404,6 @@ const screens = {
     <Content>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
-
           {/* Retail: Customer is optional / minimal */}
           <Card>
             <SectionLabel>Step 1  -  Customer (optional for retail)</SectionLabel>
@@ -1486,7 +1429,6 @@ const screens = {
               <div style={{fontSize:11,color:C.textMuted}}>Retail Customer · Ahmedabad</div>
             </div>
           </Card>
-
           {/* Item scanning  -  retail uses retail price */}
           <Card>
             <SectionLabel>Step 2  -  Scan / Add Items</SectionLabel>
@@ -1531,7 +1473,6 @@ const screens = {
               ))}
             </div>
           </Card>
-
           {/* Payment  -  retail is typically paid immediately */}
           <Card>
             <SectionLabel>Step 3  -  Payment</SectionLabel>
@@ -1550,7 +1491,6 @@ const screens = {
               ℹ Retail orders do <strong>not</strong> require approval  -  submitted order is immediately dispatched. Challan printed on submit.
             </div>
           </Card>
-
         </div>
         <div style={{flex:1}}>
           <Card>
@@ -1592,7 +1532,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ── WHOLESALE ORDER ──────────────────────────────
 "W-16W": () => (
   <WebLayout activeMenu="Orders" activeScreen="W-16W">
@@ -1600,7 +1539,6 @@ const screens = {
     <Content>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
-
           {/* Wholesale: Customer must be pre-registered with full profile */}
           <Card>
             <SectionLabel>Step 1  -  Select Wholesale Customer</SectionLabel>
@@ -1637,7 +1575,6 @@ const screens = {
               </div>
             </div>
           </Card>
-
           {/* Item scanning  -  wholesale uses wholesale price + customer discount */}
           <Card>
             <SectionLabel>Step 2  -  Scan / Add Items</SectionLabel>
@@ -1681,7 +1618,6 @@ const screens = {
               ))}
             </div>
           </Card>
-
           {/* Payment  -  wholesale may be credit / partial */}
           <Card>
             <SectionLabel>Step 3  -  Payment Terms</SectionLabel>
@@ -1702,7 +1638,6 @@ const screens = {
               ⚠ This order goes to <strong>Approval Queue</strong> after submission. Stock is reserved but <strong>not deducted</strong> until approved by admin/manager.
             </div>
           </Card>
-
           {/* Wholesale-only: Challan & Logistics */}
           <Card>
             <SectionLabel>Step 4  -  Challan & Logistics (Wholesale only)</SectionLabel>
@@ -1712,7 +1647,6 @@ const screens = {
             </div>
             <Input label="Special Instructions (optional)" placeholder="e.g. dispatch only after full payment, fragile items..."/>
           </Card>
-
         </div>
         <div style={{flex:1}}>
           <Card>
@@ -1762,7 +1696,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-34": () => (
   <WebLayout activeMenu="Orders">
     <TopBar title="Wholesale Approval Queue" actions={[{label:"Approve Selected",primary:true}]}/>
@@ -1799,11 +1732,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // DISPATCH & LOGISTICS
 // ------------------------------------------------------------------------
-
 "W-17": () => (
   <WebLayout activeMenu="Dispatch">
     <TopBar title="LR Management Console" actions={[{label:"Resend Selected",primary:true},{label:"Export"}]}/>
@@ -1836,7 +1767,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-18": () => (
   <WebLayout activeMenu="Dispatch">
     <TopBar title="LR Detail  -  Order #1042" actions={[{label:"Resend SMS"},{label:"Download LR",primary:true}]}/>
@@ -1870,7 +1800,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-19": () => (
   <WebLayout activeMenu="Dispatch">
     <TopBar title="Logistics Status Tracker  -  REMOVED"/>
@@ -1888,11 +1817,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // PAYMENTS
 // ------------------------------------------------------------------------
-
 "W-20": () => (
   <WebLayout activeMenu="Payments">
     <TopBar title="Payment Records" sub="Outstanding balances prioritised by credit limit usage"/>
@@ -1942,11 +1869,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // CCTV
 // ------------------------------------------------------------------------
-
 "W-21": ({ onNavigate }) => {
   const [tab, setTab] = useState("Record New Dispatch");
   return (
@@ -2058,7 +1983,6 @@ const screens = {
     </WebLayout>
   );
 },
-
 "W-22": () => (
   <WebLayout activeMenu="CCTV">
     <TopBar title="Video Playback  -  Order #1042" actions={[{label:"Download Clip",primary:true}]}/>
@@ -2091,11 +2015,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // REPORTS
 // ------------------------------------------------------------------------
-
 "W-23": () => (
   <WebLayout activeMenu="Reports">
     <TopBar title="Reports Hub"/>
@@ -2120,7 +2042,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-24": () => (
   <WebLayout activeMenu="Reports">
     <TopBar title="Sales Report" actions={[{label:"Export Excel"},{label:"Export PDF",primary:true}]}/>
@@ -2146,7 +2067,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-25": () => (
   <WebLayout activeMenu="Reports">
     <TopBar title="Inventory Ageing Report" actions={[{label:"Export",primary:true}]}/>
@@ -2168,7 +2088,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-26": () => (
   <WebLayout activeMenu="Reports">
     <TopBar title="Top-Selling Designs" actions={[{label:"Export Excel",primary:true}]}/>
@@ -2195,7 +2114,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-27": () => (
   <WebLayout activeMenu="Reports">
     <TopBar title="Customer Order History" actions={[{label:"PDF Statement",primary:true}]}/>
@@ -2226,11 +2144,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // SMS
 // ------------------------------------------------------------------------
-
 "W-28": () => (
   <WebLayout activeMenu="SMS">
     <TopBar title="SMS Log"/>
@@ -2251,7 +2167,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-29": () => (
   <WebLayout activeMenu="SMS">
     <TopBar title="SMS Template Management" actions={[{label:"+ New Template",primary:true}]}/>
@@ -2273,11 +2188,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // DAILY OPS
 // ------------------------------------------------------------------------
-
 "W-36": () => (
   <WebLayout activeMenu="Daily Ops">
     <TopBar title="Daily Reconciliation" sub="04 Apr 2026" actions={[{label:"Export Statement"},{label:"Close Day",primary:true}]}/>
@@ -2351,11 +2264,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // ADMIN
 // ------------------------------------------------------------------------
-
 "W-30": () => (
   <WebLayout activeMenu="Admin" activeScreen="W-30">
     <TopBar title="User Management" actions={[{label:"+ Add User",primary:true}]}/>
@@ -2388,7 +2299,6 @@ const screens = {
           </div>
         ))}
       </div>
-
       {/* ── DIALOG STATE 1: + Add User ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
         ↓ Dialog shown when "+ Add User" is clicked
@@ -2444,7 +2354,6 @@ const screens = {
           </div>
         </Modal>
       </div>
-
       {/* ── DIALOG STATE 2: Edit User ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
         ↓ Dialog shown when "Edit" is clicked on a user row
@@ -2509,7 +2418,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-30A": () => (
   <WebLayout activeMenu="Admin" activeScreen="W-30A">
     <TopBar title="Role-Based Permissions" sub="Configure what each role can access and do" actions={[{label:"Save All Permissions",primary:true}]}/>
@@ -2570,7 +2478,6 @@ const screens = {
           </div>
         </Card>
       ))}
-
       {/* ── DIALOG STATE 1: + Add Role ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",margin:"20px 0 10px"}}>
         ↓ Dialog shown when "+ Add Role" is clicked
@@ -2615,7 +2522,6 @@ const screens = {
           </div>
         </Modal>
       </div>
-
       {/* ── DIALOG STATE 2: Delete Role confirmation ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
         ↓ Dialog shown when "Delete Role" is clicked
@@ -2656,7 +2562,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-31": () => (
   <WebLayout activeMenu="Admin">
     <TopBar title="Customer Master" actions={[{label:"+ Add Customer",primary:true},{label:"Import CSV"}]}/>
@@ -2679,7 +2584,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-35": () => (
   <WebLayout activeMenu="Admin">
     <TopBar title="Create Wholesale Customer" actions={[{label:"Save Customer",primary:true},{label:"Cancel"}]}/>
@@ -2759,7 +2663,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-32": () => (
   <WebLayout activeMenu="Admin">
     <TopBar title="System Settings" actions={[{label:"Save Settings",primary:true}]}/>
@@ -2785,7 +2688,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "W-33": () => (
   <WebLayout activeMenu="Admin">
     <TopBar title="Audit Trail" actions={[{label:"Export"}]}/>
@@ -2807,11 +2709,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // CHALLAN PRINT
 // ------------------------------------------------------------------------
-
 "W-39": () => (
   <WebLayout activeMenu="Orders">
     <TopBar title="Challan Print Preview" actions={[{label:"← Back"},{label:"Print Challan",primary:true}]}/>
@@ -2901,11 +2801,9 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE SCREENS
 // ------------------------------------------------------------------------
-
 "M-01": () => (
   <MobileFrame>
     <div style={{background:C.black,padding:"32px 24px 24px",textAlign:"center"}}>
@@ -2922,7 +2820,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-02": () => (
   <MobileFrame>
     <div style={{background:C.black,padding:"16px 16px 20px"}}>
@@ -2959,7 +2856,6 @@ const screens = {
     <MBottomNav active="Home"/>
   </MobileFrame>
 ),
-
 "M-03": () => (
   <MobileFrame>
     <MNav label="Barcode Scanner"/>
@@ -2985,7 +2881,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-04": () => (
   <MobileFrame>
     <MNav label="Scan Result"/>
@@ -3005,7 +2900,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-05": () => (
   <MobileFrame>
     <MNav label="Stock In"/>
@@ -3025,7 +2919,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-06": () => (
   <MobileFrame>
     <MNav label="Stock Lookup"/>
@@ -3057,7 +2950,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-07": () => (
   <MobileFrame>
     <MNav label="Order Picking List"/>
@@ -3085,7 +2977,6 @@ const screens = {
     <MBottomNav active="Orders"/>
   </MobileFrame>
 ),
-
 "M-08": () => (
   <MobileFrame>
     <MNav label="Order #1043" action="Print Challan"/>
@@ -3135,7 +3026,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-09": () => (
   <MobileFrame>
     <MNav label="Pick Items  -  #1043"/>
@@ -3162,7 +3052,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-10": () => (
   <MobileFrame>
     <MNav label="Dispatch Confirmation"/>
@@ -3190,7 +3079,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-11": () => (
   <MobileFrame>
     <MNav label="LR Upload"/>
@@ -3243,7 +3131,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-12": () => (
   <MobileFrame>
     <MNav label="LR Submitted"/>
@@ -3258,11 +3145,9 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  CREATE ORDER
 // ------------------------------------------------------------------------
-
 // ── RETAIL ORDER (MOBILE) ──────────────────────
 "M-15R": () => (
   <MobileFrame>
@@ -3273,7 +3158,6 @@ const screens = {
         <div style={{flex:1,textAlign:"center",padding:"8px",background:C.black,color:C.white,borderRadius:4,fontSize:12,fontWeight:600}}>Retail ✔</div>
         <div style={{flex:1,textAlign:"center",padding:"8px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,color:C.textMuted}}>Wholesale</div>
       </div>
-
       {/* Customer  -  optional for retail, quick add */}
       <SectionLabel>Customer (optional)</SectionLabel>
       <div style={{fontSize:10,color:C.textMuted,marginBottom:8,padding:"5px 8px",background:C.bgSoft,borderRadius:4}}>
@@ -3289,7 +3173,6 @@ const screens = {
         <div style={{fontWeight:600,color:C.green}}>✔ Ramesh Traders</div>
         <div style={{color:C.textMuted}}>+91 76543 21098 · Retail</div>
       </div>
-
       {/* Scan items  -  retail price */}
       <SectionLabel>Scan Items  -  Retail Price</SectionLabel>
       <div style={{display:"flex",gap:8,marginBottom:10}}>
@@ -3331,7 +3214,6 @@ const screens = {
           <span>Total</span><span>₹2,190</span>
         </div>
       </div>
-
       {/* Payment  -  typically immediate for retail */}
       <SectionLabel>Payment</SectionLabel>
       <div style={{display:"flex",gap:6,marginBottom:8}}>
@@ -3347,7 +3229,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ── WHOLESALE ORDER (MOBILE) ──────────────────────
 "M-15W": () => (
   <MobileFrame>
@@ -3358,7 +3239,6 @@ const screens = {
         <div style={{flex:1,textAlign:"center",padding:"8px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,color:C.textMuted}}>Retail</div>
         <div style={{flex:1,textAlign:"center",padding:"8px",background:C.black,color:C.white,borderRadius:4,fontSize:12,fontWeight:600}}>Wholesale ✔</div>
       </div>
-
       {/* Customer  -  must be pre-registered */}
       <SectionLabel>Wholesale Customer *</SectionLabel>
       <div style={{fontSize:10,color:C.textMuted,marginBottom:8,padding:"5px 8px",background:C.bgSoft,borderRadius:4}}>
@@ -3388,7 +3268,6 @@ const screens = {
           <span style={{fontSize:10,color:C.green,fontWeight:600}}>Disc: 5%</span>
         </div>
       </div>
-
       {/* Scan items  -  wholesale price + auto discount */}
       <SectionLabel>Scan Items  -  Wholesale Price + 5% Discount</SectionLabel>
       <div style={{display:"flex",gap:8,marginBottom:10}}>
@@ -3429,7 +3308,6 @@ const screens = {
           <div style={{display:"flex",justifyContent:"space-between",fontWeight:700,marginTop:2}}><span>Net Total</span><span>₹4,636</span></div>
         </div>
       </div>
-
       {/* Payment  -  credit option for wholesale */}
       <SectionLabel>Payment</SectionLabel>
       <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
@@ -3439,12 +3317,10 @@ const screens = {
       </div>
       <Input label="Amount Paid Now (₹)" placeholder="₹0  -  credit allowed" note="0 = Unpaid · Partial = Partial Paid"/>
       <Input label="Reference no. (optional)" placeholder="UTR / Cheque no."/>
-
       {/* Wholesale-only fields */}
       <SectionLabel>Logistics (Wholesale Only)</SectionLabel>
       <Input label="Broker" placeholder="Broker name (if applicable)"/>
       <Input label="Transport / Carrier" placeholder="Customer's preferred transport"/>
-
       <div style={{padding:"6px 8px",background:"#fff8e1",border:`0.5px solid #f5c842`,borderRadius:4,fontSize:10,color:"#7a5c00",marginBottom:12}}>
         ⚠ Goes to Approval Queue  -  stock not deducted until admin approves
       </div>
@@ -3452,11 +3328,9 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  WHOLESALE APPROVAL
 // ------------------------------------------------------------------------
-
 "M-16": () => (
   <MobileFrame>
     <MNav label="Wholesale Approvals"/>
@@ -3490,11 +3364,9 @@ const screens = {
     <MBottomNav active="Orders"/>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  CUSTOMER CREATE
 // ------------------------------------------------------------------------
-
 "M-17": () => (
   <MobileFrame>
     <MNav label="New Customer"/>
@@ -3540,11 +3412,9 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  CCTV RECORDING
 // ------------------------------------------------------------------------
-
 "M-19": () => (
   <MobileFrame>
     <MNav label="CCTV Recording"/>
@@ -3591,11 +3461,9 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  CHALLAN PRINT
 // ------------------------------------------------------------------------
-
 "M-18": () => (
   <MobileFrame>
     <MNav label="Challan Print"/>
@@ -3642,11 +3510,9 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  GENERAL
 // ------------------------------------------------------------------------
-
 "M-13": () => (
   <MobileFrame>
     <MNav label="Notifications"/>
@@ -3671,7 +3537,6 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 "M-14": () => (
   <MobileFrame>
     <MNav label="Profile & Settings"/>
@@ -3700,11 +3565,9 @@ const screens = {
     </div>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // MOBILE  -  SLIDE MENU
 // ------------------------------------------------------------------------
-
 "M-20": () => (
   <MobileFrame menuOpen={true}>
     <MNav label="Home Dashboard"/>
@@ -3714,11 +3577,9 @@ const screens = {
     <MBottomNav active="Menu"/>
   </MobileFrame>
 ),
-
 // ------------------------------------------------------------------------
 // PUBLIC
 // ------------------------------------------------------------------------
-
 "P-01": () => (
   <div style={{maxWidth:420,margin:"0 auto",background:C.white,borderRadius:8,border:`0.5px solid ${C.border}`,overflow:"hidden"}}>
     <div style={{background:C.black,padding:"16px 20px"}}>
@@ -3747,7 +3608,6 @@ const screens = {
 // ------------------------------------------------------------------------
 // GMMS  -  MANUFACTURING ERP SCREENS
 // ------------------------------------------------------------------------
-
 // G-12: Production Dashboard
 "G-12": ({ onNavigate }) => {
   const [erpMode,setErpMode]=useState("Manufacturing ERP");
@@ -3777,10 +3637,14 @@ const screens = {
     </div>
     <Content>
       <div style={{display:"flex",gap:10,marginBottom:14}}>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
         <Metric label="Lots in Progress" value="42" sub="Active challans" onClick={()=>onNavigate("G-01")}/>
-        <Metric label="RF List" value="3" sub="Pending RF entries" onClick={()=>onNavigate("G-08")} alert/>
-        <Metric label="Reports" value={"\u2192"} sub="Challan / Contractor / Design" onClick={()=>onNavigate("G-19")}/>
-        <Metric label="Today's Incoming Ready Pcs" value="1,240" sub="From all contractors" onClick={()=>onNavigate("G-06")} green/>
+        <Metric label="Today’s Ready PCS" value="1,240" sub="From all contractors" onClick={()=>onNavigate("G-06")} green/>
+        <Metric label="Today’s RF" value="3" sub="Pending entries" alert/>
+        <Metric label="Today’s Short" value="28" sub="Across stages" alert/>
+        <Metric label="Active Claims" value="2" sub="Non-returnable items" onClick={()=>onNavigate("G-08")}/>
+        <Metric label="Stage Completion" value="72%" sub="Avg of all stages"/>
+      </div>
       </div>
       <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
         {[["EMB",12,"#e67e22"],["STH",8,"#2980b9"],["DIA",6,"#8e44ad"],["WASH",4,"#1abc9c"],["CUT",3,"#95a5a6"],["FIN",2,"#27ae60"]].map(([stage,cnt,color],i)=>(
@@ -3829,12 +3693,43 @@ const screens = {
           </Card>
         </div>
       </div>
+      <div style={{marginTop:12}}>
+        <Card>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+            <div style={{fontSize:12,fontWeight:600}}>Payment Summary</div>
+            <span style={{fontSize:10,color:CO.accent,cursor:"pointer"}} onClick={()=>onNavigate("G-31")}>Payment Dashboard →</span>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <Metric label="Total Paid" value={"₹ 12,45,000"} sub="This month" small onClick={()=>onNavigate("G-36")} green/>
+            <Metric label="Pending Payments" value={"₹ 4,33,000"} sub="Outstanding" small onClick={()=>onNavigate("G-35")} alert/>
+            <Metric label="Avg Processing" value="2.4d" sub="Invoice to payment" small onClick={()=>onNavigate("G-39")}/>
+            <Metric label="QR Payments" value={"₹ 1,88,000"} sub="This month" small onClick={()=>onNavigate("G-37")} green/>
+          </div>
+        </Card>
+      </div>
+      <div style={{marginTop:12}}>
+        <Card>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+            <div style={{fontSize:12,fontWeight:600}}>Costing Summary</div>
+            <span style={{fontSize:10,color:CO.accent,cursor:"pointer"}} onClick={()=>onNavigate("G-40")}>Costing Dashboard →</span>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <Metric label="Total Cost (May)" value={"₹ 18,64,200"} sub="All active challans" small onClick={()=>onNavigate("G-41")}/>
+            <Metric label="Avg / PCS" value={"₹ 124.50"} sub="Per piece average" small green/>
+            <Metric label="Pending Costing" value="2 challans" sub="Not yet costed" small onClick={()=>onNavigate("G-41")} alert/>
+            <Metric label="Highest Challan" value={"₹ 2,84,500"} sub="#3202 - D-710" small onClick={()=>onNavigate("G-42")}/>
+          </div>
+        </Card>
+      </div>
     </Content>
   </WebLayout>
   );
 },
 "G-01": () => {
   const [statusFilter,setStatusFilter]=useState("All");
+  const [showDetails,setShowDetails]=useState(null);
+  const [showAddChallan,setShowAddChallan]=useState(false);
+  const [challanQty,setChallanQty]=useState("");
   const [rows,setRows]=useState([
     {cn:"CH-3221",dn:"D-730",contractor:"M/s Rajan Fabrics",pcs:600,readyPcs:350,flow:["EMB","STH","DIA"],status:"Active",date:"07 May",days:10},
     {cn:"CH-3210",dn:"D-710",contractor:"M/s Sharma Exports",pcs:450,readyPcs:0,flow:["EMB","LAC"],status:"Overdue",date:"04 May",days:13},
@@ -3852,53 +3747,114 @@ const screens = {
   };
   return(
   <WebLayout activeMenu="Challans" mode="mfg">
-    <GTopBar title="Challan List" sub="All production challans" actions={[{label:"New Challan",primary:true}]}/>
+    <GTopBar title="Challan List" sub="All production challans" actions={[{label:"+ New Challan",primary:true}]}/>
+    {showAddChallan&&(
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowAddChallan(false)}>
+        <div style={{background:C.white,borderRadius:8,padding:24,width:400}} onClick={e=>e.stopPropagation()}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:16}}>
+            <div style={{fontSize:14,fontWeight:700}}>Add New Challan</div>
+            <span onClick={()=>setShowAddChallan(false)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"×"}</span>
+          </div>
+          <Input label="Design Number" placeholder="e.g. D-730"/>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="Challan Qty (Pieces)" placeholder="600" value={challanQty} onChange={e=>setChallanQty(e.target.value)}/></div>
+            <div style={{flex:1}}><Input label="Date" placeholder="11 May 2026"/></div>
+          </div>
+          <Input label="Contractor" placeholder="Select or type name"/>
+          <Input label="Job Type" placeholder="e.g. EMB / STH"/>
+          <div style={{display:"flex",gap:8,marginTop:16}}>
+            <button style={{flex:1,padding:"8px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Create Challan</button>
+            <button onClick={()=>setShowAddChallan(false)} style={{flex:1,padding:"8px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer"}}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    )}
     <Content>
       <div style={{display:"flex",gap:8,marginBottom:12,alignItems:"center"}}>
         <input placeholder="Search challan / design..." style={{flex:1,padding:"6px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
         {["All","Active","Completed","Overdue","On Hold"].map(s=>(
           <div key={s} onClick={()=>setStatusFilter(s)} style={{padding:"4px 10px",fontSize:10,borderRadius:4,cursor:"pointer",fontWeight:600,background:statusFilter===s?CO.accent:C.bgSoft,color:statusFilter===s?C.white:C.textMuted,border:`0.5px solid ${statusFilter===s?CO.accentBorder:C.border}`}}>{s}</div>
         ))}
+        <button onClick={()=>setShowAddChallan(true)} style={{padding:"6px 14px",border:`1px solid ${CO.accentBorder}`,borderRadius:4,fontSize:11,background:CO.accent,color:C.white,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>+ New Challan</button>
       </div>
       <Card>
         <TH cols={[{v:"Date",w:0.5},{v:"Days",w:0.35},{v:"Challan No",w:0.7},{v:"Design No",w:0.55},{v:"Contractor"},{v:"Pcs",w:0.4},{v:"Ready Pcs",w:0.55},{v:"Flow"},{v:"Status",w:0.7},{v:"Action",w:0.5}]}/>
         {rows.filter(r=>statusFilter==="All"||r.status===statusFilter).map((r,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"7px 8px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-            <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{r.date}</div>
-            <div style={{flex:0.35,fontWeight:600,color:r.days>20?C.red:r.days>14?"#b45309":C.text,fontSize:10}}>{r.days}d</div>
-            <div style={{flex:0.7,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{r.cn}</div>
-            <div style={{flex:0.55,fontFamily:"monospace",color:C.textMuted,fontSize:10}}>{r.dn}</div>
-            <div style={{flex:1,fontWeight:700,fontSize:10}}>{r.contractor}</div>
-            <div style={{flex:0.4,fontWeight:600}}>{r.pcs}</div>
-            <div style={{flex:0.55,display:"flex",alignItems:"center",gap:4}}>
-              <span style={{fontWeight:600,fontSize:11}}>{r.readyPcs}</span>
-              {r.status!=="Completed"&&(
-                <span onClick={()=>markComplete(i)} style={{fontSize:9,padding:"2px 6px",borderRadius:3,background:"#e8f5e9",color:"#2e7d32",cursor:"pointer",fontWeight:600,border:"0.5px solid #a5d6a7",whiteSpace:"nowrap"}}>{"\u2713"} Complete</span>
-              )}
+          <div key={i}>
+            <div style={{display:"flex",alignItems:"center",gap:4,padding:"7px 8px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+              <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{r.date}</div>
+              <div style={{flex:0.35,fontWeight:600,color:r.days>20?C.red:r.days>14?"#b45309":C.text,fontSize:10}}>{r.days}d</div>
+              <div style={{flex:0.7,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{r.cn}</div>
+              <div style={{flex:0.55,fontFamily:"monospace",color:C.textMuted,fontSize:10}}>{r.dn}</div>
+              <div style={{flex:1,fontWeight:700,fontSize:10}}>{r.contractor}</div>
+              <div style={{flex:0.4,fontWeight:600}}>{r.pcs}</div>
+              <div style={{flex:0.55,display:"flex",alignItems:"center",gap:4}}>
+                <span style={{fontWeight:600,fontSize:11}}>{r.readyPcs}</span>
+                {r.status!=="Completed"&&(
+                  <span onClick={()=>markComplete(i)} style={{fontSize:9,padding:"2px 6px",borderRadius:3,background:"#e8f5e9",color:"#2e7d32",cursor:"pointer",fontWeight:600,border:"0.5px solid #a5d6a7",whiteSpace:"nowrap"}}>{"✓"} Complete</span>
+                )}
+              </div>
+              <div style={{flex:1}}>{r.flow.map((s,j)=><span key={j} style={{marginRight:2,background:CO.accentLight,color:CO.accent,padding:"1px 5px",borderRadius:3,fontSize:9,fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>{s}</span>)}</div>
+              <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Active"?"#e8f5e9":r.status==="Completed"?"#e3f2fd":r.status==="Overdue"?"#ffebee":"#fff8e1",color:r.status==="Active"?"#2e7d32":r.status==="Completed"?"#1565c0":r.status==="Overdue"?"#c62828":"#f57f17"}}>{r.status}</span></div>
+              <div style={{flex:0.5}}><Btn small>View</Btn></div>
             </div>
-            <div style={{flex:1}}>{r.flow.map((s,j)=><span key={j} style={{marginRight:2,background:CO.accentLight,color:CO.accent,padding:"1px 5px",borderRadius:3,fontSize:9,fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>{s}</span>)}</div>
-            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Active"?"#e8f5e9":r.status==="Completed"?"#e3f2fd":r.status==="Overdue"?"#ffebee":"#fff8e1",color:r.status==="Active"?"#2e7d32":r.status==="Completed"?"#1565c0":r.status==="Overdue"?"#c62828":"#f57f17"}}>{r.status}</span></div>
-            <div style={{flex:0.5}}><Btn small>View</Btn></div>
+            {showDetails===i&&(
+              <div style={{padding:"10px 16px",background:C.bgSoft,borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <div style={{display:"flex",gap:16,marginBottom:8,flexWrap:"wrap"}}>
+                  <div><span style={{color:C.textMuted}}>Contact:</span> +91 98765 43210</div>
+                  <div><span style={{color:C.textMuted}}>Fabric Allotted:</span> 420.5m</div>
+                  <div><span style={{color:C.textMuted}}>Fabric Used:</span> 385.0m</div>
+                </div>
+                <div style={{display:"flex",gap:16,marginBottom:8,flexWrap:"wrap"}}>
+                  <div><span style={{color:C.textMuted}}>Exp. Completion:</span> 10 days from challan</div>
+                  <div><span style={{color:C.textMuted}}>Current Stage:</span> <span style={{background:CO.accentLight,color:CO.accent,padding:"1px 6px",borderRadius:3,fontSize:10}}>{r.flow[0]}</span></div>
+                  <div><span style={{color:C.textMuted}}>Colours:</span> Pink (200), Blue (200), Cream (200)</div>
+                </div>
+                <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
+                  <div><span style={{color:C.textMuted}}>Priority:</span> <span style={{background:r.days>20?"#ffebee":"#fff3e0",color:r.days>20?C.red:"#e65100",padding:"1px 6px",borderRadius:3,fontSize:10,fontWeight:600}}>{r.days>20?"High":r.days>14?"Medium":"Low"}</span></div>
+                  <div><span style={{color:C.textMuted}}>Remarks:</span> {r.readyPcs<r.pcs?"Production in progress":"All pieces completed"}</div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
+        <div style={{padding:"6px 12px",borderTop:`0.5px solid ${C.border}`,background:C.bgSoft,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:10,color:C.textMuted}}>Showing {rows.length} challans</span>
+          <span onClick={()=>setShowDetails(showDetails===null?0:null)} style={{fontSize:10,color:CO.accent,cursor:"pointer",fontWeight:600}}>{"▼"} More Details</span>
+        </div>
       </Card>
     </Content>
   </WebLayout>
   );
 },
-
-"G-05": () => (
+"G-05": () => {
+  const [expandedLedger,setExpandedLedger]=useState(null);
+  const ledgerTxns=[
+    {d:"10 May",cn:"CH-3225",design:"D-735",stage:"Embroidery",pcs:600,gross:"₹ 36,000",ded:"₹ 0",net:"₹ 36,000",paid:"₹ 36,000",bal:0,proof:"UPI Ref: UPI-22041",rm:"On time"},
+    {d:"05 May",cn:"CH-3210",design:"D-730",stage:"Embroidery",pcs:500,gross:"₹ 30,000",ded:"₹ 800",net:"₹ 29,200",paid:"₹ 29,200",bal:0,proof:"Bank: HDFC-8821",rm:"2 pcs damaged"},
+    {d:"28 Apr",cn:"CH-3195",design:"D-718",stage:"Embroidery",pcs:450,gross:"₹ 27,000",ded:"₹ 0",net:"₹ 27,000",paid:"₹ 27,000",bal:0,proof:"Cash Receipt #104",rm:""},
+    {d:"15 Apr",cn:"CH-3180",design:"D-705",stage:"Embroidery",pcs:400,gross:"₹ 24,000",ded:"₹ 400",net:"₹ 23,600",paid:"₹ 20,000",bal:3600,proof:"",rm:"Partial payment"},
+  ];
+  const totals={pcs:1950,gross:"₹ 1,17,000",ded:"₹ 1,200",net:"₹ 1,15,800",paid:"₹ 1,12,200",pending:"₹ 3,600"};
+  return(
   <WebLayout activeMenu="Contractors" mode="mfg">
-    <GTopBar title="Contractor Detail" sub="Ramesh Kadkiya · EMB-001 · Embroidery Specialist"/>
+    <GTopBar title="Contractor Detail" sub="Ramesh Kadkiya · EMB-001 · Embroidery Specialist">
+      <div style={{display:"flex",gap:6}}>
+        <Btn label="Ledger G-33" small onClick={()=>onNavigate("G-33")}/>
+        <Btn label="Performance G-38" small onClick={()=>onNavigate("G-38")}/>
+        <Btn label="Statement G-34" small onClick={()=>onNavigate("G-34")}/>
+      </div>
+    </GTopBar>
     <Content>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
           <Card>
-            <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:14,paddingBottom:12,borderBottom:`0.5px solid ${C.border}`}}>
-              <div style={{width:44,height:44,borderRadius:"50%",background:CO.accentLight,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:700,color:CO.accent,border:`0.5px solid ${CO.accentBorder}`}}>R</div>
+            <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:14,paddingBottom:12,borderBottom:"0.5px solid "+C.border}}>
+              <div style={{width:44,height:44,borderRadius:"50%",background:CO.accentLight,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:700,color:CO.accent,border:"0.5px solid "+CO.accentBorder}}>R</div>
               <div>
                 <div style={{fontSize:14,fontWeight:700}}>Ramesh Kadkiya</div>
                 <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>Code: EMB-001 · Type: Embroidery · Mobile: +91 98765 43210</div>
+                <div style={{fontSize:11,color:C.textMuted,marginTop:1}}>Broker: Vinod Kumar</div>
                 <div style={{marginTop:6,display:"flex",gap:6}}>
                   <span style={{background:"#e8f5e9",color:"#2e7d32",padding:"2px 8px",borderRadius:3,fontSize:10,fontWeight:600}}>Active</span>
                   <span style={{background:CO.accentLight,color:CO.accent,padding:"2px 8px",borderRadius:3,fontSize:10}}>Mobile Login: Enabled</span>
@@ -3909,205 +3865,271 @@ const screens = {
               <Metric label="Active Challans" value="4" sub="Currently running"/>
               <Metric label="Avg Turnaround" value="8.2d" sub="Last 30 challans"/>
               <Metric label="Rejection Rate" value="1.4%" sub="Last 60 days" green/>
-              <Metric label="Total Earned" value={"₹3.2L"} sub="This FY"/>
+              <Metric label="Total Earned" value={"₹ 3.2L"} sub="This FY"/>
             </div>
             <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Active Challans</div>
-            <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden"}}>
+            <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden",marginBottom:14}}>
               <TH cols={[{v:"Challan No",w:0.8},{v:"Design"},{v:"Stage"},{v:"Pieces",w:0.6},{v:"Deadline",w:0.7},{v:"Status",w:0.7}]}/>
               {[
                 {cn:"CH-3221",design:"D-730",stage:"Embroidery",pcs:600,deadline:"17 May",late:false},
                 {cn:"CH-3215",design:"D-718",stage:"Embroidery",pcs:450,deadline:"15 May",late:true},
                 {cn:"CH-3208",design:"D-705",stage:"Embroidery",pcs:300,deadline:"18 May",late:false},
               ].map((r,i)=>(
-                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:"0.5px solid "+C.border,fontSize:11}}>
                   <div style={{flex:0.8,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.cn}</div>
                   <div style={{flex:1,fontWeight:500}}>{r.design}</div>
                   <div style={{flex:1}}><span style={{background:CO.accentLight,color:CO.accent,padding:"2px 7px",borderRadius:3,fontSize:10}}>{r.stage}</span></div>
                   <div style={{flex:0.6}}>{r.pcs}</div>
-                  <div style={{flex:0.7,color:r.late?C.red:C.textMuted,fontWeight:r.late?600:400}}>{r.deadline}{r.late?" (!)" :""}</div>
+                  <div style={{flex:0.7,color:r.late?C.red:C.textMuted,fontWeight:r.late?600:400}}>{r.deadline}{r.late?" (!)":""}</div>
                   <div style={{flex:0.7}}><span style={{background:r.late?"#ffebee":"#e8f5e9",color:r.late?C.red:"#2e7d32",padding:"2px 6px",borderRadius:3,fontSize:10,fontWeight:600}}>{r.late?"Overdue":"On Track"}</span></div>
                 </div>
               ))}
+            </div>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Contractor Rates</div>
+            <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"Work Type",w:1},{v:"Rate per Meter",w:0.8},{v:"Action",w:0.6}]}/>
+              {[
+                {work:"Embroidery",rate:"₹ 0.18 / stitch"},
+                {work:"Stitching",rate:"₹ 45.00 / pc"},
+                {work:"Diamond Work",rate:"₹ 28.00 / pc"},
+                {work:"Lace Work",rate:"₹ 12.00 / m"},
+                {work:"Washing",rate:"₹ 8.00 / pc"},
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderBottom:"0.5px solid "+C.border,fontSize:11}}>
+                  <div style={{flex:1,fontWeight:500}}>{r.work}</div>
+                  <div style={{flex:0.8,color:CO.accent,fontWeight:600}}>{r.rate}</div>
+                  <div style={{flex:0.6,display:"flex",gap:3}}>
+                    <button style={{padding:"2px 8px",fontSize:10,border:"0.5px solid "+C.border,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
+                    <button style={{padding:"2px 8px",fontSize:10,border:"0.5px solid "+C.redBorder,borderRadius:3,background:C.white,color:C.red,cursor:"pointer"}}>Delete</button>
+                  </div>
+                </div>
+              ))}
+              <div style={{padding:"6px 10px",borderTop:"0.5px solid "+C.border,background:C.bgSoft}}>
+                <button style={{padding:"3px 10px",fontSize:10,border:"0.5px solid "+CO.accentBorder,borderRadius:3,background:CO.accentLight,color:CO.accent,fontWeight:600,cursor:"pointer"}}>+ Add Row</button>
+              </div>
             </div>
           </Card>
         </div>
         <div style={{flex:1}}>
           <Card>
-            <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Payment History</div>
-            {[
-              {ref:"PAY-1042",ch:"CH-3200",amount:"₹24,000",date:"30 Apr",status:"Paid"},
-              {ref:"PAY-1038",ch:"CH-3185",amount:"₹18,500",date:"25 Apr",status:"Paid"},
-              {ref:"PAY-1025",ch:"CH-3155",amount:"₹15,000",date:"10 Apr",status:"Pending"},
-            ].map((p,i)=>(
-              <div key={i} style={{padding:"7px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-                <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
-                  <span style={{fontFamily:"monospace",color:CO.accent,fontSize:10}}>{p.ref}</span>
-                  <span style={{fontWeight:600,color:p.status==="Paid"?"#2e7d32":CO.accent}}>{p.amount}</span>
+            <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Payment Summary</div>
+            <div style={{display:"flex",gap:6,marginBottom:8}}>
+              <Metric label="Work Completed" value={totals.pcs+" pcs"} sub="This period"/>
+              <Metric label="Gross" value={totals.gross} sub="Before deductions"/>
+              <Metric label="Deductions" value={totals.ded} sub="Short/Damage" alert/>
+              <Metric label="Paid" value={totals.paid} sub="Settled" green/>
+              <Metric label="Pending" value={totals.pending} sub="Outstanding" alert/>
+            </div>
+          </Card>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Payment Ledger</div>
+            <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"Date",w:0.5},{v:"CN",w:0.5},{v:"Net"},{v:"Bal",w:0.5}]}/>
+              {ledgerTxns.map((t,i)=>(
+                <div key={i}>
+                  <div onClick={()=>setExpandedLedger(expandedLedger===i?null:i)} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:expandedLedger===i?CO.accentLight:(i%2===0?C.white:"#faf8f5"),cursor:"pointer"}}>
+                    <div style={{flex:0.5,fontSize:9,color:C.textMuted}}>{t.d}</div>
+                    <div style={{flex:0.5,fontWeight:600,fontFamily:"monospace"}}>{t.cn}</div>
+                    <div style={{flex:1,fontWeight:600}}>{t.net}</div>
+                    <div style={{flex:0.5,fontWeight:700,color:t.bal>0?C.red:C.green,textAlign:"right"}}>{t.bal>0?"₹ "+t.bal:"✓"}</div>
+                  </div>
+                  {expandedLedger===i&&(
+                    <div style={{padding:"6px 8px",fontSize:9,color:C.textMuted,background:CO.accentLight,borderTop:"0.5px solid "+CO.accentBorder,display:"flex",gap:12}}>
+                      <div><strong>Design:</strong> {t.design}</div>
+                      <div><strong>Stage:</strong> {t.stage}</div>
+                      <div><strong>PCS:</strong> {t.pcs}</div>
+                      <div><strong>Gross:</strong> {t.gross}</div>
+                      <div><strong>Ded:</strong> {t.ded}</div>
+                      <div><strong>Paid:</strong> {t.paid}</div>
+                      <div><strong>Proof:</strong> {t.proof||"-"}</div>
+                      <div><strong>RM:</strong> {t.rm||"-"}</div>
+                    </div>
+                  )}
                 </div>
-                <div style={{display:"flex",justifyContent:"space-between",color:C.textMuted,fontSize:10}}>
-                  <span>{p.ch} · {p.date}</span>
-                  <span style={{background:p.status==="Paid"?"#e8f5e9":"#fff3e0",color:p.status==="Paid"?"#2e7d32":"#e65100",padding:"1px 6px",borderRadius:3}}>{p.status}</span>
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>QR Codes</div>
+            {[
+              {name:"D-730 / UPI Daily",limit:"₹ 50,000",note:"Standard daily collection QR"},
+              {name:"N-001 / Festival Advance",limit:"₹ 2,00,000",note:"Advance payment for bulk orders"},
+            ].map((q,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"0.5px solid "+C.border}}>
+                <div style={{width:36,height:36,background:C.bgSoft,border:"0.5px solid "+C.border,borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>{"▦"}</div>
+                <div style={{flex:1}}><div style={{fontSize:11,fontWeight:600}}>{q.name}</div><div style={{fontSize:10,color:C.textMuted}}>Max: {q.limit}</div></div>
+                <div style={{display:"flex",gap:3}}>
+                  <button style={{padding:"2px 6px",fontSize:9,border:"0.5px solid "+C.border,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
                 </div>
               </div>
             ))}
+            <button style={{width:"100%",padding:"6px",marginTop:6,fontSize:10,border:"0.5px solid "+CO.accentBorder,borderRadius:3,background:CO.accentLight,color:CO.accent,fontWeight:600,cursor:"pointer"}}>+ Add QR Code</button>
           </Card>
-          <Card>
-            <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Notes</div>
-            <div style={{fontSize:11,color:C.textMuted,lineHeight:1.5}}>Reliable contractor for EMB work. Specialized in heavy embroidery. Has own 12-machine unit at Surat.</div>
-          </Card>
+          <Card style={{fontSize:11,color:C.textMuted,lineHeight:1.5}}>Reliable contractor for EMB work. Specialized in heavy embroidery.</Card>
         </div>
       </div>
     </Content>
   </WebLayout>
-),
-
+);
+},
 "G-06": () => {
-  const [expandedIdx,setExpandedIdx]=useState(null);
-  const [statusF,setStatusF]=useState("All");
   const [searchQ,setSearchQ]=useState("");
-  const [data,setData]=useState([
-    {cn:"CH-3221",dn:"D-730",contractor:"M/s Rajan Fabrics",pcs:600,date:"07 May",status:"Active",colours:[
-      {col:"Red",exp:400,items:[{label:"Top",rec:150,def:2},{label:"Bottom",rec:148,def:5},{label:"Dupatta",rec:150,def:0}]},
-      {col:"Blue",exp:200,items:[{label:"Top",rec:100,def:0},{label:"Bottom",rec:100,def:0},{label:"Dupatta",rec:0,def:0}]},
+  const [stageFilter,setStageFilter]=useState("All");
+  const [expandedIdx,setExpandedIdx]=useState(null);
+  const [rfModal,setRfModal]=useState(null);
+  const stages=["EMB","STH","DIA","LAC","WASH","CUT","FIN","HND","PRT"];
+  const [challans,setChallans]=useState([
+    {cn:"CH-3221",dn:"D-730",contractor:"Rajan Fabrics",stage:"EMB",date:"07 May",colours:[
+      {col:"Deep Pink",components:[{name:"Top",assigned:200,ready:150,short:48,rf:2,note:""},{name:"Bottom",assigned:200,ready:148,short:45,rf:5,note:"Resize"},{name:"Dupatta",assigned:200,ready:150,short:50,rf:0,note:""}]},
+      {col:"Royal Blue",components:[{name:"Top",assigned:100,ready:100,short:0,rf:0,note:""},{name:"Bottom",assigned:100,ready:100,short:0,rf:0,note:""},{name:"Dupatta",assigned:100,ready:95,short:0,rf:5,note:"Colour bleed"}]},
     ]},
-    {cn:"CH-3210",dn:"D-710",contractor:"M/s Sharma Exports",pcs:450,date:"04 May",status:"Pending",colours:[
-      {col:"Gold",exp:250,items:[{label:"Top",rec:0,def:0},{label:"Bottom",rec:0,def:0},{label:"Dupatta",rec:0,def:0}]},
-      {col:"Silver",exp:200,items:[{label:"Top",rec:0,def:0},{label:"Bottom",rec:0,def:0},{label:"Dupatta",rec:0,def:0}]},
+    {cn:"CH-3210",dn:"D-710",contractor:"Sharma Exports",stage:"STH",date:"04 May",colours:[
+      {col:"Gold",components:[{name:"Top",assigned:250,ready:240,short:6,rf:4,note:""},{name:"Bottom",assigned:250,ready:245,short:5,rf:0,note:""},{name:"Dupatta",assigned:250,ready:235,short:10,rf:5,note:"Lace loose"}]},
+      {col:"Silver",components:[{name:"Top",assigned:200,ready:0,short:0,rf:0,note:""},{name:"Bottom",assigned:200,ready:0,short:0,rf:0,note:""},{name:"Dupatta",assigned:200,ready:0,short:0,rf:0,note:""}]},
     ]},
-    {cn:"CH-3200",dn:"D-695",contractor:"M/s Patel Traders",pcs:300,date:"02 May",status:"Pending",colours:[
-      {col:"Teal",exp:300,items:[{label:"Top",rec:0,def:0},{label:"Bottom",rec:0,def:0},{label:"Dupatta",rec:0,def:0}]},
+    {cn:"CH-3200",dn:"D-695",contractor:"Patel Traders",stage:"DIA",date:"02 May",colours:[
+      {col:"Teal",components:[{name:"Top",assigned:300,ready:300,short:0,rf:0,note:""},{name:"Bottom",assigned:300,ready:298,short:0,rf:2,note:""},{name:"Dupatta",assigned:300,ready:300,short:0,rf:0,note:""}]},
     ]},
-    {cn:"CH-3189",dn:"D-688",contractor:"M/s Ali Brothers",pcs:800,date:"28 Apr",status:"Completed",colours:[
-      {col:"Red",exp:400,items:[{label:"Top",rec:200,def:1},{label:"Bottom",rec:198,def:2},{label:"Dupatta",rec:200,def:0}]},
-      {col:"Blue",exp:400,items:[{label:"Top",rec:198,def:0},{label:"Bottom",rec:200,def:1},{label:"Dupatta",rec:200,def:0}]},
+    {cn:"CH-3189",dn:"D-688",contractor:"Ali Brothers",stage:"PRT",date:"28 Apr",colours:[
+      {col:"Red",components:[{name:"Top",assigned:400,ready:400,short:0,rf:0,note:""},{name:"Bottom",assigned:400,ready:395,short:0,rf:5,note:"Print smudge"},{name:"Dupatta",assigned:400,ready:400,short:0,rf:0,note:""}]},
+      {col:"Blue",components:[{name:"Top",assigned:400,ready:398,short:0,rf:2,note:""},{name:"Bottom",assigned:400,ready:400,short:0,rf:0,note:""},{name:"Dupatta",assigned:400,ready:400,short:0,rf:0,note:""}]},
+    ]},
+    {cn:"CH-3175",dn:"D-672",contractor:"Kumar Textiles",stage:"WASH",date:"25 Apr",colours:[
+      {col:"Mint Green",components:[{name:"Top",assigned:200,ready:100,short:80,rf:20,note:"Shrinkage issue"},{name:"Bottom",assigned:200,ready:120,short:60,rf:20,note:""},{name:"Dupatta",assigned:200,ready:140,short:50,rf:10,note:""}]},
     ]},
   ]);
-  const netGood=(item)=>Math.max(0,(item.rec||0)-(item.def||0));
-  const colTotal=(colour)=>colour.items.reduce((s,i)=>s+netGood(i),0);
-  const readySets=(colour)=>Math.min(...colour.items.map(i=>netGood(i)));
-  const sentBack=(colour)=>{
-    const r=readySets(colour);
-    const sum=colour.items.reduce((s,i)=>s+netGood(i),0);
-    return sum-r*colour.items.length;
-  };
-  const totalReady=(ch)=>ch.colours.reduce((s,c)=>s+readySets(c),0);
-  const totalExp=(ch)=>ch.colours.reduce((s,c)=>s+c.exp,0);
-  const updateItem=(chIdx,coIdx,itIdx,field,val)=>{
+  const updateCell=(chIdx,coIdx,cpIdx,field,val)=>{
     const v=Math.max(0,parseInt(val)||0);
-    setData(prev=>{
-      const next=prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:c.items.map((it,k)=>k===itIdx?{...it,[field]:v}:it)}:c)}:ch);
-      return next;
-    });
+    setChallans(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,components:c.components.map((cp,k)=>k===cpIdx?{...cp,[field]:v}:cp)}:c)}:ch));
   };
-  const addCustomItem=(chIdx,coIdx)=>{
-    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:[...c.items,{label:"Custom",rec:0,def:0}]}:c)}:ch));
-  };
-  const removeCustom=(chIdx,coIdx,itIdx)=>{
-    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:c.items.filter((_,k)=>k!==itIdx)}:c)}:ch));
-  };
-  const renameCustom=(chIdx,coIdx,itIdx,label)=>{
-    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,colours:ch.colours.map((c,j)=>j===coIdx?{...c,items:c.items.map((it,k)=>k===itIdx?{...it,label}:it)}:c)}:ch));
-  };
-  const confirmClose=(chIdx)=>{
-    setData(prev=>prev.map((ch,i)=>i===chIdx?{...ch,status:"Completed"}:ch));
-  };
-  const filtered=data.filter(r=>statusF==="All"||r.status===statusF).filter(r=>!searchQ||r.cn.toLowerCase().includes(searchQ.toLowerCase())||r.dn.toLowerCase().includes(searchQ.toLowerCase())||r.contractor.toLowerCase().includes(searchQ.toLowerCase()));
+  const totalFor=(ch,field)=>ch.colours.reduce((s,c)=>s+c.components.reduce((t,cp)=>t+(cp[field]||0),0),0);
+  const totalAssigned=(c)=>c.colours.reduce((s,c2)=>s+c2.components.reduce((t,cp)=>t+cp.assigned,0),0);
+  const totalReady=(c)=>c.colours.reduce((s,c2)=>s+c2.components.reduce((t,cp)=>t+cp.ready,0),0);
+  const totalRf=(c)=>c.colours.reduce((s,c2)=>s+c2.components.reduce((t,cp)=>t+cp.rf,0),0);
+  const totalShort=(c)=>c.colours.reduce((s,c2)=>s+c2.components.reduce((t,cp)=>t+cp.short,0),0);
+  const totalBalance=(c)=>totalAssigned(c)-totalReady(c)-totalRf(c)-totalShort(c);
+  const pctComplete=(c)=>totalAssigned(c)>0?Math.round((totalReady(c)/totalAssigned(c))*100):0;
+  const hasValidationError=(ch)=>ch.colours.some(c=>c.components.some(cp=>cp.ready+cp.short+cp.rf>cp.assigned));
+  const filtered=challans.filter(ch=>!searchQ||ch.cn.includes(searchQ)||ch.dn.includes(searchQ)||ch.contractor.toLowerCase().includes(searchQ.toLowerCase()));
   return(
   <WebLayout activeMenu="Production" mode="mfg">
-    <GTopBar title="Ready Piece Count" sub="Record actual pieces received back to warehouse" actions={[{label:"Export Report"}]}/>
+    <GTopBar title="Ready Piece Count" sub="Universal production stage workflow — every job work type" actions={[{label:"Export"}]}/>
+    {rfModal&&(
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setRfModal(null)}>
+        <div style={{background:C.white,borderRadius:8,padding:24,width:420}} onClick={e=>e.stopPropagation()}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+            <div style={{fontSize:14,fontWeight:700}}>Raise RF</div>
+            <span onClick={()=>setRfModal(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"×"}</span>
+          </div>
+          <div style={{background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,padding:"8px 12px",marginBottom:12,fontSize:11}}>
+            <div>Challan: <strong>{rfModal.cn}</strong> {"·"} Design: <strong>{rfModal.dn}</strong></div>
+            <div>Color: <strong>{rfModal.col}</strong> {"·"} Component: <strong>{rfModal.cp}</strong></div>
+            <div>Contractor: <strong>{rfModal.cont}</strong></div>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{flex:1}}><Input label="RF Quantity" placeholder={String(rfModal.qty)}/></div>
+            <div style={{flex:1}}><Input label="Date" placeholder="11 May 2026"/></div>
+          </div>
+          <Input label="Reason" placeholder="e.g. Stitching defect, colour bleed..."/>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:9,marginTop:4}}>
+            <div style={{width:14,height:14,border:"1.5px solid #999",borderRadius:2,background:"#fff",cursor:"pointer"}}></div>
+            <span style={{fontSize:11,color:C.textMuted,cursor:"pointer"}}>Non-returnable — mark as <strong style={{color:"#7b1fa2"}}>Claim</strong></span>
+          </div>
+          <div style={{display:"flex",gap:8,marginTop:14}}>
+            <button style={{flex:1,padding:"8px",background:CO.accent,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Submit RF</button>
+            <button onClick={()=>setRfModal(null)} style={{flex:1,padding:"8px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer"}}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    )}
     <Content>
-      <div style={{display:"flex",gap:8,marginBottom:10,alignItems:"center",flexWrap:"wrap"}}>
-        <input value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Search challan / design / contractor..." style={{flex:1,minWidth:180,padding:"6px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
-        {["All","Pending","Active","Completed"].map(s=>(
-          <div key={s} onClick={()=>setStatusF(s)} style={{padding:"4px 10px",fontSize:10,borderRadius:4,cursor:"pointer",fontWeight:600,background:statusF===s?CO.accent:C.bgSoft,color:statusF===s?C.white:C.textMuted,border:`0.5px solid ${statusF===s?CO.accentBorder:C.border}`}}>{s}</div>
-        ))}
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <input value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Search challan / design / contractor..." style={{flex:1,padding:"6px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,outline:"none"}}/>
+        <select value={stageFilter} onChange={e=>setStageFilter(e.target.value)} style={{padding:"5px 10px",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:11,background:C.white}}>
+          <option value="All">All Stages</option>
+          {stages.map(s=><option key={s} value={s}>{s}</option>)}
+        </select>
+      </div>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
+        <Metric label="Assigned Pieces" value={String(filtered.reduce((s,c)=>s+totalAssigned(c),0))} sub="Across all challans"/>
+        <Metric label="Ready Pieces" value={String(filtered.reduce((s,c)=>s+totalReady(c),0))} sub="Completed" green/>
+        <Metric label="RF" value={String(filtered.reduce((s,c)=>s+totalRf(c),0))} sub="Raised" alert/>
+        <Metric label="Short" value={String(filtered.reduce((s,c)=>s+totalShort(c),0))} sub="Pending" alert/>
+        <Metric label="Completion" value={filtered.length>0?Math.round(filtered.reduce((s,c)=>s+pctComplete(c),0)/filtered.length)+"%":"0%"} sub="Avg across stages"/>
+        <Metric label="Remaining" value={String(filtered.reduce((s,c)=>s+Math.max(0,totalBalance(c)),0))} sub="Not yet accounted"/>
       </div>
       <Card>
-        <TH cols={[{v:"Date",w:0.5},{v:"Challan No",w:0.7},{v:"Design",w:0.5},{v:"Contractor"},{v:"Colours",w:1.2},{v:"Pcs",w:0.4},{v:"Ready",w:0.5},{v:"Status",w:0.6},{v:"",w:0.3}]}/>
+        <TH cols={[{v:"Challan",w:0.6},{v:"Design",w:0.5},{v:"Contractor"},{v:"Stage",w:0.45},{v:"Assigned",w:0.5},{v:"Ready",w:0.5},{v:"RF",w:0.4},{v:"Short",w:0.4},{v:"Balance",w:0.45},{v:"%"},{v:"",w:0.4}]}/>
         {filtered.map((ch,ci)=>{
           const isExp=expandedIdx===ci;
+          const assign=totalAssigned(ch);
+          const ready=totalReady(ch);
+          const rf=totalRf(ch);
+          const short=totalShort(ch);
+          const balance=totalBalance(ch);
+          const pct=assign>0?Math.round(ready/assign*100):0;
+          const hasErr=hasValidationError(ch);
           return(
           <div key={ci}>
             <div onClick={()=>setExpandedIdx(isExp?null:ci)} style={{display:"flex",alignItems:"center",gap:4,padding:"7px 8px",borderBottom:isExp?`1.5px solid ${CO.accent}`:`0.5px solid ${C.border}`,fontSize:11,cursor:"pointer",background:isExp?CO.accentLight:"transparent"}}>
-              <div style={{flex:0.5,color:C.textMuted,fontSize:10}}>{ch.date}</div>
-              <div style={{flex:0.7,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{ch.cn}</div>
+              <div style={{flex:0.6,fontFamily:"monospace",fontWeight:600,color:CO.accent}}>{ch.cn}</div>
               <div style={{flex:0.5,fontFamily:"monospace",color:C.textMuted,fontSize:10}}>{ch.dn}</div>
               <div style={{flex:1,fontSize:10,fontWeight:600}}>{ch.contractor}</div>
-              <div style={{flex:1.2,fontSize:9,color:C.textMuted}}>{ch.colours.map(c=>c.col+" "+readySets(c)+"/"+c.exp).join("  ")}</div>
-              <div style={{flex:0.4,fontWeight:600}}>{totalExp(ch)}</div>
-              <div style={{flex:0.5,fontWeight:600,color:totalReady(ch)===totalExp(ch)?"#2e7d32":C.text}}>{totalReady(ch)}/{totalExp(ch)}</div>
-              <div style={{flex:0.6}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:ch.status==="Completed"?"#e3f2fd":"#fff8e1",color:ch.status==="Completed"?"#1565c0":"#f57f17"}}>{ch.status}</span></div>
-              <div style={{flex:0.3,textAlign:"center",fontSize:14,color:CO.accent,fontWeight:700}}>{isExp?"\u25B2":"\u25BC"}</div>
+              <div style={{flex:0.45}}><span style={{fontSize:9,fontWeight:700,background:CO.accentLight,color:CO.accent,padding:"2px 5px",borderRadius:3}}>{ch.stage}</span></div>
+              <div style={{flex:0.5,fontWeight:600}}>{assign}</div>
+              <div style={{flex:0.5,fontWeight:600,color:ready===assign?C.green:CO.accent}}>{ready}</div>
+              <div style={{flex:0.4,color:rf>0?C.red:C.textMuted,fontWeight:rf>0?600:400}}>{rf}</div>
+              <div style={{flex:0.4,color:short>0?C.red:C.textMuted,fontWeight:short>0?600:400}}>{short}</div>
+              <div style={{flex:0.45,fontWeight:700,color:balance===0?C.green:balance<assign*0.1?"#b45309":C.red}}>{balance}</div>
+              <div style={{flex:1,display:"flex",alignItems:"center",gap:4}}>
+                <div style={{flex:1,height:6,background:C.border,borderRadius:3,overflow:"hidden",maxWidth:50}}>
+                  <div style={{height:"100%",width:pct+"%",background:pct===100?C.green:pct>=80?CO.accent:C.red,borderRadius:3}}/>
+                </div>
+                <span style={{fontSize:10,fontWeight:700,color:pct===100?C.green:pct>=80?CO.accent:C.red}}>{pct}%</span>
+              </div>
+              <div style={{flex:0.4,display:"flex",gap:3}}>
+                {!hasErr&&<span style={{fontSize:10,padding:"2px 5px",borderRadius:3,background:CO.accentLight,color:CO.accent,cursor:"pointer",fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>Confirm</span>}
+              </div>
             </div>
             {isExp&&(
-              <div style={{padding:"10px 12px",borderBottom:`0.5px solid ${C.border}`,background:C.bgSoft}}>
-                {ch.colours.map((co,coi)=>{
-                  const total=colTotal(co);
-                  const diff=co.exp-total;
-                  const defaultLen=3;
-                  return(
-                  <div key={coi} style={{marginBottom:coi<ch.colours.length-1?10:0,border:`0.5px solid ${C.border}`,borderRadius:6,background:C.white,overflow:"hidden"}}>
-                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 10px",background:C.bgSoft,borderBottom:`0.5px solid ${C.border}`}}>
-                      <span style={{fontWeight:700,fontSize:12}}>{co.col}</span>
-                      <span style={{fontSize:11,color:C.textMuted}}>Expected: {co.exp} pcs</span>
+              <div style={{padding:"8px 12px",background:C.bgSoft,borderBottom:`1px solid ${CO.accent}`,overflowX:"auto"}}>
+                {ch.colours.map((co,coi)=>(
+                  <div key={coi} style={{marginBottom:8}}>
+                    <div style={{fontSize:11,fontWeight:700,color:CO.accent,marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
+                      <span style={{display:"inline-block",width:12,height:12,borderRadius:"50%",background:co.col==="Deep Pink"?"#e91e63":co.col==="Royal Blue"?"#1565c0":co.col==="Gold"?"#ff8f00":co.col==="Silver"?"#78909c":co.col==="Teal"?"#00897b":co.col==="Red"?"#c62828":co.col==="Blue"?"#1976d2":co.col==="Mint Green"?"#43a047":"#7b1fa2",border:`0.5px solid ${C.border}`}}></span>
+                      {co.col}
                     </div>
-                    <div style={{padding:"4px 10px 0"}}>
-                      <div style={{display:"flex",fontSize:10,fontWeight:600,color:C.textMuted,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`}}>
-                        <div style={{flex:1}}>Item</div>
-                        <div style={{flex:0.7,textAlign:"center"}}>Received</div>
-                        <div style={{flex:0.7,textAlign:"center"}}>Defect</div>
-                        <div style={{flex:0.7,textAlign:"center"}}>Net Good</div>
-                        <div style={{flex:0.3}}></div>
+                    <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,overflow:"hidden",fontSize:10}}>
+                      <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a",gap:4}}>
+                        <div style={{flex:1}}>Component</div><div style={{flex:0.6,textAlign:"right"}}>Assigned</div><div style={{flex:0.6,textAlign:"right"}}>Ready</div><div style={{flex:0.5,textAlign:"right"}}>Short</div><div style={{flex:0.5,textAlign:"right"}}>RF</div><div style={{flex:0.6,textAlign:"right"}}>Balance</div><div style={{flex:0.5,textAlign:"center"}}>{"⚙"}</div><div style={{flex:0.9}}>Notes</div>
                       </div>
-                      {co.items.map((it,iti)=>{
-                        const isDefault=iti<defaultLen;
+                      {co.components.map((cp,cpi)=>{
+                        const bal=cp.assigned-cp.ready-cp.short-cp.rf;
+                        const err=cp.ready+cp.short+cp.rf>cp.assigned;
                         return(
-                        <div key={iti} style={{display:"flex",alignItems:"center",gap:2,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`}}>
-                          {isDefault?(
-                            <div style={{flex:1,fontSize:11,fontWeight:500}}>{it.label}</div>
-                          ):(
-                            <div style={{flex:1,display:"flex",alignItems:"center",gap:4}}>
-                              <span onClick={()=>removeCustom(ci,coi,iti)} style={{color:C.red,cursor:"pointer",fontSize:13,fontWeight:700,lineHeight:1}}>{"\u00D7"}</span>
-                              <input value={it.label} onChange={e=>renameCustom(ci,coi,iti,e.target.value)} style={{flex:1,border:"none",borderBottom:`0.5px solid ${C.border}`,fontSize:11,padding:"2px 4px",background:"transparent",outline:"none"}}/>
-                            </div>
-                          )}
-                          <input type="number" value={it.rec||""} onChange={e=>updateItem(ci,coi,iti,"rec",e.target.value)} style={{flex:0.7,width:"100%",padding:"3px 4px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:11,textAlign:"center"}}/>
-                          <input type="number" value={it.def||""} onChange={e=>updateItem(ci,coi,iti,"def",e.target.value)} style={{flex:0.7,width:"100%",padding:"3px 4px",border:`0.5px solid ${C.border}`,borderRadius:3,fontSize:11,textAlign:"center"}}/>
-                          <div style={{flex:0.7,textAlign:"center",fontWeight:700,fontSize:12,color:netGood(it)===it.rec?"#2e7d32":C.text}}>{netGood(it)}</div>
-                          <div style={{flex:0.3}}></div>
+                        <div key={cpi} style={{display:"flex",alignItems:"center",gap:4,padding:"4px 6px",borderTop:`0.5px solid ${C.border}`,background:err?C.redLight:"transparent"}}>
+                          <div style={{flex:1,fontWeight:600}}>{cp.name}</div>
+                          <div style={{flex:0.6,textAlign:"right",fontWeight:600}}>{cp.assigned}</div>
+                          <div style={{flex:0.6,textAlign:"right"}}><input type="number" value={cp.ready||""} onChange={e=>updateCell(ci,coi,cpi,"ready",e.target.value)} style={{width:"100%",padding:"2px 4px",border:`0.5px solid ${C.border}`,borderRadius:2,fontSize:10,textAlign:"right",background:C.white}}/></div>
+                          <div style={{flex:0.5,textAlign:"right"}}><input type="number" value={cp.short||""} onChange={e=>updateCell(ci,coi,cpi,"short",e.target.value)} style={{width:"100%",padding:"2px 4px",border:`0.5px solid ${C.border}`,borderRadius:2,fontSize:10,textAlign:"right",background:C.white}}/></div>
+                          <div style={{flex:0.5,textAlign:"right"}}><input type="number" value={cp.rf||""} onChange={e=>updateCell(ci,coi,cpi,"rf",e.target.value)} style={{width:"100%",padding:"2px 4px",border:`0.5px solid ${C.border}`,borderRadius:2,fontSize:10,textAlign:"right",background:C.white}}/></div>
+                          <div style={{flex:0.6,textAlign:"right",fontWeight:700,color:bal===0?C.green:bal<0?C.red:C.text}}>{bal}</div>
+                          <div style={{flex:0.5,textAlign:"center",display:"flex",gap:2,justifyContent:"center"}}>
+                            {cp.rf>0&&<span style={{fontSize:8,padding:"1px 4px",borderRadius:2,background:"#f3e5f5",color:"#7b1fa2",fontWeight:600}}>Claim</span>}
+                            <span onClick={()=>setRfModal({cn:ch.cn,dn:ch.dn,col:co.col,cp:cp.name,qty:cp.assigned-cp.ready,cont:ch.contractor})} style={{fontSize:10,padding:"1px 5px",borderRadius:2,background:CO.accentLight,color:CO.accent,cursor:"pointer",fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>RF</span>
+                          </div>
+                          <div style={{flex:0.9}}><input value={cp.note} onChange={e=>updateCell(ci,coi,cpi,"note",e.target.value)} placeholder="-" style={{width:"100%",border:"none",padding:"2px 4px",fontSize:10,background:"transparent",outline:"none",borderBottom:`0.5px solid ${C.border}`}}/></div>
                         </div>
                       )})}
                     </div>
-                    <div style={{padding:"0 10px",borderTop:`0.5px dashed ${C.border}`}}>
-                      <div style={{display:"flex",fontSize:10,padding:"5px 0",borderBottom:`0.5px solid ${C.border}`}}>
-                        <div style={{flex:1,fontWeight:700,color:CO.accent}}>Ready Sets</div>
-                        <div style={{flex:0.7,textAlign:"center"}}></div>
-                        <div style={{flex:0.7,textAlign:"center"}}></div>
-                        <div style={{flex:0.7,textAlign:"center",fontWeight:700,fontSize:13,color:CO.accent}}>{readySets(co)}</div>
-                        <div style={{flex:0.3}}></div>
-                      </div>
-                      <div style={{display:"flex",fontSize:10,padding:"4px 0",borderBottom:`0.5px solid ${C.border}`}}>
-                        <div style={{flex:1,color:C.textMuted}}>Sent Back to Contractor</div>
-                        <div style={{flex:0.7,textAlign:"center"}}></div>
-                        <div style={{flex:0.7,textAlign:"center"}}></div>
-                        <div style={{flex:0.7,textAlign:"center",fontWeight:600,color:C.red}}>{sentBack(co)}</div>
-                        <div style={{flex:0.3}}></div>
-                      </div>
-                    </div>
-                    <div style={{padding:"4px 10px 6px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                      <span onClick={()=>addCustomItem(ci,coi)} style={{fontSize:10,fontWeight:600,color:CO.accent,cursor:"pointer",padding:"3px 8px",borderRadius:3,border:`0.5px dashed ${CO.accentBorder}`}}>{"\u002B"} Add Custom Item</span>
-                      <div style={{display:"flex",gap:12,fontSize:11}}>
-                        <span>Exp: <strong>{co.exp}</strong></span>
-                        <span style={{fontWeight:700}}>Ready: <strong style={{color:CO.accent}}>{readySets(co)}</strong></span>
-                        <span style={{color:diff===0?"#2e7d32":C.red}}>Short: <strong>{Math.max(0,co.exp-readySets(co))}</strong></span>
-                      </div>
-                    </div>
+                    {co.components.some(cp=>(cp.ready+cp.short+cp.rf)>cp.assigned)&&(
+                      <div style={{fontSize:9,color:C.red,marginTop:2}}>{"⚠"} Validation: Ready + Short + RF exceeds Assigned for this colour</div>
+                    )}
                   </div>
-                  );
-                })}
-                <div style={{display:"flex",gap:8,marginTop:8,justifyContent:"flex-end"}}>
+                ))}
+                <div style={{display:"flex",gap:8,justifyContent:"flex-end",marginTop:6}}>
                   <Btn small onClick={()=>setExpandedIdx(null)}>Collapse</Btn>
-                  {ch.status!=="Completed"&&<Btn small primary onClick={()=>confirmClose(ci)}>Confirm & Close Challan</Btn>}
+                  <Btn small primary disabled={hasErr}>Confirm & Close Challan</Btn>
                 </div>
               </div>
             )}
@@ -4119,49 +4141,83 @@ const screens = {
   </WebLayout>
   );
 },
-
-"G-07": () => {
+"G-07": ({ onNavigate }) => {
   const [tab,setTab]=useState("Pending");
+  const deductions=[{l:"Short Pieces",v:"12 pcs",a:"₹ 2,400"},{l:"Damage / Rejects",v:"8 pcs",a:"₹ 3,200"},{l:"Delay Penalty",v:"5 days",a:"₹ 1,800"},{l:"Claims",v:"2 claims",a:"₹ 1,000"}];
   return(
   <WebLayout activeMenu="Production" mode="mfg">
-    <GTopBar title="Payment & Checking" sub="Contractor payments and piece verification" actions={[{label:"Create Payment",primary:true}]}/>
+    <GTopBar title="Payment & Checking" sub="Contractor payments and piece verification" actions={[{label:"Payment Dashboard",primary:true,onClick:()=>onNavigate("G-31")}]}/>
     <Content>
       <div style={{display:"flex",gap:10,marginBottom:12}}>
-        <Metric label="Total Paid (Apr)" value={"₹1.8L"} sub="22 transactions" green/>
-        <Metric label="Pending Payments" value={"₹54,200"} sub="8 challans" alert/>
-        <Metric label="Disputed" value={"₹8,400"} sub="2 issues" alert/>
+        <Metric label="Total Paid (May)" value="₹ 1,80,000" sub="18 transactions" green/>
+        <Metric label="Pending Payments" value="₹ 54,200" sub="8 challans" alert/>
+        <Metric label="Ready for Verification" value="4" sub="Awaiting QC" alert/>
+        <Metric label="Disputed" value="₹ 8,400" sub="2 issues" alert/>
+        <Metric label="Pending QR" value="3" sub="Awaiting attachment"/>
         <Metric label="Avg Payment Days" value="6.2d" sub="After challan close"/>
+        <Metric label="This Month Spend" value="₹ 12,45,000" sub="May 2026" green/>
       </div>
-      <div style={{display:"flex",gap:6,marginBottom:10}}>
+      <div style={{display:"flex",gap:6,marginBottom:10,flexWrap:"wrap"}}>
         {["Pending","Paid","All"].map(t=>(
-          <div key={t} onClick={()=>setTab(t)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,cursor:"pointer",fontWeight:600,background:tab===t?CO.accent:C.bgSoft,color:tab===t?C.white:C.textMuted,border:`0.5px solid ${tab===t?CO.accentBorder:C.border}`}}>{t}</div>
+          <div key={t} onClick={()=>setTab(t)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,cursor:"pointer",fontWeight:600,background:tab===t?CO.accent:C.bgSoft,color:tab===t?C.white:C.textMuted,border:"0.5px solid "+(tab===t?CO.accentBorder:C.border)}}>{t}</div>
         ))}
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          <Btn small primary onClick={()=>onNavigate("G-32")}>Verify Invoices</Btn>
+          <Btn small primary onClick={()=>onNavigate("G-35")}>Process Payment</Btn>
+          <Btn small onClick={()=>onNavigate("G-33")}>Ledger</Btn>
+          <Btn small onClick={()=>onNavigate("G-37")}>QR</Btn>
+          <Btn small onClick={()=>onNavigate("G-39")}>Timeline</Btn>
+        </div>
       </div>
-      <Card>
-        <TH cols={[{v:"Ref No",w:0.8},{v:"Challan"},{v:"Contractor"},{v:"Amount",w:0.7},{v:"Pieces",w:0.6},{v:"Date",w:0.6},{v:"Status",w:0.7},{v:"Action",w:0.6}]}/>
-        {[
-          {ref:"PAY-1050",ch:"CH-3200",cont:"Ramesh Kadkiya",amt:"₹24,000",pcs:300,date:"07 May",status:"Pending"},
-          {ref:"PAY-1049",ch:"CH-3198",cont:"Suresh Bhai",amt:"₹18,000",pcs:450,date:"06 May",status:"Pending"},
-          {ref:"PAY-1045",ch:"CH-3185",cont:"Hari Gems",amt:"₹30,000",pcs:600,date:"04 May",status:"Paid"},
-          {ref:"PAY-1042",ch:"CH-3175",cont:"Priya Emb.",amt:"₹21,000",pcs:200,date:"02 May",status:"Paid"},
-        ].filter(r=>tab==="All"||r.status===tab).map((r,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-            <div style={{flex:0.8,fontFamily:"monospace",color:CO.accent,fontSize:10}}>{r.ref}</div>
-            <div style={{flex:1,fontFamily:"monospace"}}>{r.ch}</div>
-            <div style={{flex:1,fontWeight:500}}>{r.cont}</div>
-            <div style={{flex:0.7,fontWeight:600}}>{r.amt}</div>
-            <div style={{flex:0.6,color:C.textMuted}}>{r.pcs}</div>
-            <div style={{flex:0.6,color:C.textMuted}}>{r.date}</div>
-            <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Pending"?"#fff3e0":"#e8f5e9",color:r.status==="Pending"?"#e65100":"#2e7d32"}}>{r.status}</span></div>
-            <div style={{flex:0.6}}>{r.status==="Pending"&&<Btn small primary>Pay</Btn>}</div>
-          </div>
-        ))}
-      </Card>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <div style={{flex:2}}>
+          <Card>
+            <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+              <TH cols={[{v:"Ref No",w:0.7},{v:"Invoice"},{v:"Contractor"},{v:"Amount",w:0.7},{v:"Pieces",w:0.5},{v:"Date",w:0.5},{v:"Status",w:0.6},{v:"Action",w:0.7}]}/>
+              {[
+                {ref:"PAY-1052",inv:"INV-1050",cont:"Ramesh Kadkiya",amt:"₹ 24,000",pcs:300,date:"11 May",status:"Pending",ch:"CH-3225"},
+                {ref:"PAY-1051",inv:"INV-1048",cont:"Salim Works",amt:"₹ 18,000",pcs:450,date:"10 May",status:"Pending",ch:"CH-3220"},
+                {ref:"PAY-1050",inv:"INV-1045",cont:"Hari Gems",amt:"₹ 30,000",pcs:600,date:"04 May",status:"Paid",ch:"CH-3185"},
+                {ref:"PAY-1049",inv:"INV-1042",cont:"Mohan Stitching",amt:"₹ 15,000",pcs:500,date:"02 May",status:"Pending",ch:"CH-3175"},
+                {ref:"PAY-1048",inv:"INV-1038",cont:"Priya Emb.",amt:"₹ 21,000",pcs:200,date:"30 Apr",status:"Paid",ch:"CH-3160"},
+                {ref:"PAY-1047",inv:"INV-1035",cont:"Raju Tailor",amt:"₹ 12,000",pcs:150,date:"28 Apr",status:"Pending",ch:"CH-3150"},
+              ].filter(r=>tab==="All"||r.status===tab).map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5",cursor:"pointer"}} onClick={()=>onNavigate("G-35")}>
+                  <div style={{flex:0.7,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.ref}</div>
+                  <div style={{flex:0.6,fontFamily:"monospace"}}>{r.inv}</div>
+                  <div style={{flex:1}}>{r.cont}</div>
+                  <div style={{flex:0.7,fontWeight:600}}>{r.amt}</div>
+                  <div style={{flex:0.5}}>{r.pcs}</div>
+                  <div style={{flex:0.5,fontSize:9,color:C.textMuted}}>{r.date}</div>
+                  <div style={{flex:0.6}}><Tag label={r.status} color={r.status==="Paid"?"green":r.status==="Pending"?"amber":"red"} small/></div>
+                  <div style={{flex:0.7}}>{r.status==="Pending"?<Btn small primary>Pay</Btn>:<span style={{fontSize:9,color:C.green}}>{"✓"} Paid</span>}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div style={{flex:1}}>
+          <Card red>
+            <div style={{fontSize:11,fontWeight:600,marginBottom:6,color:C.red}}>Deduction Summary (Pending)</div>
+            {deductions.map((d,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:i<deductions.length-1?"0.5px solid "+C.redBorder:"none",fontSize:10}}>
+                <span style={{color:C.textMuted}}>{d.l}</span>
+                <div style={{textAlign:"right"}}><div style={{fontWeight:600}}>{d.v}</div><div style={{fontSize:9,color:C.red}}>{d.a}</div></div>
+              </div>
+            ))}
+            <div style={{display:"flex",justifyContent:"space-between",marginTop:6,paddingTop:6,borderTop:"0.5px solid "+C.redBorder,fontSize:11,fontWeight:700,color:C.red}}>
+              <span>Total Deductions</span><span>₹ 8,400</span>
+            </div>
+            <div style={{marginTop:8,display:"flex",gap:4}}>
+              <Btn small primary full onClick={()=>onNavigate("G-32")}>Verify & Deduct</Btn>
+            </div>
+          </Card>
+        </div>
+      </div>
     </Content>
   </WebLayout>
   );
 },
-
 "G-08": () => {
   const [typeFilter,setTypeFilter]=useState("All");
   const [daysFilter,setDaysFilter]=useState("All");
@@ -4214,14 +4270,14 @@ const screens = {
   };
   return(
   <WebLayout activeMenu="RF / Returns" mode="mfg">
-    <GTopBar title="RF Management" sub="Return Fabric entries and tracking" actions={[{label:"Create RF Entry"},{label:"Create RF \u2192 G-20",primary:true}]}/>
+    <GTopBar title="RF Management" sub="Return Fabric entries and tracking" actions={[{label:"Create RF Entry"},{label:"Create RF → G-20",primary:true}]}/>
     <Content>
       {viewRf&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setViewRf(null)}>
           <div style={{background:C.white,borderRadius:8,padding:24,width:420,maxHeight:"70vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-              <div style={{fontSize:14,fontWeight:700}}>RF Details \u2014 {viewRf.rf}</div>
-              <span onClick={()=>setViewRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"\u00D7"}</span>
+              <div style={{fontSize:14,fontWeight:700}}>RF Details — {viewRf.rf}</div>
+              <span onClick={()=>setViewRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"×"}</span>
             </div>
             <div style={{border:"0.5px solid "+C.border,borderRadius:6,padding:"12px 14px",marginBottom:12}}>
               <div style={{fontSize:11,fontWeight:600,color:C.textMuted,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.05em"}}>RF Information</div>
@@ -4246,15 +4302,15 @@ const screens = {
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:101,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setReceivingRf(null)}>
           <div style={{background:C.white,borderRadius:8,padding:24,width:400}} onClick={e=>e.stopPropagation()}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-              <div style={{fontSize:14,fontWeight:700}}>{"\u{1F4E5}"} Receive RF Items \u2014 {receivingRf.rf}</div>
-              <span onClick={()=>setReceivingRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"\u00D7"}</span>
+              <div style={{fontSize:14,fontWeight:700}}>{"\u{1F4E5}"} Receive RF Items — {receivingRf.rf}</div>
+              <span onClick={()=>setReceivingRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"×"}</span>
             </div>
             <div style={{border:"0.5px solid #a5d6a7",borderRadius:6,padding:"12px 14px",background:"#e8f5e9",marginBottom:12,fontSize:11}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
                 <span>Contractor: <strong>{receivingRf.cont}</strong></span>
                 <span>Total RF Qty: <strong>{receivingRf.pcs}</strong></span>
               </div>
-              <div style={{fontSize:10,color:C.textMuted}}>Challan: {receivingRf.ch} \u00B7 Type: {receivingRf.type}</div>
+              <div style={{fontSize:10,color:C.textMuted}}>Challan: {receivingRf.ch} · Type: {receivingRf.type}</div>
             </div>
             <div style={{marginBottom:12}}>
               <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginBottom:8}}>
@@ -4276,13 +4332,13 @@ const screens = {
               </div>
               {receivedQtyInput < receivingRf.pcs && (
                 <div style={{marginTop:6,padding:"4px 8px",background:"#fff3e0",borderRadius:3,fontSize:10,color:"#e65100"}}>
-                  {"\u26A0"} Partial receipt: {receivingRf.pcs - receivedQtyInput} piece(s) still pending
+                  {"⚠"} Partial receipt: {receivingRf.pcs - receivedQtyInput} piece(s) still pending
                 </div>
               )}
             </div>
             <div style={{display:"flex",gap:8,justifyContent:"flex-end"}}>
               <button onClick={()=>setReceivingRf(null)} style={{padding:"6px 16px",background:"#f5f5f5",border:"0.5px solid "+C.border,borderRadius:4,fontSize:11,cursor:"pointer"}}>Cancel</button>
-              <button onClick={handleMarkReceived} style={{padding:"6px 16px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>{"\u2713"} Confirm Received</button>
+              <button onClick={handleMarkReceived} style={{padding:"6px 16px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>{"✓"} Confirm Received</button>
             </div>
           </div>
         </div>
@@ -4291,15 +4347,15 @@ const screens = {
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:102,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setClosingRf(null)}>
           <div style={{background:C.white,borderRadius:8,padding:24,width:420}} onClick={e=>e.stopPropagation()}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-              <div style={{fontSize:14,fontWeight:700}}>{"\u{1F512}"} Close RF \u2014 {closingRf.rf}</div>
-              <span onClick={()=>setClosingRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"\u00D7"}</span>
+              <div style={{fontSize:14,fontWeight:700}}>{"\u{1F512}"} Close RF — {closingRf.rf}</div>
+              <span onClick={()=>setClosingRf(null)} style={{cursor:"pointer",fontSize:18,color:C.textMuted,lineHeight:1}}>{"×"}</span>
             </div>
             <div style={{border:"0.5px solid #ce93d8",borderRadius:6,padding:"12px 14px",background:"#f3e5f5",marginBottom:12,fontSize:11}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
                 <span>Contractor: <strong>{closingRf.cont}</strong></span>
                 <span>Total RF Qty: <strong>{closingRf.pcs}</strong></span>
               </div>
-              <div style={{fontSize:10,color:"#6a1b9a"}}>Challan: {closingRf.ch} \u00B7 Type: {closingRf.type} \u00B7 Design: {closingRf.design}</div>
+              <div style={{fontSize:10,color:"#6a1b9a"}}>Challan: {closingRf.ch} · Type: {closingRf.claim?<span style={{fontSize:10,padding:"1px 5px",borderRadius:2,fontWeight:600,background:"#f3e5f5",color:"#7b1fa2"}}>Claim</span>:closingRf.type} · Design: {closingRf.design}</div>
             </div>
             <div style={{marginBottom:12}}>
               <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginBottom:8}}>
@@ -4328,7 +4384,7 @@ const screens = {
               </div>
               {closeActualQty < closeReceivedQty && (
                 <div style={{marginTop:6,padding:"4px 8px",background:"#fff3e0",borderRadius:3,fontSize:10,color:"#e65100"}}>
-                  {"\u26A0"} {closeReceivedQty - closeActualQty} piece(s) are damaged/defective and will be written off
+                  {"⚠"} {closeReceivedQty - closeActualQty} piece(s) are damaged/defective and will be written off
                 </div>
               )}
             </div>
@@ -4347,7 +4403,7 @@ const screens = {
       </div>
       <div style={{display:"flex",gap:6,marginBottom:10,alignItems:"center"}}>
         <span style={{fontSize:10,fontWeight:600,color:C.textMuted}}>Days:</span>
-        {[["All","All"],["10","\u226410 days"],["20","\u226420 days"],["30","\u226430 days"],["30+","30+ days"]].map(([v,l])=>(
+        {[["All","All"],["10","≤10 days"],["20","≤20 days"],["30","≤30 days"],["30+","30+ days"]].map(([v,l])=>(
           <div key={v} onClick={()=>setDaysFilter(v)} style={{padding:"3px 9px",fontSize:10,borderRadius:3,cursor:"pointer",fontWeight:600,background:daysFilter===v?CO.accent:C.bgSoft,color:daysFilter===v?C.white:C.textMuted,border:"0.5px solid "+(daysFilter===v?CO.accentBorder:C.border)}}>{l}</div>
         ))}
       </div>
@@ -4386,7 +4442,6 @@ const screens = {
   </WebLayout>
   );
 },
-
 "G-09": () => (
   <WebLayout activeMenu="Fabric / Mill" mode="mfg">
     <GTopBar title="Mill / Fabric Management" sub="Fabric roll inventory and mill tracking" actions={[{label:"Add Roll"},{label:"Add Mill",primary:true}]}/>
@@ -4444,7 +4499,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "G-10": () => {
   const [design,setDesign]=useState("D-730");
   return(
@@ -4506,7 +4560,6 @@ const screens = {
   </WebLayout>
   );
 },
-
 "G-11": () => (
   <WebLayout activeMenu="Masters" mode="mfg">
     <Content>
@@ -4519,7 +4572,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 "G-02": ({ onNavigate }) => {
   const [showDesignHistory, setShowDesignHistory] = useState(false);
   const createdAt = "11 May 2026, 15:42";
@@ -4553,7 +4605,7 @@ const screens = {
         </div>
       )}
       <div style={{display:"flex",justifyContent:"flex-end",marginBottom:8}}>
-        <button onClick={()=>onNavigate("G-23")} style={{padding:"4px 10px",border:"0.5px solid #f5cba7",background:"#fef3e2",borderRadius:3,fontSize:10,fontWeight:600,color:"#e67e22",cursor:"pointer"}}>{"\u{1F4CB}"} View Traditional Challan Layout {"\u2192"}</button>
+        <button onClick={()=>onNavigate("G-23")} style={{padding:"4px 10px",border:"0.5px solid #f5cba7",background:"#fef3e2",borderRadius:3,fontSize:10,fontWeight:600,color:"#e67e22",cursor:"pointer"}}>{"\u{1F4CB}"} View Traditional Challan Layout {"→"}</button>
       </div>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
@@ -4791,7 +4843,7 @@ const screens = {
           <div style={{background:C.white,borderRadius:8,padding:20,width:420,maxHeight:"70vh",overflow:"auto"}} onClick={e=>e.stopPropagation()}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
               <div style={{fontSize:13,fontWeight:700}}>Design History - D-730</div>
-              <span onClick={()=>setShowDesignHistory(false)} style={{cursor:"pointer",fontSize:16,color:C.textMuted}}>{"\u00D7"}</span>
+              <span onClick={()=>setShowDesignHistory(false)} style={{cursor:"pointer",fontSize:16,color:C.textMuted}}>{"×"}</span>
             </div>
             {[
               {challan:"3209",date:"06 May",pcs:600,note:"2 dupattas missing lace. Lace contractor 3 days late."},
@@ -4801,7 +4853,7 @@ const screens = {
               <div key={i} style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",marginBottom:8}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
                   <span style={{fontSize:11,fontWeight:700,fontFamily:"monospace"}}>#{r.challan}</span>
-                  <span style={{fontSize:10,color:C.textMuted}}>{r.date} {"\u00B7"} {r.pcs} pcs</span>
+                  <span style={{fontSize:10,color:C.textMuted}}>{r.date} {"·"} {r.pcs} pcs</span>
                 </div>
                 <div style={{fontSize:11,color:C.text}}>{r.note}</div>
                 <button style={{marginTop:6,fontSize:10,padding:"3px 8px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,color:CO.accent,cursor:"pointer"}}>Prefill from this run</button>
@@ -4813,7 +4865,7 @@ const screens = {
       <div id="cs" style={{width:720,maxWidth:"100%",border:`1.5px dashed ${C.textLight}`,borderRadius:4,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:16,fontFamily:"'Courier New',monospace"}}>
         <div style={{background:"#b71c1c",color:C.white,padding:"14px 20px 10px",textAlign:"center"}}>
           <div style={{fontSize:20,fontWeight:900,letterSpacing:6,textTransform:"uppercase"}}>C H A L L A N</div>
-          <div style={{fontSize:9,opacity:0.7,marginTop:2,letterSpacing:2}}>GMMS Manufacturing ERP {"\u00B7"} Surat</div>
+          <div style={{fontSize:9,opacity:0.7,marginTop:2,letterSpacing:2}}>GMMS Manufacturing ERP {"·"} Surat</div>
         </div>
         <div style={{padding:"12px 20px"}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
@@ -4839,14 +4891,20 @@ const screens = {
             <strong>MOBILE:</strong> <span style={{borderBottom:`1px solid ${C.textLight}`,padding:"0 20px",minWidth:280,display:"inline-block"}}>+91 98765 43210</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4,fontSize:11}}>
-            <strong>DESIGN NO:</strong> D-730
-            <button onClick={()=>setShowDesignHistory(true)} style={{fontSize:8,padding:"2px 6px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:2,color:CO.accent,cursor:"pointer",fontWeight:600}}>History {"\u25BE"}</button>
+            <strong>DESIGN SERIES:</strong>
+            <div style={{display:"flex",gap:4}}>
+              {["D","N","R"].map((s,i)=>(
+                <div key={s} style={{padding:"1px 8px",border:"0.5px solid #999",borderRadius:2,fontSize:10,fontWeight:700,cursor:"pointer",background:i===0?CO.accent:C.white,color:i===0?C.white:"#999"}}>{s}</div>
+              ))}
+            </div>
+            <span style={{fontFamily:"monospace",fontWeight:700,fontSize:12}}>D-730</span>
+            <button onClick={()=>setShowDesignHistory(true)} style={{fontSize:8,padding:"2px 6px",background:CO.accentLight,border:`0.5px solid ${CO.accentBorder}`,borderRadius:2,color:CO.accent,cursor:"pointer",fontWeight:600}}>History {"▾"}</button>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4,fontSize:11}}>
             <strong>JOB TYPE:</strong>
             <div style={{position:"relative"}}>
               <div onClick={()=>setShowJobTypeDropdown(!showJobTypeDropdown)} style={{padding:"2px 8px",border:`0.5px solid ${CO.accentBorder}`,borderRadius:2,background:CO.accentLight,cursor:"pointer",fontSize:10,fontWeight:700,color:CO.accent,display:"flex",alignItems:"center",gap:4,fontFamily:"'Courier New',monospace"}}>
-                {selectedJobType} {"\u25BE"}
+                {selectedJobType} {"▾"}
               </div>
               {showJobTypeDropdown&&(
                 <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:3,minWidth:140,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:200,overflowY:"auto"}}>
@@ -4861,7 +4919,7 @@ const screens = {
             </div>
           </div>
           <div style={{border:`1px solid ${C.redBorder}`,borderRadius:3,padding:"5px 8px",background:C.redLight,marginTop:6,fontSize:10}}>
-            <div style={{fontWeight:700,color:C.red,marginBottom:3}}>{"\u26A0"} Repeat Design Found - D-730 (2 prior runs)</div>
+            <div style={{fontWeight:700,color:C.red,marginBottom:3}}>{"⚠"} Repeat Design Found - D-730 (2 prior runs)</div>
             <div><strong>#3209 (06 May):</strong> 2 dupattas missing lace</div>
             <div><strong>#3198 (28 Apr):</strong> Fabric overconsumption - 6 pieces short</div>
           </div>
@@ -4873,7 +4931,7 @@ const screens = {
             <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
               <div style={{flex:2}}>Colour</div>
               <div style={{flex:1.8,textAlign:"center"}}>Remarks</div>
-              <div style={{flex:0.3,textAlign:"center"}}>{"\u00D7"}</div>
+              <div style={{flex:0.3,textAlign:"center"}}>{"×"}</div>
             </div>
             {colorRows.map((r,i)=>(
               <div key={i} style={{position:"relative",display:"flex",alignItems:"center",gap:4,padding:"4px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10,background:i%2===0?"#faf8f5":C.white}}>
@@ -4897,23 +4955,26 @@ const screens = {
                   ):null}
                   <div onClick={()=>{setOpenDropdown(openDropdown===i?null:i);setNewColorInput("");}} style={{cursor:"pointer",padding:"2px 4px",border:`0.5px solid ${C.border}`,borderRadius:2,background:C.white,fontWeight:600,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                     <span>{r.colour||"Select"}</span>
-                    <span style={{fontSize:7,color:C.textMuted}}>{"\u25BE"}</span>
+                    <span style={{fontSize:7,color:C.textMuted}}>{"▾"}</span>
                   </div>
                 </div>
                 <div style={{flex:1.8,textAlign:"center"}}><input value={r.remarks} onChange={e=>updateColorRow(i,"remarks",e.target.value)} placeholder="--" style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:9,textAlign:"center",background:C.white,fontFamily:"inherit",color:C.textMuted}}/></div>
-                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setColorRows(colorRows.filter((_,j)=>j!==i))}>{"\u00D7"}</div>
+                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setColorRows(colorRows.filter((_,j)=>j!==i))}>{"×"}</div>
               </div>
             ))}
           </div>
           <button onClick={()=>setColorRows([...colorRows,{colour:"",remarks:""}])} style={{marginTop:4,marginBottom:10,padding:"3px 10px",border:`1px dashed ${CO.accentBorder}`,background:CO.accentLight,borderRadius:2,fontSize:9,color:CO.accent,fontWeight:600,cursor:"pointer",width:"100%"}}>+ Add Color</button>
-          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Fabric & Qty</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+            <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em"}}>Fabric & Qty</div>
+            <div style={{fontSize:10,fontWeight:600,color:CO.accent,padding:"2px 8px",background:CO.accentLight,borderRadius:3}}>Available Stock: 1,250.50 Meters</div>
+          </div>
           <div style={{border:`0.5px solid ${C.border}`,borderRadius:3,overflow:"hidden",marginBottom:6}}>
             <div style={{display:"flex",background:"#f0ebe4",padding:"4px 6px",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
               <div style={{flex:1.5}}>Fabric Description</div>
               <div style={{flex:0.7,textAlign:"right"}}>Cons/pc (m)</div>
               <div style={{flex:0.7,textAlign:"right"}}>Qty (pcs)</div>
               <div style={{flex:0.7,textAlign:"right"}}>Buffer (m)</div>
-              <div style={{flex:0.3,textAlign:"center"}}>{"\u00D7"}</div>
+              <div style={{flex:0.3,textAlign:"center"}}>{"×"}</div>
             </div>
             {fabricRows.map((r,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"3px 6px",borderTop:`0.5px solid ${C.border}`,fontSize:10}}>
@@ -4921,7 +4982,7 @@ const screens = {
                 <div style={{flex:0.7,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.cons} onChange={e=>updateFabricRow(i,"cons",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
                 <div style={{flex:0.7,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.qty} onChange={e=>updateFabricRow(i,"qty",e.target.value)} style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
                 <div style={{flex:0.7,textAlign:"right"}}><input type="number" step="0.01" min="0" value={r.buffer} onChange={e=>updateFabricRow(i,"buffer",e.target.value)} placeholder="0" style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:2,padding:"2px 4px",fontSize:10,fontWeight:600,textAlign:"right",background:C.white,fontFamily:"'Courier New',monospace"}}/></div>
-                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setFabricRows(fabricRows.filter((_,j)=>j!==i))}>{"\u00D7"}</div>
+                <div style={{flex:0.3,textAlign:"center",color:C.red,cursor:"pointer",fontSize:11,fontWeight:700}} onClick={()=>setFabricRows(fabricRows.filter((_,j)=>j!==i))}>{"×"}</div>
               </div>
             ))}
             <div style={{borderTop:`0.5px solid ${C.border}`,padding:"4px 6px",background:"#f5f0ea",display:"flex",fontSize:9,fontWeight:700,color:"#5a4a3a"}}>
@@ -4969,6 +5030,15 @@ const screens = {
         </div>
         <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
         <div style={{padding:"4px 20px 10px"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Expected Completion Days</div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:11}}>Within</span>
+            <input type="number" min="1" max="90" placeholder="10" style={{width:60,border:`0.5px solid ${C.border}`,borderRadius:2,padding:"4px 6px",fontSize:11,fontWeight:600,textAlign:"center",fontFamily:"'Courier New',monospace"}}/>
+            <span style={{fontSize:11}}>days</span>
+          </div>
+        </div>
+        <hr style={{border:"none",borderTop:`0.5px dashed ${C.border}`,margin:"4px 0"}}/>
+        <div style={{padding:"4px 20px 10px"}}>
           <div style={{fontSize:9,fontWeight:700,color:C.textMuted,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Special Instructions / Remarks</div>
           <div style={{border:`0.5px solid ${C.border}`,borderRadius:2,overflow:"hidden"}}>
             <div style={{borderBottom:`0.5px dashed ${C.border}`,padding:"4px 8px",fontSize:10,fontFamily:"'Courier New',monospace",color:C.textLight,minHeight:16}}>Add specific instructions for this production run...</div>
@@ -4977,7 +5047,7 @@ const screens = {
           </div>
         </div>
         <div style={{borderTop:`0.5px solid ${C.border}`,padding:"6px 20px",display:"flex",justifyContent:"space-between",fontSize:8,color:C.textMuted,background:C.bgSoft}}>
-          <span>Challan #3211 {"\u00B7"} {createdAt}</span>
+          <span>Challan #3211 {"·"} {createdAt}</span>
           <span>Page 1/1</span>
         </div>
       </div>
@@ -4988,43 +5058,79 @@ const screens = {
   </WebLayout>
   );
 },
-"G-03": () => (
+"G-03": () => {
+  const [expandedStage,setExpandedStage]=useState(null);
+  const stages = [
+    {step:1,code:"EMB",label:"Embroidery",cont:"Ramesh Kadkiya",assigned:600,ready:598,rf:2,short:0,pending:0,start:"07 May",deadline:"17 May",status:"completed",colours:[
+      {col:"Pink",components:[{name:"Top",ready:200,rf:0,short:0},{name:"Bottom",ready:198,rf:2,short:0},{name:"Dupatta",ready:200,rf:0,short:0}]},
+      {col:"Blue",components:[{name:"Top",ready:100,rf:0,short:0},{name:"Bottom",ready:100,rf:0,short:0},{name:"Dupatta",ready:100,rf:0,short:0}]},
+    ]},
+    {step:2,code:"STH",label:"Stitching",cont:"Suresh Bhai",assigned:600,ready:590,rf:5,short:3,pending:2,start:"18 May",deadline:"24 May",status:"inprogress",colours:[
+      {col:"Pink",components:[{name:"Top",ready:200,rf:2,short:1},{name:"Bottom",ready:195,rf:3,short:1},{name:"Dupatta",ready:195,rf:0,short:1}]},
+      {col:"Blue",components:[{name:"Top",ready:100,rf:0,short:0},{name:"Bottom",ready:100,rf:0,short:0},{name:"Dupatta",ready:100,rf:0,short:0}]},
+    ]},
+    {step:3,code:"DIA",label:"Diamond Work",cont:"Anil Thakkar",assigned:600,ready:0,rf:0,short:0,pending:600,start:null,deadline:"28 May",status:"pending",colours:[]},
+    {step:4,code:"LAC",label:"Lace Work",cont:"Mohan Das",assigned:600,ready:0,rf:0,short:0,pending:600,start:null,deadline:"30 May",status:"pending",colours:[]},
+    {step:5,code:"PKG",label:"Ready Count",cont:"In-house Staff",assigned:600,ready:0,rf:0,short:0,pending:600,start:null,deadline:"01 Jun",status:"pending",colours:[]},
+  ];
+  return(
   <WebLayout activeMenu="Challans" mode="mfg">
-    <GTopBar title="Challan Tracking - #3210" sub="D-730 · Floral Embroidery Set · 600 pcs · Started 07 May 2026" actions={[{label:"Add Note"},{label:"Reprocess → G-13"},{label:"Print Challan",primary:true}]}/>
+    <GTopBar title="Challan Tracking - #3210" sub="D-730 - Floral Embroidery Set - 600 pcs - Started 07 May 2026" actions={[{label:"Add Note"},{label:"Reprocess -> G-13"},{label:"Print Challan",primary:true}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
           <Card>
             <div style={{fontSize:12,fontWeight:600,marginBottom:14}}>Production Progress Tracker</div>
-            {[
-              {step:1,code:"EMB",label:"Embroidery",cont:"Ramesh Kadkiya",sent:600,conf:600,start:"07 May",deadline:"17 May",status:"completed"},
-              {step:2,code:"STH",label:"Stitching",cont:"Suresh Bhai",sent:600,conf:598,start:"18 May",deadline:"24 May",status:"inprogress"},
-              {step:3,code:"DIA",label:"Diamond Work",cont:"Anil Thakkar",sent:null,deadline:"28 May",status:"pending"},
-              {step:4,code:"LAC",label:"Lace Work",cont:"Mohan Das",sent:null,deadline:"30 May",status:"pending"},
-              {step:5,code:"PKG",label:"Ready Count",cont:"In-house Staff",sent:null,deadline:"01 Jun",status:"pending"},
-            ].map((s,i)=>(
+            {stages.map((s,i)=>(
               <div key={i} style={{display:"flex",gap:0,marginBottom:0}}>
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",width:28,flexShrink:0}}>
                   <div style={{width:18,height:18,borderRadius:"50%",background:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.border,display:"flex",alignItems:"center",justifyContent:"center",zIndex:1,flexShrink:0}}>
-                    {s.status==="completed"&&<span style={{color:C.white,fontSize:9,fontWeight:700}}>✔</span>}
+                    {s.status==="completed"&&<span style={{color:C.white,fontSize:9,fontWeight:700}}>{"✓"}</span>}
                     {s.status==="inprogress"&&<div style={{width:6,height:6,borderRadius:"50%",background:C.white}}/>}
                   </div>
                   {i<4&&<div style={{width:1.5,flex:1,minHeight:20,background:s.status==="completed"?C.green:C.border,margin:"2px 0"}}/>}
                 </div>
                 <div style={{flex:1,paddingBottom:10,paddingLeft:8}}>
-                  <div style={{border:`0.5px solid ${s.status==="completed"?C.greenBorder:s.status==="inprogress"?CO.accentBorder:C.border}`,borderRadius:4,padding:"8px 10px",background:s.status==="completed"?C.greenLight:s.status==="inprogress"?CO.accentLight:C.white}}>
+                  <div onClick={()=>setExpandedStage(expandedStage===i?null:i)} style={{cursor:"pointer",border:`0.5px solid ${s.status==="completed"?C.greenBorder:s.status==="inprogress"?CO.accentBorder:C.border}`,borderRadius:4,padding:"8px 10px",background:s.status==="completed"?C.greenLight:s.status==="inprogress"?CO.accentLight:C.white}}>
                     <div style={{display:"flex",justifyContent:"space-between"}}>
                       <div><span style={{fontSize:10,fontFamily:"monospace",color:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.textLight,fontWeight:600}}>/{s.code}</span><span style={{fontSize:12,fontWeight:600,marginLeft:6}}>{s.label}</span></div>
                       <span style={{fontSize:10,fontWeight:600,color:s.status==="completed"?C.green:s.status==="inprogress"?CO.accent:C.textLight,textTransform:"uppercase"}}>{s.status==="inprogress"?"In Progress":s.status==="completed"?"Completed":"Pending"}</span>
                     </div>
                     <div style={{fontSize:11,color:C.textMuted,marginTop:4}}>{s.cont}</div>
-                    {s.sent&&<div style={{display:"flex",gap:12,marginTop:6,fontSize:11}}>
-                      <span>Sent: <strong>{s.sent}</strong></span>
-                      {s.conf&&<span style={{color:s.conf<s.sent?C.red:C.green}}>Confirmed: <strong>{s.conf}</strong>{s.conf<s.sent&&<span style={{color:C.red}}> (-{s.sent-s.conf} dispute)</span>}</span>}
+                    <div style={{display:"flex",gap:10,marginTop:6,fontSize:10,flexWrap:"wrap"}}>
+                      <span>Assigned: <strong>{s.assigned}</strong></span>
+                      <span style={{color:C.green}}>Ready: <strong>{s.ready}</strong></span>
+                      <span style={{color:"#7b1fa2"}}>RF: <strong>{s.rf}</strong></span>
+                      <span style={{color:C.red}}>Short: <strong>{s.short}</strong></span>
+                      <span style={{color:"#b45309"}}>Pending: <strong>{s.pending}</strong></span>
                       <span style={{color:C.textMuted}}>Deadline: {s.deadline}</span>
-                    </div>}
-                    {s.status==="pending"&&<div style={{fontSize:10,color:C.textMuted,marginTop:4}}>Deadline: {s.deadline}</div>}
+                    </div>
                   </div>
+                  {expandedStage===i&&s.colours.length>0&&(
+                    <div style={{marginTop:6,padding:"6px 8px",background:"#faf8f5",border:`0.5px solid ${C.border}`,borderRadius:4}}>
+                      <div style={{fontSize:9,fontWeight:700,color:C.textMuted,marginBottom:4}}>Colour / Component Breakdown</div>
+                      {s.colours.map((co,coi)=>(
+                        <div key={coi} style={{marginBottom:4}}>
+                          <div style={{fontSize:10,fontWeight:600,color:CO.accent,marginBottom:2}}>{co.col}</div>
+                          <div style={{display:"flex",gap:3}}>
+                            <div style={{flex:1,fontSize:9,background:C.white,border:`0.5px solid ${C.border}`,borderRadius:2}}>
+                              <div style={{display:"flex",background:"#f0ebe4",padding:"2px 4px",fontSize:8,fontWeight:700}}>
+                                <div style={{flex:1}}>Component</div><div style={{flex:0.5,textAlign:"right"}}>Ready</div><div style={{flex:0.5,textAlign:"right"}}>RF</div><div style={{flex:0.5,textAlign:"right"}}>Short</div>
+                              </div>
+                              {co.components.map((cp,cpi)=>(
+                                <div key={cpi} style={{display:"flex",padding:"2px 4px",borderTop:`0.5px solid ${C.border}`,fontSize:9}}>
+                                  <div style={{flex:1}}>{cp.name}</div>
+                                  <div style={{flex:0.5,textAlign:"right"}}>{cp.ready}</div>
+                                  <div style={{flex:0.5,textAlign:"right",color:cp.rf>0?"#7b1fa2":C.textMuted}}>{cp.rf}</div>
+                                  <div style={{flex:0.5,textAlign:"right",color:cp.short>0?C.red:C.textMuted}}>{cp.short}</div>
+                                </div>
+              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -5033,7 +5139,7 @@ const screens = {
         <div style={{flex:1}}>
           <Card>
             <SectionLabel>Challan Summary</SectionLabel>
-            {[["Challan No","3210"],["Design No","D-730"],["Total Pieces","600"],["Colours","Pink/Blue/Cream × 200 each"],["Flow","4 stages + Ready Count"],["Started","07 May 2026"],["Expected Completion","01 Jun 2026"]].map(([l,v],i)=>(
+            {[["Challan No","3210"],["Design No","D-730"],["Total Pieces","600"],["Colours","Pink/Blue/Cream x 200 each"],["Flow","4 stages + Ready Count"],["Started","07 May 2026"],["Expected Completion","01 Jun 2026"]].map(([l,v],i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500,textAlign:"right",maxWidth:"55%"}}>{v}</span>
               </div>
@@ -5047,7 +5153,7 @@ const screens = {
             ].map((n,i)=>(
               <div key={i} style={{padding:"6px 0",borderBottom:`0.5px solid ${C.border}`}}>
                 <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:C.textMuted,marginBottom:2}}>
-                  <span>{n.author} · {n.stage}</span><span>{n.time}</span>
+                  <span>{n.author} - {n.stage}</span><span>{n.time}</span>
                 </div>
                 <div style={{fontSize:10,color:CO.accent,marginBottom:2}}>[{n.cat}]</div>
                 <div style={{fontSize:11}}>{n.note}</div>
@@ -5059,7 +5165,8 @@ const screens = {
       </div>
     </div>
   </WebLayout>
-),
+  );
+},
 "G-04": () => {
   const [showAdd, setShowAdd] = useState(false);
   return (
@@ -5077,6 +5184,11 @@ const screens = {
             <div style={{flex:1}}><Input label="Mobile" placeholder="+91 98765 XXXXX" required/></div>
             <div style={{flex:1}}><Input label="WhatsApp" placeholder="+91 98765 XXXXX"/></div>
           </div>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:9}}>
+            <div style={{width:14,height:14,border:"1.5px solid #999",borderRadius:2,background:"#fff",cursor:"pointer"}}></div>
+            <span style={{fontSize:11,color:C.textMuted,cursor:"pointer"}}>WhatsApp Number same as Mobile</span>
+          </div>
+          <Input label="Broker / Reference Name" placeholder="e.g. Vinod Kumar (optional)"/>
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Primary Job Work Type <span style={{color:C.red}}>*</span></div>
             <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
@@ -5086,10 +5198,7 @@ const screens = {
             </div>
           </div>
           <Input label="Address" placeholder="City / Area"/>
-          <div style={{display:"flex",gap:10}}>
-            <div style={{flex:1}}><Input label="GSTIN" placeholder="Optional"/></div>
-            <div style={{flex:1}}><Input label="Bank Account (last 4)" placeholder="XXXX"/></div>
-          </div>
+          <Input label="GSTIN" placeholder="Optional"/>
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Create Mobile Login?</div>
             <div style={{display:"flex",gap:6}}>
@@ -5191,7 +5300,7 @@ const screens = {
           </select>
         </div>
         <div style={{padding:"7px 12px",background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:4,fontSize:11,color:"#e65100",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <span>{"\u26A0"} Reprocessing Challan #{original.cn} · {original.design} {original.designName} · Original: {jobTypes.find(j=>j.code===original.jobType)?.name||original.jobType}</span>
+          <span>{"⚠"} Reprocessing Challan #{original.cn} · {original.design} {original.designName} · Original: {jobTypes.find(j=>j.code===original.jobType)?.name||original.jobType}</span>
           <span style={{fontSize:10,color:"#bf360c"}}>Same items carry over</span>
         </div>
         <div style={{display:"flex",gap:8,marginTop:8}}>
@@ -5203,7 +5312,7 @@ const screens = {
           </div>
           {shortQty > 0 && (
             <div style={{flex:1,padding:"6px 10px",background:"#fff3e0",border:"0.5px solid #ffcc80",borderRadius:4,fontSize:10,fontWeight:600}}>
-              {"\u26A0"} Short/RF: <strong>{shortQty}</strong> against <strong>{original.contractor}</strong>
+              {"⚠"} Short/RF: <strong>{shortQty}</strong> against <strong>{original.contractor}</strong>
             </div>
           )}
         </div>
@@ -5252,7 +5361,7 @@ const screens = {
             <strong>JOB TYPE:</strong>
             <div style={{position:"relative"}}>
               <div onClick={()=>setShowJobTypeDropdown(!showJobTypeDropdown)} style={{padding:"2px 8px",border:"0.5px solid "+CO.accentBorder,borderRadius:2,background:CO.accentLight,cursor:"pointer",fontSize:10,fontWeight:700,color:CO.accent,display:"flex",alignItems:"center",gap:4,fontFamily:"'Courier New',monospace"}}>
-                {newJobType} {"\u25BE"}
+                {newJobType} {"▾"}
               </div>
               {showJobTypeDropdown&&(
                 <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:"0.5px solid "+C.border,borderRadius:3,minWidth:140,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:200,overflowY:"auto"}}>
@@ -5267,7 +5376,7 @@ const screens = {
             </div>
           </div>
           <div style={{border:"1px solid #ffcc80",borderRadius:3,padding:"5px 8px",background:"#fff8e1",marginTop:6,fontSize:10}}>
-            <div style={{fontWeight:700,color:"#e65100",marginBottom:3}}>{"\u26A0"} Reprocessing from Challan #{original.cn} ({jobTypes.find(j=>j.code===original.jobType)?.name})</div>
+            <div style={{fontWeight:700,color:"#e65100",marginBottom:3}}>{"⚠"} Reprocessing from Challan #{original.cn} ({jobTypes.find(j=>j.code===original.jobType)?.name})</div>
             <div style={{display:"flex",gap:16,color:"#bf360c"}}>
               <span>Original Contractor: <strong>{original.contractor}</strong></span>
               <span>Colors: <strong>{original.colors.join(", ")}</strong></span>
@@ -5463,7 +5572,7 @@ const screens = {
             <strong>JOB TYPE:</strong>
             <div style={{position:"relative"}}>
               <div onClick={()=>setShowJobTypeDropdown(!showJobTypeDropdown)} style={{padding:"2px 8px",border:"0.5px solid "+CO.accentBorder,borderRadius:2,background:CO.accentLight,cursor:"pointer",fontSize:10,fontWeight:700,color:CO.accent,display:"flex",alignItems:"center",gap:4,fontFamily:"'Courier New',monospace"}}>
-                {newJobType} {"\u25BE"}
+                {newJobType} {"▾"}
               </div>
               {showJobTypeDropdown&&(
                 <div style={{position:"absolute",top:"100%",left:0,zIndex:10,background:C.white,border:"0.5px solid "+C.border,borderRadius:3,minWidth:140,boxShadow:"0 4px 12px rgba(0,0,0,0.1)",maxHeight:200,overflowY:"auto"}}>
@@ -5789,13 +5898,13 @@ const screens = {
         <div style={{flex:2}}>
           <div style={{border:`0.5px solid ${C.border}`,borderRadius:6,overflow:"hidden",background:C.white}}>
             <div style={{display:"flex",background:C.bgSoft,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.textMuted,gap:6}}>
-              {["CODE","NAME","TYPE","MOBILE","GSTIN","BANK","LOGIN","STATUS","ACTION"].map((h,i)=><div key={i} style={{flex:1}}>{h}</div>)}
+              {["CODE","NAME","TYPE","MOBILE","GSTIN","BROKER","LOGIN","STATUS","ACTION"].map((h,i)=><div key={i} style={{flex:1}}>{h}</div>)}
             </div>
             {[
-              {code:"C-006",name:"Ramesh Kadkiya",type:"EMB",mobile:"98250-XXXXX",gstin:"27ABCDE",bank:"HDFC •••−4521",login:true,status:"Active"},
-              {code:"C-011",name:"Suresh Bhai",type:"STH",mobile:"94260-XXXXX",gstin:" - ",bank:"SBI •••−8832",login:true,status:"Active"},
-              {code:"C-023",name:"Anil Thakkar",type:"DIA",mobile:"99250-XXXXX",gstin:"27XYZAA",bank:"ICICI •••−3310",login:false,status:"Pending"},
-              {code:"C-045",name:"Mohan Das",type:"HND",mobile:"98250-XXXXX",gstin:" - ",bank:"BOI •••−6640",login:true,status:"Active"},
+              {code:"C-006",name:"Ramesh Kadkiya",type:"EMB",mobile:"98250-XXXXX",gstin:"27ABCDE",broker:"Vinod Kumar",login:true,status:"Active"},
+              {code:"C-011",name:"Suresh Bhai",type:"STH",mobile:"94260-XXXXX",gstin:" - ",broker:"Rajesh Mehta",login:true,status:"Active"},
+              {code:"C-023",name:"Anil Thakkar",type:"DIA",mobile:"99250-XXXXX",gstin:"27XYZAA",broker:" - ",login:false,status:"Pending"},
+              {code:"C-045",name:"Mohan Das",type:"HND",mobile:"98250-XXXXX",gstin:" - ",broker:"Satish Bhai",login:true,status:"Active"},
             ].map((r,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 10px",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
                 <div style={{flex:1,fontFamily:"monospace",fontSize:10,color:CO.accent,fontWeight:600}}>{r.code}</div>
@@ -5803,8 +5912,8 @@ const screens = {
                 <div style={{flex:1}}><span style={{fontSize:9,fontWeight:700,background:CO.accentLight,color:CO.accent,padding:"2px 5px",borderRadius:3}}>{r.type}</span></div>
                 <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.mobile}</div>
                 <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.gstin}</div>
-                <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.bank}</div>
-                <div style={{flex:1}}><span style={{fontSize:9,fontWeight:600,color:r.login?C.green:C.textMuted}}>{r.login?"✔ Active":"No login"}</span></div>
+                <div style={{flex:1,color:C.textMuted,fontSize:10}}>{r.broker}</div>
+                <div style={{flex:1}}><span style={{fontSize:9,fontWeight:600,color:r.login?C.green:C.textMuted}}>{r.login?"✅ Active":"No login"}</span></div>
                 <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.status==="Active"?C.green:CO.accent}}>{r.status}</span></div>
                 <div style={{flex:1,display:"flex",gap:3}}>
                   <button style={{padding:"3px 6px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Edit</button>
@@ -5821,9 +5930,13 @@ const screens = {
               <div style={{flex:1}}><Input label="Mobile" placeholder="+91 XXXXX" required/></div>
               <div style={{flex:1}}><Input label="Job Type" placeholder="EMB/STH..."/></div>
             </div>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:9}}>
+              <div style={{width:14,height:14,border:"1.5px solid #999",borderRadius:2,background:"#fff",cursor:"pointer"}}></div>
+              <span style={{fontSize:11,color:C.textMuted,cursor:"pointer"}}>WhatsApp Number same as Mobile</span>
+            </div>
+            <Input label="Broker / Reference Name" placeholder="e.g. Vinod Kumar (optional)"/>
             <Input label="Address / City" placeholder="Surat / Ahmedabad"/>
             <Input label="GSTIN" placeholder="Optional"/>
-            <Input label="Bank Account No." placeholder="For payments"/>
             <div style={{marginBottom:8}}>
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Mobile Login</div>
               <div style={{display:"flex",gap:6}}>
@@ -5893,7 +6006,7 @@ const screens = {
     <GTopBar title="GMMS Reports Hub" sub="Challan status · contractor performance · design cost history" actions={[{label:"Export PDF"},{label:"Export CSV",primary:true}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:6,marginBottom:16}}>
-        {[["challan","Challan Status"],["contractor","Contractor Performance"],["design","Design Cost History"]].map(([v,l],i)=>(
+        {[["challan","Challan Status"],["contractor","Contractor Performance"],["design","Design Cost History"],["print","Print Requisition"],["ready","Ready Summary"],["rfsum","RF Summary"],["cost","Cost Analysis"],["account","Accounting"]].map(([v,l],i)=>(
           <div key={i} onClick={()=>setReport(v)} style={{padding:"6px 16px",borderRadius:3,fontSize:11,fontWeight:600,cursor:"pointer",background:report===v?CO.accent:"#f5f5f5",color:report===v?C.white:C.textMuted,border:`0.5px solid ${report===v?CO.accent:C.border}`}}>{l}</div>
         ))}
       </div>
@@ -5964,7 +6077,106 @@ const screens = {
           </div>
         </Card>
       )}
+      {report==="print"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Print Requisition · May 2026</div>
+          <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Design"},{v:"Contractor"},{v:"Stage"},{v:"Priority",w:0.7},{v:"Status",w:0.7},{v:"Print Qty",w:0.7}]}/>
+            {[
+              {design:"D-730",contractor:"Ramesh Kadkiya",stage:"EMB",priority:"High",status:"In Progress",printQty:200},
+              {design:"D-728",contractor:"Suresh Bhai",stage:"STH",priority:"Medium",status:"Pending",printQty:150},
+              {design:"D-715",contractor:"Mohan Das",stage:"HND",priority:"Low",status:"Completed",printQty:300},
+              {design:"D-712",contractor:"Priya Sharma",stage:"LAC",priority:"Medium",status:"In Progress",printQty:100},
+              {design:"D-688",contractor:"Anil Thakkar",stage:"DIA",priority:"High",status:"Pending",printQty:250}
+            ].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:"0.5px solid "+C.border,fontSize:11}}>
+                <div style={{flex:1,fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{r.design}</div>
+                <div style={{flex:1}}>{r.contractor}</div>
+                <div style={{flex:1}}><span style={{background:CO.accentLight,color:CO.accent,padding:"2px 6px",borderRadius:3,fontSize:10,fontWeight:600}}>{r.stage}</span></div>
+                <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:r.priority==="High"?"#ffebee":r.priority==="Medium"?"#fff8e1":"#e3f2fd",color:r.priority==="High"?C.red:r.priority==="Medium"?"#f57f17":"#1565c0"}}>{r.priority}</span></div>
+                <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 6px",borderRadius:3,fontWeight:600,background:r.status==="Completed"?"#e8f5e9":r.status==="In Progress"?"#e3f2fd":"#fff8e1",color:r.status==="Completed"?"#2e7d32":r.status==="In Progress"?"#1565c0":"#f57f17"}}>{r.status}</span></div>
+                <div style={{flex:0.7,fontWeight:600,textAlign:"right"}}>{r.printQty}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+      {report==="ready"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Ready Summary · May 2026</div>
+          <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Stage"},{v:"Assigned"},{v:"Ready"},{v:"Completion %",w:0.8},{v:"On Time",w:0.7},{v:"Delayed",w:0.6}]}/>
+            {[["EMB","2,400","2,380","99%","95%","2"],["STH","1,800","1,720","96%","88%","6"],["DIA","1,200","1,150","96%","92%","3"],["WASH","800","760","95%","90%","4"],["CUT","600","580","97%","85%","1"],["FIN","400","390","98%","93%","0"],["HND","300","280","93%","80%","5"]].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:"0.5px solid "+C.border,fontSize:11}}>
+                {r.map((v,j)=><div key={j} style={{flex:j===2?1:j>=4?0.7:1,fontWeight:j===2?600:400,color:j===3?(parseFloat(v)>95?C.green:parseFloat(v)>85?CO.accent:C.red):j===4?(parseFloat(v)>90?C.green:C.red):j===5?(parseInt(v)>3?C.red:C.text):C.text,textAlign:j>=2?"right":"left"}}>{v}</div>)}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+      {report==="rfsum"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>RF Summary · May 2026</div>
+          <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Stage"},{v:"Total RF"},{v:"Resolved"},{v:"Pending"},{v:"Claims"},{v:"Avg Days"}]}/>
+            {[["EMB","12","10","1","1","4.2"],["STH","8","5","2","1","6.1"],["DIA","4","3","1","0","3.8"],["WASH","6","4","0","2","5.5"],["CUT","2","2","0","0","2.1"],["FIN","3","3","0","0","1.5"],["HND","5","2","1","2","7.3"]].map((r,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:"0.5px solid "+C.border,fontSize:11}}>
+                {r.map((v,j)=><div key={j} style={{flex:1,color:j===4&&parseInt(v)>0?"#7b1fa2":j===2&&parseInt(v)>0?C.green:C.text,fontWeight:j===4&&parseInt(v)>0?700:j===2?600:400}}>{v}</div>)}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+      {report==="account"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Accounting Report · May 2026</div>
+          <div style={{display:"flex",gap:10,marginBottom:12}}>
+            <Metric label="Total Income" value={"₹ 23,08,000"} sub="May 2026"/>
+            <Metric label="Total Expenses" value={"₹ 14,78,000"} sub="May 2026"/>
+            <Metric label="Net Profit" value={"₹ 8,30,000"} sub="May 2026" alert/>
+            <Metric label="Cash in Hand" value={"₹ 85,000"} sub={"Bank: ₹6,35,000"}/>
+          </div>
+          <div style={{fontSize:10,fontWeight:600,color:C.textMuted,marginBottom:6}}>Top Accounts by Balance</div>
+          <div style={{border:"0.5px solid " + C.border,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"Account"},{v:"Group"},{v:"Balance",w:0.6},{v:"Type",w:0.5}]}/>
+            {[["Cash in Hand","Current Assets","85,000","Dr"],["Bank HDFC","Current Assets","4,25,000","Dr"],["Accounts Receivable","Current Assets","1,84,000","Dr"],["Accounts Payable","Current Liabilities","2,56,000","Cr"],["Sales - Domestic","Direct Income","12,40,000","Cr"],["Raw Material","Direct Expenses","7,80,000","Dr"]].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 10px",borderTop:"0.5px solid " + C.border,fontSize:11}}>
+                  {r.map((v,j)=><div key={j} style={{flex:j===2||j===3?0.6:1,fontWeight:j===0?600:400,color:j===3?(v==="Dr"?CO.accent:C.green):C.text,textAlign:j>=2?"right":"left",fontFamily:j>=2?"monospace":"inherit"}}>{v}</div>)}
+                </div>
+              ))}
+          </div>
+        </Card>
+      )}
     </div>
+      {report==="cost"&&(
+        <Card>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:10}}>Cost Analysis · May 2026</div>
+          <div style={{display:"flex",gap:10,marginBottom:12}}>
+            <Metric label="Total Cost" value={"₹ 18,64,200"} sub="May 2026"/>
+            <Metric label="Avg / PCS" value={"₹ 124.50"} sub="All stages"/>
+            <Metric label="Highest Stage" value="Embroidery" sub={"₹ 45,000 avg/challan"} alert/>
+            <Metric label="Pending Costing" value="2 challans" sub="Not finalized"/>
+          </div>
+          <div style={{fontSize:10,fontWeight:600,color:C.textMuted,marginBottom:6}}>Top 5 Challans by Cost</div>
+          <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+            <TH cols={[{v:"C.No",w:0.6},{v:"Design"},{v:"Contractor"},{v:"Total Cost",w:0.8},{v:"Cost/PCS",w:0.7},{v:"Status",w:0.6}]}/>
+            {[{cn:"3210",d:"D-730",con:"Raju Tailor",t:"₹ 62,500",p:"₹ 125",s:"Final"},{cn:"3208",d:"D-688",con:"Salim Works",t:"₹ 72,000",p:"₹ 240",s:"Draft"},{cn:"3205",d:"D-695",con:"Hari Gems",t:"₹ 98,500",p:"₹ 492.5",s:"Final"},{cn:"3202",d:"D-710",con:"Raju Tailor",t:"₹ 18,750",p:"₹ 125",s:"Final"},{cn:"3198",d:"D-688",con:"Salim Works",t:"₹ 32,000",p:"₹ 80",s:"Draft"}].map((r,i)=>(
+              <div key={i} style={{display:"flex",padding:"4px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+                <div style={{flex:0.6,fontWeight:600}}>{r.cn}</div>
+                <div style={{flex:1}}>{r.d}</div>
+                <div style={{flex:1}}>{r.con}</div>
+                <div style={{flex:0.8}}>{r.t}</div>
+                <div style={{flex:0.7}}>{r.p}</div>
+                <div style={{flex:0.6}}><Tag label={r.s} color={r.s==="Final"?"#2e7d32":"#e65100"} small/></div>
+              </div>
+            ))}
+          </div>
+          <div style={{marginTop:8,display:"flex",gap:6}}>
+            <Btn label="Full Cost Analysis" theme="soft" onClick={()=>onNavigate("G-44")}/>
+            <Btn label="Compare Challans" theme="soft" onClick={()=>onNavigate("G-45")}/>
+          </div>
+        </Card>
+      )}
   </WebLayout>
   );
 },
@@ -5978,6 +6190,7 @@ const screens = {
   const [showNewRfType, setShowNewRfType] = useState(false);
   const [newRfTypeVal, setNewRfTypeVal] = useState("");
   const [piecesAffected, setPiecesAffected] = useState("24");
+  const [isClaim,setIsClaim]=useState(false);
   const rfCreatedAt = "11 May 2026, 15:44";
   const contractors = [
     {name:"Ramesh Kadkiya",stage:"EMB",phone:"+91 98765 43210",completed:true},
@@ -5987,7 +6200,7 @@ const screens = {
   ];
   return (
   <WebLayout activeMenu="RF" mode="mfg">
-    <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. \u00B7 raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
+    <GTopBar title="RF / Alteration Creation" sub="Lookup by Invoice No. or Design No. · raise alteration request" actions={[{label:"Submit RF",primary:true},{label:"Cancel"}]}/>
     <div style={{padding:16,background:C.bgSoft,minHeight:460}}>
       <div style={{display:"flex",gap:12}}>
         <div style={{flex:2}}>
@@ -6005,10 +6218,10 @@ const screens = {
             {found&&(
               <div style={{border:"0.5px solid "+CO.accentBorder,borderRadius:6,padding:"10px 14px",background:CO.accentLight,marginTop:4}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-                  <div style={{fontSize:12,fontWeight:700}}>Challan #3202 \u00B7 D-710 Floral Anarkali</div>
+                  <div style={{fontSize:12,fontWeight:700}}>Challan #3202 · D-710 Floral Anarkali</div>
                   <span style={{fontSize:10,padding:"2px 8px",background:C.greenLight,color:C.green,borderRadius:3,fontWeight:600}}>Found</span>
                 </div>
-                <div style={{fontSize:10,color:C.textMuted,marginBottom:8}}>Invoice: INV-2024-1042 \u00B7 240 pcs \u00B7 03 May 2026</div>
+                <div style={{fontSize:10,color:C.textMuted,marginBottom:8}}>Invoice: INV-2024-1042 · 240 pcs · 03 May 2026</div>
                 <div style={{fontSize:10,fontWeight:600,color:C.text,marginBottom:6}}>Select Contractor who raised this RF:</div>
                 {contractors.map((c,i)=>(
                   <div key={i} onClick={()=>{setSelectedContractor(c);setFound(true);}} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 8px",borderRadius:4,cursor:"pointer",marginBottom:4,background:selectedContractor?.name===c.name?CO.accent:"#fafafa",border:"0.5px solid "+(selectedContractor?.name===c.name?CO.accentBorder:C.border),fontSize:11}}>
@@ -6042,7 +6255,7 @@ const screens = {
                   <div style={{display:"flex",gap:4,alignItems:"center"}}>
                     <input value={newRfTypeVal} onChange={e=>setNewRfTypeVal(e.target.value)} placeholder="Type new RF type..." style={{width:120,padding:"4px 8px",border:"0.5px solid "+CO.accentBorder,borderRadius:3,fontSize:11}} autoFocus/>
                     <button onClick={()=>{if(newRfTypeVal.trim()&&!savedRfTypes.includes(newRfTypeVal.trim())){setSavedRfTypes([...savedRfTypes,newRfTypeVal.trim()])}setSelectedRfType(newRfTypeVal.trim());setShowNewRfType(false);setNewRfTypeVal("");}} style={{padding:"4px 8px",background:CO.accent,color:C.white,border:"none",borderRadius:3,fontSize:10,cursor:"pointer",fontWeight:600}}>Add</button>
-                    <span onClick={()=>{setShowNewRfType(false);setNewRfTypeVal("");}} style={{fontSize:12,color:C.textMuted,cursor:"pointer"}}>{"\u00D7"}</span>
+                    <span onClick={()=>{setShowNewRfType(false);setNewRfTypeVal("");}} style={{fontSize:12,color:C.textMuted,cursor:"pointer"}}>{"×"}</span>
                   </div>
                 ):(
                   <div onClick={()=>{setShowNewRfType(true);setSelectedRfType(null);}} style={{padding:"4px 10px",border:"1px dashed "+C.redBorder,borderRadius:3,fontSize:11,cursor:"pointer",background:C.redLight,color:C.red,fontWeight:600}}>+ Other</div>
@@ -6053,20 +6266,24 @@ const screens = {
             <div style={{marginBottom:8}}>
               <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Assign to Contractor?</div>
               <div style={{display:"flex",gap:6}}>
-                {["Yes \u2014 Raise against selected","No \u2014 Internal only"].map((opt,i)=>(
+                {["Yes — Raise against selected","No — Internal only"].map((opt,i)=>(
                   <div key={i} style={{padding:"4px 12px",border:"0.5px solid "+(i===0?C.redBorder:C.border),borderRadius:3,fontSize:11,cursor:"pointer",background:i===0?C.redLight:"#fafafa",color:i===0?C.red:C.textMuted,fontWeight:i===0?600:400}}>{opt}</div>
                 ))}
               </div>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6,marginTop:4}}>
+              <div onClick={()=>setIsClaim(!isClaim)} style={{width:14,height:14,border:"1.5px solid #999",borderRadius:2,background:isClaim?"#7b1fa2":"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:C.white,fontWeight:700}}>{isClaim?"✓":""}</div>
+              <span style={{fontSize:11,color:C.textMuted,cursor:"pointer"}}>Non-returnable — mark as <strong style={{color:"#7b1fa2"}}>Claim</strong></span>
+            </div>
             </div>
             <div style={{fontSize:9,color:C.textMuted,borderTop:"0.5px solid "+C.border,paddingTop:6,marginTop:4}}>
-              RF created {rfCreatedAt} by Moin Noorani {"\u00B7"} Stored in RF audit trail
+              RF created {rfCreatedAt} by Moin Noorani {"·"} Stored in RF audit trail
             </div>
           </Card>
         </div>
         <div style={{flex:1}}>
           <Card style={{background:C.redLight,border:"0.5px solid "+C.redBorder}}>
             <SectionLabel>RF Summary</SectionLabel>
-            {[["Challan","#3202"],["Design","D-710"],["Type",selectedRfType||"-"],["Pieces",piecesAffected],["Created At",rfCreatedAt],["Created By","Moin Noorani"],["Assigned to",selectedContractor?selectedContractor.name:"-"],["Status","Pending"]].map(([l,v],i)=>(
+            {[["Challan","#3202"],["Design","D-710"],["Type",isClaim?<span style={{fontSize:11,padding:"1px 6px",borderRadius:3,fontWeight:600,color:"#7b1fa2",background:"#f3e5f5"}}>Claim</span>:selectedRfType||"-"],["Pieces",piecesAffected],["Created At",rfCreatedAt],["Created By","Moin Noorani"],["Assigned to",selectedContractor?selectedContractor.name:"-"],["Status","Pending"]].map(([l,v],i)=>( 
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:"0.5px solid "+C.redBorder,fontSize:11}}>
                 <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
               </div>
@@ -6076,16 +6293,26 @@ const screens = {
             </div>
           </Card>
           <Card>
-            <SectionLabel>Recent RFs</SectionLabel>
-            {[["#RF-441","D-688","STH Error","Resolved"],["#RF-440","D-730","Fabric Short","Open"],["#RF-439","D-710","Late Delivery","Closed"]].map(([id,d,t,st],i)=>(
-              <div key={i} style={{padding:"5px 0",borderBottom:"0.5px solid "+C.border,fontSize:11}}>
-                <div style={{display:"flex",justifyContent:"space-between"}}>
-                  <span style={{fontFamily:"monospace",color:CO.accent,fontWeight:600}}>{id}</span>
-                  <span style={{fontSize:10,padding:"1px 6px",borderRadius:3,fontWeight:600,background:st==="Resolved"?C.greenLight:st==="Open"?C.redLight:"#f5f5f5",color:st==="Resolved"?C.green:st==="Open"?C.red:C.textMuted}}>{st}</span>
-                </div>
-                <div style={{fontSize:10,color:C.textMuted}}>{d} {t?"\u00B7 "+t:""}</div>
+            <SectionLabel>Reprocess / Rejection Items</SectionLabel>
+            <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden",marginTop:6}}>
+              <div style={{display:"flex",background:C.bgSoft,padding:"4px 6px",fontSize:9,fontWeight:700,color:C.textMuted,gap:4}}>
+                <div style={{flex:0.6}}>Type</div><div style={{flex:0.5}}>Qty (pcs)</div><div style={{flex:1}}>Reason</div><div style={{flex:1}}>Process</div><div style={{flex:0.8}}>Status</div>
               </div>
-            ))}
+              {[
+                {type:"Rejection",qty:5,reason:"Stitching defect - uneven seams",process:"Re-stitch",status:"Pending"},
+                {type:"Rejection",qty:3,reason:"Colour bleeding after wash",process:"Re-wash",status:"In Progress"},
+                {type:"Short Qty",qty:2,reason:"Fabric shortage at cutting",process:"Re-cut",status:"Resolved"},
+                {type:"Damage",qty:1,reason:"Torn during embroidery",process:"Patch work",status:"Approved"}
+              ].map((r,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"5px 6px",borderTop:"0.5px solid "+C.border,fontSize:10}}>
+                  <div style={{flex:0.6}}><span style={{fontSize:9,padding:"1px 5px",borderRadius:3,fontWeight:600,background:r.type==="Rejection"?"#ffebee":r.type==="Short Qty"?"#fff8e1":"#f3e5f5",color:r.type==="Rejection"?C.red:r.type==="Short Qty"?"#f57f17":"#7b1fa2"}}>{r.type}</span></div>
+                  <div style={{flex:0.5,fontWeight:600}}>{r.qty}</div>
+                  <div style={{flex:1,color:C.textMuted,fontSize:9,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.reason}</div>
+                  <div style={{flex:1,fontSize:9}}><span style={{background:CO.accentLight,color:CO.accent,padding:"1px 5px",borderRadius:3}}>{r.process}</span></div>
+                  <div style={{flex:0.8}}><span style={{fontSize:9,padding:"1px 5px",borderRadius:3,fontWeight:600,background:r.status==="Resolved"?C.greenLight:r.status==="In Progress"?"#e3f2fd":r.status==="Approved"?"#fff3e0":"#ffebee",color:r.status==="Resolved"?C.green:r.status==="In Progress"?"#1565c0":r.status==="Approved"?"#e65100":C.red}}>{r.status}</span></div>
+                </div>
+              ))}
+            </div>
           </Card>
         </div>
       </div>
@@ -6258,7 +6485,6 @@ const screens = {
     </div>
   </WebLayout>
 ),
-
 // G-30: User Management (GMMS)
 "G-30": () => (
   <WebLayout activeMenu="Admin" mode="mfg">
@@ -6292,7 +6518,6 @@ const screens = {
           </div>
         ))}
       </div>
-
       {/* ── DIALOG STATE 1: + Add User ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
         ↓ Dialog shown when "+ Add User" is clicked
@@ -6348,7 +6573,6 @@ const screens = {
           </div>
         </Modal>
       </div>
-
       {/* ── DIALOG STATE 2: Edit User ────────────────────── */}
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
         ↓ Dialog shown when "Edit" is clicked on a user row
@@ -6413,7 +6637,6 @@ const screens = {
     </Content>
   </WebLayout>
 ),
-
 // G-30A: Role Permissions (GMMS)
 "G-30A": () => {
   const [activeRole, setActiveRole] = useState(0);
@@ -6520,7 +6743,6 @@ const screens = {
           );
         })}
       </div>
-
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",margin:"20px 0 10px"}}>
         {"↓"} Dialog shown when "+ Add Role" is clicked
       </div>
@@ -6564,7 +6786,6 @@ const screens = {
           </div>
         </Modal>
       </div>
-
       <div style={{fontSize:11,fontWeight:700,color:C.textMuted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
         {"↓"} Dialog shown when "Delete Role" is clicked
       </div>
@@ -6622,161 +6843,310 @@ const screens = {
   </MobileFrame>
 ),
 // M-G02: My Challans
-"M-G02": () => (
+"M-G02": () => {
+  const [tab,setTab]=useState("Active");
+  const challans=[
+    {cno:"3210",design:"D-730",name:"Floral Anarkali",pcs:600,stage:"STH",due:"24 May",assigned:600,ready:580,balance:20,status:"Active",payReq:"Submitted",urgent:true},
+    {cno:"3205",design:"D-715",name:"Embr. Dupatta",pcs:200,stage:"EMB",due:"28 May",assigned:200,ready:200,balance:0,status:"Active",payReq:"Paid",urgent:false},
+    {cno:"3201",design:"D-708",name:"Georgette Suit",pcs:400,stage:"EMB",due:"30 May",assigned:400,ready:360,balance:40,status:"Active",payReq:null,urgent:false},
+    {cno:"3195",design:"D-688",name:"Lehenga Set",pcs:800,stage:"DIA",due:"10 May",assigned:800,ready:800,balance:0,status:"Pending",payReq:null,urgent:false},
+    {cno:"3188",design:"D-702",name:"Silk Saree",pcs:300,stage:"WASH",due:"22 May",assigned:300,ready:300,balance:0,status:"Done",payReq:"Pending",urgent:false},
+  ];
+  const filtered=tab==="All"?challans:challans.filter(c=>c.status===tab);
+  return (
   <MobileFrame>
-    <MNav label="My Challans" action="Ramesh K."/>
+    <MNav label="My Challans" action={`Ramesh K.`}/>
     <div style={{padding:14}}>
       <div style={{display:"flex",gap:4,marginBottom:12}}>
-        {["Pending","Active","Done"].map((t,i)=>(
-          <div key={i} style={{flex:1,textAlign:"center",padding:"6px 0",borderRadius:3,fontSize:11,fontWeight:600,background:i===1?"#e65100":"#f5f5f5",color:i===1?"#fff":"#888",border:`0.5px solid ${i===1?"#e65100":"#ddd"}`}}>{t}</div>
+        {["All","Pending","Active","Done"].map((t,i)=>(
+          <div key={i} onClick={()=>setTab(t)} style={{flex:1,textAlign:"center",padding:"6px 0",borderRadius:3,fontSize:11,fontWeight:600,background:t===tab?"#e65100":"#f5f5f5",color:t===tab?"#fff":"#888",border:`0.5px solid ${t===tab?"#e65100":"#ddd"}`,cursor:"pointer"}}>{t}</div>
         ))}
       </div>
-      {[
-        {cno:"3210",design:"D-730",name:"Floral Anarkali",pcs:600,stage:"STH",due:"24 May",status:"Active",urgent:true},
-        {cno:"3205",design:"D-715",name:"Embr. Dupatta",pcs:200,stage:"EMB",due:"28 May",status:"Active",urgent:false},
-        {cno:"3201",design:"D-708",name:"Georgette Suit",pcs:400,stage:"EMB",due:"30 May",status:"Active",urgent:false},
-      ].map((r,i)=>(
+      {filtered.map((r,i)=>(
         <div key={i} style={{background:C.white,border:`0.5px solid ${r.urgent?C.redBorder:C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
             <span style={{fontSize:12,fontWeight:700,fontFamily:"monospace",color:"#e65100"}}>#{r.cno}</span>
-            {r.urgent&&<span style={{fontSize:9,fontWeight:700,background:C.redLight,color:C.red,padding:"2px 6px",borderRadius:3}}>OVERDUE</span>}
+            <div style={{display:"flex",gap:3}}>
+              {r.urgent&&<span style={{fontSize:9,fontWeight:700,background:C.redLight,color:C.red,padding:"2px 6px",borderRadius:3}}>OVERDUE</span>}
+              <span style={{fontSize:9,fontWeight:600,background:r.status==="Active"?"#e3f2fd":r.status==="Pending"?"#fff8e1":"#e8f5e9",color:r.status==="Active"?"#1565c0":r.status==="Pending"?"#f57f17":"#2e7d32",padding:"2px 6px",borderRadius:3}}>{r.status}</span>
+            </div>
           </div>
-          <div style={{fontSize:11,fontWeight:600,marginBottom:2}}>{r.name}</div>
-          <div style={{fontSize:10,color:C.textMuted}}>{r.design} · {r.pcs} pcs · {r.stage}</div>
-          <div style={{fontSize:10,color:r.urgent?C.red:C.textMuted,marginTop:4}}>Due: {r.due}</div>
+          <div style={{fontSize:11,fontWeight:600,marginBottom:2}}>{r.name} · {r.design}</div>
+          <div style={{display:"flex",gap:6,fontSize:10,color:C.textMuted,marginTop:2}}>
+            <span>Stage: <strong>{r.stage}</strong></span>
+            <span>Due: <strong style={{color:r.urgent?C.red:C.text}}>{r.due}</strong></span>
+          </div>
+          <div style={{display:"flex",gap:8,marginTop:4,padding:"4px 0",borderTop:`0.5px solid ${C.borderLight}`,fontSize:10}}>
+            <span>Assigned: <strong>{r.assigned}</strong></span>
+            <span>Ready: <strong style={{color:C.green}}>{r.ready}</strong></span>
+            <span>Balance: <strong style={{color:r.balance>0?C.red:C.green}}>{r.balance}</strong></span>
+          </div>
+          {r.payReq&&<div style={{fontSize:10,marginTop:2,padding:"2px 6px",background:"#f3e5f5",color:"#7b1fa2",borderRadius:3,display:"inline-block",fontWeight:600}}>Payment: {r.payReq}</div>}
           <div style={{marginTop:8,display:"flex",gap:6}}>
-            <button style={{flex:1,padding:"6px",background:"#e65100",color:"#fff",border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>View Details</button>
+            <button style={{flex:1,padding:"6px",background:"#e65100",color:"#fff",border:"none",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>View</button>
+            {r.balance>0&&<button style={{flex:1,padding:"6px",background:"#fff",color:"#e65100",border:`0.5px solid #e65100`,borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>Submit Ready</button>}
+            {r.ready===r.assigned&&!r.payReq&&<button style={{flex:1,padding:"6px",background:"#f3e5f5",color:"#7b1fa2",border:`0.5px solid #7b1fa2`,borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer"}}>Request Payment</button>}
           </div>
         </div>
       ))}
     </div>
     <MBottomNav active="Challans" type="gmms"/>
   </MobileFrame>
-),
-// M-G03: Challan Detail (Accept / Reject)
-"M-G03": () => (
+  );
+},
+"M-G03": () => {
+  const [accepted,setAccepted]=useState(false);
+  const challan={cno:"3210",design:"D-730",name:"Floral Anarkali",job:"Stitching",contractor:"Ramesh Kadkiya",pcs:600,issued:"07 May 2026",due:"24 May 2026",rate:"₹ 45 / piece",days:17,sample:true,fabric:[{name:"Georgette",qty:"12 m"},{name:"Lining",qty:"6 m"},{name:"Underskirt",qty:"4 m"}],colors:[["Pink",200],["Blue",200],["Cream",200]],instructions:"Use standard embroidery pattern D-730. Confirm colour fastness before starting bulk stitching."};
+  const notes=[
+    {msg:"Challan assigned to you",date:"07 May",type:"system"},
+    {msg:"Fabric issued from inventory",date:"07 May",type:"system"},
+    {msg:"Reminder: Due in 3 days",date:"21 May",type:"alert"},
+  ];
+  return (
   <MobileFrame>
-    <MNav label="Challan #3210"/>
+    <MNav label={"Challan #"+challan.cno}/>
     <div style={{background:"#e65100",padding:"10px 14px"}}>
-      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>D-730 · Floral Anarkali</div>
-      <div style={{fontSize:10,color:"#ffcc80"}}>600 pcs · Stitching · Due 24 May</div>
+      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>{challan.design} · {challan.name}</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>{challan.pcs} pcs · {challan.job} · Due {challan.due}</div>
     </div>
     <div style={{padding:14}}>
-      <div style={{background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:6,padding:"8px 12px",marginBottom:10,fontSize:11,color:"#e65100",fontWeight:600}}>
-        ⚠ New challan awaiting your acceptance
-      </div>
+      {!accepted&&<div style={{background:"#fff3e0",border:`0.5px solid #ffcc80`,borderRadius:6,padding:"8px 12px",marginBottom:10,fontSize:11,color:"#e65100",fontWeight:600}}>{"⚠"} New challan awaiting your acceptance</div>}
       <Card>
         <SectionLabel>Challan Details</SectionLabel>
-        {[["Challan No","#3210"],["Design","D-730"],["Job Type","Stitching"],["Pieces","600"],["Date Issued","07 May 2026"],["Return By","24 May 2026"],["Rate","₹ 45 / piece"]].map(([l,v],i)=>(
+        {[["Challan No","#"+challan.cno],["Design",challan.design],["Job Type",challan.job],["Contractor",challan.contractor],["Assigned Qty",challan.pcs+" pcs"],["Date Issued",challan.issued],["Return By",challan.due],["Expected Days",challan.days+" days"],["Rate",challan.rate]].map(([l,v],i)=>(
           <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
             <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
           </div>
         ))}
       </Card>
+      {challan.sample&&<Card>
+        <SectionLabel>Sample Indicator</SectionLabel>
+        <div style={{display:"flex",gap:8,alignItems:"center",padding:"4px 0"}}>
+          <span style={{fontSize:20}}>{"✅"}</span>
+          <div>
+            <div style={{fontSize:11,fontWeight:600}}>Sample Approved</div>
+            <div style={{fontSize:10,color:C.textMuted}}>Sample #S-730/01 approved on 05 May 2026</div>
+          </div>
+        </div>
+      </Card>}
+      <Card>
+        <SectionLabel>Fabric Summary (Read Only)</SectionLabel>
+        {challan.fabric.map((f,i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span>{f.name}</span><span style={{fontWeight:600}}>{f.qty}</span>
+          </div>
+        ))}
+      </Card>
       <Card>
         <SectionLabel>Colour Breakdown</SectionLabel>
-        {[["Pink",200],["Blue",200],["Cream",200]].map(([c,p],i)=>(
+        {challan.colors.map(([c,p],i)=>(
           <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",fontSize:11}}>
             <span>{c}</span><span style={{fontWeight:600}}>{p} pcs</span>
           </div>
         ))}
       </Card>
-      <div style={{display:"flex",gap:8,marginTop:4}}>
-        <button style={{flex:1,padding:"10px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>✔ Accept</button>
-        <button style={{flex:1,padding:"10px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>× Reject</button>
-      </div>
-    </div>
-  </MobileFrame>
-),
-// M-G04: Confirm Pieces Sent
-"M-G04": () => {
-  const [colorItems, setColorItems] = useState([
-    {col:"Pink",issued:200,items:["","",""]},
-    {col:"Blue",issued:200,items:["","",""]},
-    {col:"Cream",issued:200,items:["","",""]},
-  ]);
-  function updateItem(cIdx,iIdx,val){setColorItems(colorItems.map((r,i)=>i===cIdx?{...r,items:r.items.map((it,j)=>j===iIdx?val:it)}:r));}
-  return (
-  <MobileFrame>
-    <MNav label="Confirm Pieces Sent"/>
-    <div style={{padding:14}}>
-      <div style={{background:"#e65100",borderRadius:6,padding:"10px 14px",marginBottom:12}}>
-        <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>Challan #3210</div>
-        <div style={{fontSize:10,color:"#ffcc80"}}>D-730 · Stitching · 600 pieces issued</div>
-      </div>
       <Card>
-        <SectionLabel>Enter Pieces Returned</SectionLabel>
-        <div style={{fontSize:11,color:C.textMuted,marginBottom:10}}>Enter count of finished pieces being sent back. Any discrepancy will trigger a dispute.</div>
-        {colorItems.map((r,i)=>(
-          <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:10}}>
-            <div style={{fontSize:13,fontWeight:700,color:"#e65100",marginBottom:6}}>{r.col}</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
-              {r.items.map((it,j)=>(
-                <input key={j} value={it} onChange={e=>updateItem(i,j,e.target.value)} placeholder={["Top","Bottom","Dupatta"][j]} style={{flex:"1 1 calc(50% - 6px)",minWidth:80,border:`0.5px solid ${C.border}`,borderRadius:4,padding:"6px 8px",fontSize:12,textAlign:"center",background:"#fafafa"}}/>
-              ))}
-            </div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:`0.5px solid ${C.border}`,paddingTop:6}}>
-              <span style={{fontSize:11,color:C.textMuted}}>Issued: <strong>{r.issued}</strong> pcs</span>
-              <div style={{display:"flex",alignItems:"center",gap:6}}>
-                <span style={{fontSize:11,color:C.textMuted}}>Returned:</span>
-                <div style={{width:60,border:`0.5px solid ${CO.accentBorder}`,borderRadius:4,padding:"5px 6px",fontSize:14,fontWeight:700,textAlign:"center",background:C.white}}>{r.issued}</div>
-              </div>
-            </div>
+        <SectionLabel>Stage Instructions</SectionLabel>
+        <div style={{fontSize:11,color:C.text,padding:"4px 0",lineHeight:1.5}}>{challan.instructions}</div>
+      </Card>
+      <Card>
+        <SectionLabel>Notes Timeline</SectionLabel>
+        {notes.map((n,i)=>(
+          <div key={i} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{flexShrink:0}}>{n.type==="alert"?"⚠":n.type==="system"?"ℹ":"\u{1F4AC}"}</div>
+            <div style={{flex:1}}><span style={{color:C.textMuted}}>{n.msg}</span></div>
+            <div style={{fontSize:10,color:C.textLight}}>{n.date}</div>
           </div>
         ))}
-        <div style={{marginTop:4,padding:"8px 10px",background:C.bgSoft,borderRadius:4,fontSize:11,color:C.textMuted}}>
-          Total: <strong>600 / 600 pieces</strong>
+      </Card>
+      {!accepted&&<div style={{display:"flex",gap:8,marginTop:4}}>
+        <button onClick={()=>setAccepted(true)} style={{flex:1,padding:"10px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"✔"} Accept</button>
+        <button style={{flex:1,padding:"10px",background:C.red,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"✖"} Reject</button>
+      </div>}
+      {accepted&&<div style={{background:"#e8f5e9",border:`0.5px solid ${C.greenBorder}`,borderRadius:6,padding:"8px 12px",marginTop:4,fontSize:12,fontWeight:600,color:C.green,textAlign:"center"}}>{"✓"} Accepted — Start production</div>}
+    </div>
+  </MobileFrame>
+  );
+},
+"M-G04": () => {
+  const colors=["Pink","Blue","Cream"];
+  const components=["Top","Bottom","Dupatta"];
+  const initData=colors.map(c=>({col:c,issued:200,items:components.map(()=>({ready:"",short:"",rf:""}))}));
+  const [data,setData]=useState(initData);
+  const [submitted,setSubmitted]=useState(false);
+  const [notes,setNotes]=useState("");
+  function upd(cIdx,compIdx,field,val){
+    setData(data.map((r,i)=>i===cIdx?{...r,items:r.items.map((it,j)=>j===compIdx?{...it,[field]:val}:it)}:r));
+  }
+  function calcTotals(field){
+    return data.reduce((s,r)=>s+r.items.reduce((a,it)=>a+(parseInt(it[field])||0),0),0);
+  }
+  function calcBalance(cIdx,compIdx){
+    const it=data[cIdx].items[compIdx];
+    const assigned=data[cIdx].issued;
+    const ready=parseInt(it.ready)||0;
+    const short=parseInt(it.short)||0;
+    const rf=parseInt(it.rf)||0;
+    return assigned-ready-short-rf;
+  }
+  function isValid(){
+    for(const r of data){
+      for(const it of r.items){
+        const ready=parseInt(it.ready)||0;
+        const short=parseInt(it.short)||0;
+        const rf=parseInt(it.rf)||0;
+        if(ready+short+rf>r.issued)return false;
+      }
+    }
+    return calcTotals("ready")>0;
+  }
+  const totalReady=calcTotals("ready");
+  const totalShort=calcTotals("short");
+  const totalRf=calcTotals("rf");
+  const totalBalance=data.reduce((s,r)=>s+r.issued*components.length,0)-totalReady-totalShort-totalRf;
+  return (
+  <MobileFrame>
+    <MNav label="Ready PCS Entry"/>
+    <div style={{background:"#e65100",padding:"10px 14px"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>Challan #3210</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>D-730 · Stitching · 600 pieces issued</div>
+    </div>
+    <div style={{padding:14}}>
+      {submitted?<div style={{background:"#e8f5e9",border:`0.5px solid ${C.greenBorder}`,borderRadius:6,padding:"14px",textAlign:"center",marginBottom:10}}>
+        <div style={{fontSize:28,marginBottom:6}}>{"✅"}</div>
+        <div style={{fontSize:14,fontWeight:700,color:C.green}}>Work Submitted Successfully!</div>
+        <div style={{fontSize:11,color:C.textMuted,marginTop:4}}>{totalReady} pieces confirmed. Challan updated.</div>
+        <button onClick={()=>{setSubmitted(false);setData(initData);setNotes("");}} style={{marginTop:10,padding:"8px 20px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>Submit Another</button>
+      </div>:<>
+      <Card>
+        <SectionLabel>Ready PCS Entry</SectionLabel>
+        <div style={{fontSize:11,color:C.textMuted,marginBottom:8}}>Enter counts for each color × component. Ready + Short + RF cannot exceed assigned qty.</div>
+        <div style={{overflowX:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",fontSize:10}}>
+            <thead>
+              <tr style={{background:C.bgSoft}}>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"left"}}>Color</th>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"left"}}>Component</th>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>Assigned</th>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right",background:"#e8f5e9"}}>Ready</th>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right",background:"#fff8e1"}}>Short</th>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right",background:"#ffebee"}}>RF</th>
+                <th style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((r,ci)=>components.map((comp,ji)=>(
+                <tr key={ci+"-"+ji}>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,fontWeight:600}}>{r.col}</td>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`}}>{comp}</td>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right",fontWeight:600}}>{r.issued}</td>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>
+                    <input value={r.items[ji].ready} onChange={e=>upd(ci,ji,"ready",e.target.value)} placeholder="0" style={{width:46,padding:"2px 4px",border:`0.5px solid ${C.borderLight}`,borderRadius:2,textAlign:"right",fontSize:10}}/>
+                  </td>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>
+                    <input value={r.items[ji].short} onChange={e=>upd(ci,ji,"short",e.target.value)} placeholder="0" style={{width:46,padding:"2px 4px",border:`0.5px solid ${C.borderLight}`,borderRadius:2,textAlign:"right",fontSize:10}}/>
+                  </td>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>
+                    <input value={r.items[ji].rf} onChange={e=>upd(ci,ji,"rf",e.target.value)} placeholder="0" style={{width:46,padding:"2px 4px",border:`0.5px solid ${C.borderLight}`,borderRadius:2,textAlign:"right",fontSize:10}}/>
+                  </td>
+                  <td style={{padding:"4px 6px",border:`0.5px solid ${C.border}`,textAlign:"right",fontWeight:600,color:calcBalance(ci,ji)<0?C.red:C.green}}>{calcBalance(ci,ji)}</td>
+                </tr>
+              )))}
+              <tr style={{background:C.bgSoft,fontWeight:700}}>
+                <td colSpan={2} style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>Total</td>
+                <td style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,textAlign:"right"}}>{data.reduce((s,r)=>s+r.issued,0)}</td>
+                <td style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,textAlign:"right",color:C.green}}>{totalReady}</td>
+                <td style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,textAlign:"right",color:"#b45309"}}>{totalShort}</td>
+                <td style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,textAlign:"right",color:C.red}}>{totalRf}</td>
+                <td style={{padding:"4px 8px",border:`0.5px solid ${C.border}`,textAlign:"right",color:totalBalance<0?C.red:C.green}}>{totalBalance}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        {totalBalance<0&&<div style={{marginTop:6,padding:"6px 10px",background:C.redLight,color:C.red,borderRadius:4,fontSize:11,fontWeight:600}}>{"⚠"} Validation: Ready + Short + RF ({totalReady+totalShort+totalRf}) exceeds assigned ({data.reduce((s,r)=>s+r.issued,0)})</div>}
+        {totalBalance>=0&&totalReady>0&&<div style={{marginTop:6,padding:"6px 10px",background:"#e8f5e9",color:C.green,borderRadius:4,fontSize:11}}>Remaining balance: <strong>{totalBalance}</strong> pieces</div>}
       </Card>
       <Card>
         <SectionLabel>Notes (Optional)</SectionLabel>
-        <div style={{border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",fontSize:12,color:C.textLight,minHeight:60}}>Any notes about quality or count...</div>
+        <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Any notes about quality or count..." style={{width:"100%",border:`0.5px solid ${C.border}`,borderRadius:4,padding:"8px 10px",fontSize:12,color:C.textLight,minHeight:60,resize:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
       </Card>
-      <div style={{marginTop:4}}>
-        <button style={{width:"100%",padding:"12px",background:"#e65100",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:"pointer"}}>Confirm & Submit</button>
-      </div>
+      <button disabled={!isValid()} onClick={()=>setSubmitted(true)} style={{width:"100%",padding:"12px",background:isValid()?"#e65100":"#ccc",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:isValid()?"pointer":"default"}}>{"✓"} Confirm & Submit</button>
+      </>}
     </div>
   </MobileFrame>
   );
 },
 // M-G05: My Payment Ledger
-"M-G05": () => (
+"M-G05": () => {
+  const [tab,setTab]=useState("All");
+  const payments=[
+    {req:"PR-001",challan:"3205",design:"D-715",stage:"EMB",pcs:200,inv:"INV-3205",amtReq:9200,amtPaid:9200,date:"12 May",proof:true,status:"Paid"},
+    {req:"PR-002",challan:"3198",design:"D-688",stage:"EMB",pcs:600,inv:"INV-3198",amtReq:19200,amtPaid:19200,date:"04 May",proof:true,status:"Paid"},
+    {req:"PR-003",challan:"3185",design:"D-712",stage:"EMB",pcs:600,inv:"INV-3185",amtReq:18000,amtPaid:18000,date:"18 Apr",proof:false,status:"Paid"},
+    {req:"PR-004",challan:"3171",design:"D-708",stage:"EMB",pcs:400,inv:"INV-3171",amtReq:12400,amtPaid:12400,date:"02 Apr",proof:true,status:"Paid"},
+    {req:"PR-005",challan:"3210",design:"D-730",stage:"STH",pcs:600,inv:"INV-3210",amtReq:27000,amtPaid:null,date:"12 May",proof:false,status:"Pending"},
+    {req:"PR-006",challan:"3201",design:"D-708",stage:"EMB",pcs:400,inv:"INV-3201",amtReq:12400,amtPaid:null,date:"15 May",proof:false,status:"Under Verification"},
+  ];
+  const filtered=tab==="All"?payments:payments.filter(p=>p.status===tab);
+  const totalEarned=payments.reduce((s,p)=>s+(p.amtPaid||0),0);
+  const totalPending=payments.filter(p=>!p.amtPaid).reduce((s,p)=>s+p.amtReq,0);
+  return (
   <MobileFrame>
     <MNav label="My Payment Ledger"/>
     <div style={{background:"#e65100",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
       <div>
         <div style={{fontSize:11,color:"#ffcc80"}}>Total Earned (May)</div>
-        <div style={{fontSize:20,fontWeight:700,color:"#fff"}}>₹ 28,400</div>
+        <div style={{fontSize:20,fontWeight:700,color:"#fff"}}>{"₹"}{" "}{totalEarned.toLocaleString()}</div>
       </div>
       <div style={{textAlign:"right"}}>
         <div style={{fontSize:10,color:"#ffcc80"}}>Pending</div>
-        <div style={{fontSize:15,fontWeight:600,color:"#fff"}}>₹ 9,200</div>
+        <div style={{fontSize:15,fontWeight:600,color:"#fff"}}>{"₹"}{" "}{totalPending.toLocaleString()}</div>
       </div>
     </div>
     <div style={{padding:14}}>
-      {[
-        {challan:"3205",design:"D-715",stage:"EMB",pcs:200,amount:"₹ 9,200",date:"12 May",status:"Pending"},
-        {challan:"3198",design:"D-688",stage:"EMB",pcs:600,amount:"₹ 19,200",date:"04 May",status:"Paid"},
-        {challan:"3185",design:"D-712",stage:"EMB",pcs:600,amount:"₹ 18,000",date:"18 Apr",status:"Paid"},
-        {challan:"3171",design:"D-708",stage:"EMB",pcs:400,amount:"₹ 12,400",date:"02 Apr",status:"Paid"},
-      ].map((r,i)=>(
+      <div style={{display:"flex",gap:4,marginBottom:10}}>
+        {["All","Paid","Pending","Under Verification"].map((t,i)=>(
+          <div key={i} onClick={()=>setTab(t)} style={{padding:"4px 8px",borderRadius:3,fontSize:10,fontWeight:600,background:t===tab?"#e65100":"#f5f5f5",color:t===tab?"#fff":"#888",border:`0.5px solid ${t===tab?"#e65100":"#ddd"}`,cursor:"pointer"}}>{t}</div>
+        ))}
+      </div>
+      {filtered.map((r,i)=>(
         <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-            <span style={{fontSize:11,fontFamily:"monospace",color:"#e65100",fontWeight:700}}>#{r.challan}</span>
-            <span style={{fontSize:12,fontWeight:700,color:r.status==="Paid"?C.green:"#b45309"}}>{r.amount}</span>
+            <div style={{display:"flex",gap:4,alignItems:"center"}}>
+              <span style={{fontSize:10,fontFamily:"monospace",color:"#e65100",fontWeight:700}}>{r.req}</span>
+              <span style={{fontSize:10,color:C.textMuted}}>#{r.challan}</span>
+            </div>
+            <span style={{fontSize:12,fontWeight:700,color:r.status==="Paid"?C.green:r.status==="Under Verification"?"#1565c0":"#b45309"}}>{"₹"}{" "}{(r.amtPaid||r.amtReq).toLocaleString()}</span>
           </div>
-          <div style={{fontSize:10,color:C.textMuted}}>{r.design} · {r.stage} · {r.pcs} pcs</div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+          <div style={{fontSize:10,color:C.textMuted}}>{r.design} · {r.stage} · {r.pcs} pcs · Inv: {r.inv}</div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}}>
             <span style={{fontSize:10,color:C.textMuted}}>{r.date}</span>
-            <span style={{fontSize:10,fontWeight:600,color:r.status==="Paid"?C.green:"#b45309",background:r.status==="Paid"?C.greenLight:"#fff8e1",padding:"2px 6px",borderRadius:3}}>{r.status}</span>
+            <div style={{display:"flex",gap:4,alignItems:"center"}}>
+              {r.proof&&<span style={{fontSize:9,background:"#e3f2fd",color:"#1565c0",padding:"1px 5px",borderRadius:3}}>{"\u{1F4C4}"} Proof</span>}
+              <span style={{fontSize:10,fontWeight:600,color:r.status==="Paid"?C.green:r.status==="Under Verification"?"#1565c0":"#b45309",background:r.status==="Paid"?C.greenLight:r.status==="Under Verification"?"#e3f2fd":"#fff8e1",padding:"2px 6px",borderRadius:3}}>{r.status}</span>
+            </div>
           </div>
         </div>
       ))}
     </div>
     <MBottomNav active="Payments" type="gmms"/>
   </MobileFrame>
-),
-"M-G06": () => (
+  );
+},
+"M-G06": () => {
+  const [tab,setTab]=useState("Profile");
+  const workTypes=[
+    {type:"Embroidery",rate:"₹ 0.18 / stitch"},
+    {type:"Stitching",rate:"₹ 45.00 / pc"},
+    {type:"Diamond Work",rate:"₹ 28.00 / pc"},
+    {type:"Lace Work",rate:"₹ 12.00 / m"},
+    {type:"Washing",rate:"₹ 8.00 / pc"},
+  ];
+  const qrCodes=[
+    {name:"UPI Daily",max:50000,note:"Standard daily collection QR"},
+    {name:"Festival Advance",max:200000,note:"Advance payment for bulk orders"},
+  ];
+  return (
   <MobileFrame>
     <MNav label="My Profile"/>
     <div style={{background:"#e65100",padding:"24px 16px",textAlign:"center"}}>
@@ -6785,36 +7155,1664 @@ const screens = {
       <div style={{fontSize:10,color:"#ffcc80"}}>Embroidery · Code C-006</div>
     </div>
     <div style={{padding:14}}>
+      <div style={{display:"flex",gap:4,marginBottom:10}}>
+        {["Profile","Rates","Earnings"].map((t,i)=>(
+          <div key={i} onClick={()=>setTab(t)} style={{padding:"4px 10px",borderRadius:3,fontSize:11,fontWeight:600,background:t===tab?"#e65100":"#f5f5f5",color:t===tab?"#fff":"#888",border:`0.5px solid ${t===tab?"#e65100":"#ddd"}`,cursor:"pointer"}}>{t}</div>
+        ))}
+      </div>
+      {tab==="Profile"&&<>
       <Card>
         <SectionLabel>Personal Details</SectionLabel>
-        {[["Mobile","+91 98250-XXXXX"],["City","Surat"],["Joined","12 Jan 2025"],["GSTIN","27ABCDE1234F1Z5"]].map(([l,v],i)=>(
-          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+        {[["Mobile","+91 98250-XXXXX"],["City","Surat"],["Joined","12 Jan 2025"],["GSTIN","27ABCDE1234F1Z5"],["Broker","Vinod Kumar"],["WhatsApp","+91 98765 43210"]].map(([l,v],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
             <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
           </div>
         ))}
       </Card>
       <Card>
         <SectionLabel>Performance</SectionLabel>
-        {[["This Month Jobs","12"],["Completion Rate","96%"],["Avg Turnaround","9.1 days"],["Rejection Rate","1.2%"]].map(([l,v],i)=>(
-          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
-            <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:600,color:l.includes("Rejection")?C.green:l.includes("Rate")&&v==="96%"?C.green:C.text}}>{v}</span>
+        {[["This Month Jobs","12 (3 ongoing)"],["Completion Rate","96%"],["Avg Turnaround","9.1 days"],["Rejection Rate","1.2%"]].map(([l,v],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:600,color:l.includes("Rejection")?C.green:C.text}}>{v}</span>
           </div>
         ))}
       </Card>
       <Card>
-        <SectionLabel>Bank Details</SectionLabel>
-        <div style={{fontSize:11,color:C.text,marginBottom:4}}>HDFC Bank · Savings</div>
-        <div style={{fontSize:11,color:C.textMuted}}>Account: •••• 4521</div>
-        <div style={{fontSize:10,color:C.textMuted,marginTop:6}}>Payments credited within 2 business days of confirmation.</div>
+        <SectionLabel>Monthly Earnings</SectionLabel>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",fontSize:11}}>
+          <span style={{color:C.textMuted}}>This Month</span><span style={{fontWeight:700,color:C.green}}>{"₹"} 45,200</span>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+          <span style={{color:C.textMuted}}>Pending Payments</span><span style={{fontWeight:700,color:"#b45309"}}>{"₹"} 9,200</span>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+          <span style={{color:C.textMuted}}>Last Month</span><span style={{fontWeight:600}}>{"₹"} 52,100</span>
+        </div>
       </Card>
+      </>}
+      {tab==="Rates"&&<>
+      <Card>
+        <SectionLabel>Work Types & Rate List</SectionLabel>
+        {workTypes.map((w,i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span style={{color:C.textMuted}}>{w.type}</span><span style={{fontWeight:600,color:CO.accent}}>{w.rate}</span>
+          </div>
+        ))}
+      </Card>
+      <Card>
+        <SectionLabel>QR Summary</SectionLabel>
+        {qrCodes.map((q,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`0.5px solid ${C.border}`}}>
+            <div style={{width:36,height:36,background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:3,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>{"▦"}</div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:11,fontWeight:600}}>{q.name}</div>
+              <div style={{fontSize:10,color:C.textMuted}}>Max: {"₹"}{" "}{q.max.toLocaleString()}</div>
+              <div style={{fontSize:10,color:C.textLight}}>{q.note}</div>
+            </div>
+          </div>
+        ))}
+      </Card>
+      </>}
+      {tab==="Earnings"&&<>
+      <Card>
+        <SectionLabel>Monthly Earnings</SectionLabel>
+        <div style={{height:80,display:"flex",alignItems:"flex-end",gap:4,marginBottom:6}}>
+          {[22,35,28,42,38,45,52].map((v,i)=>(
+            <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+              <div style={{width:"100%",height:(v/55)*60,borderRadius:"3px 3px 0 0",background:v===45?"#e65100":CO.accentLight}}></div>
+              <span style={{fontSize:8,color:C.textMuted}}>{["Nov","Dec","Jan","Feb","Mar","Apr","May"][i]}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderTop:`0.5px solid ${C.border}`,fontSize:11}}>
+          <span style={{color:C.textMuted}}>YTD Total</span><span style={{fontWeight:700}}>{"₹"}{" "}2,62,000</span>
+        </div>
+      </Card>
+      </>}
       <button style={{width:"100%",padding:"10px",background:"#f5f5f5",border:`0.5px solid ${C.border}`,borderRadius:4,fontSize:12,cursor:"pointer",color:C.textMuted,marginTop:4}}>Sign Out</button>
     </div>
     <MBottomNav active="Profile" type="gmms"/>
   </MobileFrame>
-),
+  );
+},
+"M-G07": () => {
+  const [amount,setAmount]=useState("");
+  const [remarks,setRemarks]=useState("");
+  const [submitted,setSubmitted]=useState(false);
+  const prevReqs=[
+    {req:"PR-005",challan:"3210",amount:27000,date:"12 May",status:"Pending"},
+    {req:"PR-004",challan:"3171",amount:12400,date:"02 Apr",status:"Paid"},
+    {req:"PR-003",challan:"3185",amount:18000,date:"18 Apr",status:"Paid"},
+  ];
+  return (
+  <MobileFrame>
+    <MNav label="Request Payment"/>
+    <div style={{padding:14}}>
+      {submitted?<div style={{background:"#e8f5e9",border:`0.5px solid ${C.greenBorder}`,borderRadius:6,padding:"14px",textAlign:"center",marginBottom:10}}>
+        <div style={{fontSize:28,marginBottom:6}}>{"✅"}</div>
+        <div style={{fontSize:14,fontWeight:700,color:C.green}}>Payment Request Submitted!</div>
+        <div style={{fontSize:11,color:C.textMuted,marginTop:4}}>Request #{Math.floor(Math.random()*1000)} saved. Awaiting verification.</div>
+        <button onClick={()=>{setSubmitted(false);setAmount("");setRemarks("");}} style={{marginTop:10,padding:"8px 20px",background:C.green,color:C.white,border:"none",borderRadius:4,fontSize:12,fontWeight:600,cursor:"pointer"}}>New Request</button>
+      </div>:<>
+      <Card>
+        <SectionLabel>New Payment Request</SectionLabel>
+        <Input label="Challan" value="Challan #3210 · D-730 · ₹ 27,000" onChange={()=>{}} readOnly/>
+        <Input label="Requested Amount (₹)" placeholder="e.g. 27000" value={amount} onChange={e=>setAmount(e.target.value)}/>
+        <div style={{marginBottom:8}}>
+          <div style={{fontSize:11,color:C.textMuted,marginBottom:4}}>Invoice / Bill Upload</div>
+          <div style={{border:`0.5px dashed ${C.border}`,borderRadius:4,padding:"12px",textAlign:"center",fontSize:11,color:C.textLight,cursor:"pointer",background:C.bgSoft}}>{"\u{1F4C4}"} Tap to upload invoice (PDF, JPG)</div>
+        </div>
+        <Input label="Remarks (Optional)" placeholder="Any notes..." value={remarks} onChange={e=>setRemarks(e.target.value)}/>
+      </Card>
+      <Card>
+        <SectionLabel>Preview Summary</SectionLabel>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+          <span style={{color:C.textMuted}}>Challan</span><span style={{fontWeight:600}}>#3210</span>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+          <span style={{color:C.textMuted}}>Ready PCS</span><span style={{fontWeight:600}}>580 / 600</span>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+          <span style={{color:C.textMuted}}>Rate</span><span style={{fontWeight:600}}>{"₹"} 45 / pc</span>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"5px 0",fontSize:12}}>
+          <span style={{fontWeight:600}}>Estimated Amount</span><span style={{fontWeight:700,color:CO.accent}}>{"₹"}{" "}{parseInt(amount)||0}</span>
+        </div>
+      </Card>
+      <button onClick={()=>setSubmitted(true)} disabled={!amount} style={{width:"100%",padding:"12px",background:amount?"#e65100":"#ccc",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:amount?"pointer":"default"}}>{"✓"} Submit Request</button>
+      </>}
+      <Card style={{marginTop:8}}>
+        <SectionLabel>Previous Requests</SectionLabel>
+        {prevReqs.map((r,i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div>
+              <div style={{fontWeight:600}}>{r.req}</div>
+              <div style={{fontSize:10,color:C.textMuted}}>#{r.challan} · {r.date}</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontWeight:600}}>{"₹"}{" "}{r.amount.toLocaleString()}</div>
+              <span style={{fontSize:10,fontWeight:600,color:r.status==="Paid"?C.green:"#b45309",background:r.status==="Paid"?C.greenLight:"#fff8e1",padding:"1px 5px",borderRadius:3}}>{r.status}</span>
+            </div>
+          </div>
+        ))}
+      </Card>
+    </div>
+  </MobileFrame>
+  );
+},
+"M-G08": () => {
+  const req={id:"PR-005",challan:"3210",design:"D-730",amount:27000,date:"12 May 2026",status:"Under Verification",notes:"Awaiting admin review",files:[{name:"Invoice_3210.pdf",size:"245 KB"}]};
+  const timeline=[
+    {event:"Payment Requested",date:"12 May 2026 10:30 AM",done:true},
+    {event:"Under Verification",date:"12 May 2026 02:15 PM",done:true,current:true},
+    {event:"Approved",date:"Pending",done:false},
+    {event:"Paid",date:"Pending",done:false},
+  ];
+  return (
+  <MobileFrame>
+    <MNav label={"Request #"+req.id}/>
+    <div style={{background:"#e65100",padding:"10px 14px"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>{req.id}</div>
+      <div style={{fontSize:10,color:"#ffcc80"}}>Challan #{req.challan} · {req.design}</div>
+    </div>
+    <div style={{padding:14}}>
+      <Card>
+        <SectionLabel>Request Details</SectionLabel>
+        {[["Request ID",req.id],["Challan","#"+req.challan],["Design",req.design],["Amount","₹ "+req.amount.toLocaleString()],["Date",req.date],["Status",req.status],["Remarks",req.notes]].map(([l,v],i)=>(
+          <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <span style={{color:C.textMuted}}>{l}</span><span style={{fontWeight:l==="Amount"?700:500,color:l==="Amount"?CO.accent:C.text}}>{v}</span>
+          </div>
+        ))}
+      </Card>
+      {req.files.length>0&&<Card>
+        <SectionLabel>Attached Files</SectionLabel>
+        {req.files.map((f,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0",fontSize:11}}>
+            <span style={{fontSize:16}}>{"\u{1F4C4}"}</span>
+            <div style={{flex:1}}><div style={{fontWeight:600}}>{f.name}</div><div style={{fontSize:10,color:C.textMuted}}>{f.size}</div></div>
+          </div>
+        ))}
+      </Card>}
+      <Card>
+        <SectionLabel>Status Timeline</SectionLabel>
+        {timeline.map((t,i)=>(
+          <div key={i} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
+            <div style={{width:18,height:18,borderRadius:"50%",background:t.done?C.green:t.current?CO.accent:"#ddd",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:9,flexShrink:0}}>{t.done?"✓":t.current?"●":""}</div>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:t.done||t.current?600:400,color:t.done?C.text:t.current?CO.accent:C.textLight}}>{t.event}</div>
+              <div style={{fontSize:10,color:C.textMuted}}>{t.date}</div>
+            </div>
+          </div>
+        ))}
+      </Card>
+    </div>
+  </MobileFrame>
+  );
+},
+"M-G09": () => {
+  const [qrList,setQrList]=useState([
+    {id:1,name:"UPI Daily",max:50000,note:"Standard daily collection QR",active:true},
+    {id:2,name:"Festival Advance",max:200000,note:"Advance payment for bulk orders",active:true},
+    {id:3,name:"Rush Order",max:75000,note:"Expedited payment for urgent orders",active:false},
+  ]);
+  function toggleQr(id){setQrList(qrList.map(q=>q.id===id?{...q,active:!q.active}:q));}
+  return (
+  <MobileFrame>
+    <MNav label="QR Management"/>
+    <div style={{padding:14}}>
+      {qrList.map((q,i)=>(
+        <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"12px",marginBottom:10}}>
+          <div style={{display:"flex",gap:10}}>
+            <div style={{width:56,height:56,background:C.bgSoft,border:`0.5px solid ${C.border}`,borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,color:C.textMuted,flexShrink:0}}>{"▦"}</div>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                <span style={{fontSize:12,fontWeight:700}}>{q.name}</span>
+                <div onClick={()=>toggleQr(q.id)} style={{width:36,height:18,borderRadius:9,background:q.active?C.green:"#ccc",position:"relative",cursor:"pointer"}}>
+                  <div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:q.active?20:2}}></div>
+                </div>
+              </div>
+              <div style={{fontSize:10,color:C.textMuted}}>Max: {"₹"}{" "}{q.max.toLocaleString()}</div>
+              {q.note&&<div style={{fontSize:10,color:C.textLight,marginTop:2}}>{q.note}</div>}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:6,marginTop:8,paddingTop:6,borderTop:`0.5px solid ${C.borderLight}`}}>
+            <button style={{padding:"4px 10px",fontSize:10,border:`0.5px solid ${CO.accentBorder}`,borderRadius:3,background:CO.accentLight,color:CO.accent,fontWeight:600,cursor:"pointer"}}>Edit</button>
+            <button style={{padding:"4px 10px",fontSize:10,border:`0.5px solid ${C.redBorder}`,borderRadius:3,background:C.redLight,color:C.red,fontWeight:600,cursor:"pointer"}}>Delete</button>
+          </div>
+        </div>
+      ))}
+      <button style={{width:"100%",padding:"10px",background:"#e65100",color:"#fff",border:"none",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>+ Add QR Code</button>
+    </div>
+    <MBottomNav active="Payments" type="gmms"/>
+  </MobileFrame>
+  );
+},
+"M-G10": () => {
+  const [name,setName]=useState("");
+  const [maxAmt,setMaxAmt]=useState("");
+  const [note,setNote]=useState("");
+  return (
+  <MobileFrame>
+    <MNav label={name?"Edit QR":"Add QR Code"}/>
+    <div style={{padding:14}}>
+      <Card>
+        <SectionLabel>{name?"Edit QR Code":"Add New QR Code"}</SectionLabel>
+        <Input label="QR Name" placeholder="e.g. UPI Daily" value={name} onChange={e=>setName(e.target.value)}/>
+        <Input label="Max Amount (₹)" placeholder="e.g. 50000" value={maxAmt} onChange={e=>setMaxAmt(e.target.value)}/>
+        <Input label="Notes (Optional)" placeholder="e.g. Standard daily collection" value={note} onChange={e=>setNote(e.target.value)}/>
+      </Card>
+      <div style={{border:`0.5px dashed ${C.border}`,borderRadius:6,padding:"20px",textAlign:"center",marginBottom:10,background:C.bgSoft}}>
+        <div style={{fontSize:32,color:C.textLight,marginBottom:6}}>{"▦"}</div>
+        <div style={{fontSize:11,color:C.textMuted}}>QR Code Preview</div>
+        <div style={{fontSize:10,color:C.textLight}}>Generated after saving</div>
+      </div>
+      <button disabled={!name||!maxAmt} style={{width:"100%",padding:"12px",background:name&&maxAmt?"#e65100":"#ccc",color:"#fff",border:"none",borderRadius:6,fontSize:13,fontWeight:700,cursor:name&&maxAmt?"pointer":"default"}}>Save QR Code</button>
+    </div>
+  </MobileFrame>
+  );
+},
+"M-G11": () => {
+  const [filterStatus,setFilterStatus]=useState("All");
+  const payments=[
+    {ref:"PAY-1042",challan:"CH-3200",amount:"₹ 24,000",date:"30 Apr",mode:"UPI",status:"Paid",proof:true},
+    {ref:"PAY-1038",challan:"CH-3185",amount:"₹ 18,500",date:"25 Apr",mode:"Bank Transfer",status:"Paid",proof:true},
+    {ref:"PAY-1025",challan:"CH-3155",amount:"₹ 15,000",date:"10 Apr",mode:"QR",status:"Paid",proof:true},
+    {ref:"PAY-1012",challan:"CH-3120",amount:"₹ 22,000",date:"28 Mar",mode:"UPI",status:"Paid",proof:false},
+    {ref:"PAY-1008",challan:"CH-3095",amount:"₹ 12,400",date:"15 Mar",mode:"Cash",status:"Partially Paid",proof:false},
+  ];
+  const filtered=filterStatus==="All"?payments:payments.filter(p=>p.status===filterStatus);
+  return (
+  <MobileFrame>
+    <MNav label="Payment History"/>
+    <div style={{padding:14}}>
+      <div style={{display:"flex",gap:4,marginBottom:10,flexWrap:"wrap"}}>
+        {["All","Paid","Partially Paid"].map((t,i)=>(
+          <div key={i} onClick={()=>setFilterStatus(t)} style={{padding:"4px 8px",borderRadius:3,fontSize:10,fontWeight:600,background:t===filterStatus?"#e65100":"#f5f5f5",color:t===filterStatus?"#fff":"#888",border:`0.5px solid ${t===filterStatus?"#e65100":"#ddd"}`,cursor:"pointer"}}>{t}</div>
+        ))}
+      </div>
+      {filtered.map((r,i)=>(
+        <div key={i} style={{background:C.white,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+            <span style={{fontSize:11,fontFamily:"monospace",color:"#e65100",fontWeight:700}}>{r.ref}</span>
+            <span style={{fontSize:12,fontWeight:700,color:r.status==="Paid"?C.green:"#b45309"}}>{r.amount}</span>
+          </div>
+          <div style={{fontSize:10,color:C.textMuted}}>{r.challan} · {r.date} · {r.mode}</div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}}>
+            <div style={{display:"flex",gap:4,alignItems:"center"}}>
+              {r.proof&&<span style={{fontSize:9,background:"#e3f2fd",color:"#1565c0",padding:"1px 5px",borderRadius:3}}>{"\u{1F4C4}"} Proof</span>}
+            </div>
+            <span style={{fontSize:10,fontWeight:600,color:r.status==="Paid"?C.green:"#b45309",background:r.status==="Paid"?C.greenLight:"#fff8e1",padding:"2px 6px",borderRadius:3}}>{r.status}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+    <MBottomNav active="Payments" type="gmms"/>
+  </MobileFrame>
+  );
+},
+"M-G12": () => {
+  const [filter,setFilter]=useState("All");
+  const notifications=[
+    {id:1,type:"new_challan",msg:"New Challan #3215 assigned",design:"D-735",stage:"EMB",date:"27 May 10:30 AM",read:false},
+    {id:2,type:"accepted",msg:"Challan #3210 accepted by Ramesh",design:"D-730",stage:"STH",date:"26 May 02:15 PM",read:false},
+    {id:3,type:"payment_submitted",msg:"Payment Request PR-005 submitted",design:"D-730",stage:null,date:"25 May 11:00 AM",read:true},
+    {id:4,type:"payment_approved",msg:"Payment PR-004 approved",design:"D-715",stage:null,date:"24 May 04:30 PM",read:true},
+    {id:5,type:"payment_paid",msg:"Payment PR-003 completed – ₹ 18,000 credited",design:"D-688",stage:null,date:"22 May 09:15 AM",read:true},
+    {id:6,type:"payment_rejected",msg:"Payment PR-002 rejected – Invoice mismatch",design:"D-688",stage:null,date:"20 May 03:00 PM",read:true},
+    {id:7,type:"rf_raised",msg:"RF raised on Challan #3190",design:"D-720",stage:"DIA",date:"18 May 01:45 PM",read:true},
+    {id:8,type:"claim_raised",msg:"Claim raised on Challan #3182",design:"D-710",stage:"HND",date:"15 May 10:00 AM",read:true},
+  ];
+  const icons={new_challan:"\u{1F4E6}",accepted:"✅",payment_submitted:"\u{1F4B0}",payment_approved:"✅",payment_paid:"\u{1F4B5}",payment_rejected:"❌",rf_raised:"⚠",claim_raised:"\u{1F6AB}"};
+  const colors={new_challan:"#e3f2fd",accepted:"#e8f5e9",payment_submitted:"#fff8e1",payment_approved:"#e8f5e9",payment_paid:"#e8f5e9",payment_rejected:"#ffebee",rf_raised:"#fff3e0",claim_raised:"#f3e5f5"};
+  const filtered=filter==="All"?notifications:filter==="Unread"?notifications.filter(n=>!n.read):notifications.filter(n=>n.type===filter);
+  return (
+  <MobileFrame>
+    <MNav label="Notifications"/>
+    <div style={{padding:14}}>
+      <div style={{display:"flex",gap:4,marginBottom:10,flexWrap:"wrap"}}>
+        {["All","Unread","payment_paid","rf_raised","claim_raised"].map((t,i)=>(
+          <div key={i} onClick={()=>setFilter(t)} style={{padding:"4px 8px",borderRadius:3,fontSize:10,fontWeight:600,background:t===filter?"#e65100":"#f5f5f5",color:t===filter?"#fff":"#888",border:`0.5px solid ${t===filter?"#e65100":"#ddd"}`,cursor:"pointer"}}>{t==="payment_paid"?"Paid":t==="rf_raised"?"RF":t==="claim_raised"?"Claim":t}</div>
+        ))}
+      </div>
+      {filtered.map((n,i)=>(
+        <div key={i} style={{background:n.read?C.white:CO.accentLight,border:`0.5px solid ${C.border}`,borderRadius:6,padding:"10px 12px",marginBottom:8,opacity:n.read?0.7:1}}>
+          <div style={{display:"flex",gap:8}}>
+            <div style={{width:28,height:28,borderRadius:"50%",background:colors[n.type],display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>{icons[n.type]}</div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:11,fontWeight:n.read?400:700}}>{n.msg}</div>
+              {n.design&&<div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{n.design}{n.stage?" · "+n.stage:""}</div>}
+              <div style={{fontSize:9,color:C.textLight,marginTop:2}}>{n.date}</div>
+            </div>
+            {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#e65100",flexShrink:0,marginTop:3}}></div>}
+          </div>
+        </div>
+      ))}
+    </div>
+    <MBottomNav active="Challans" type="gmms"/>
+  </MobileFrame>
+  );
+},
+"G-31": ({ onNavigate }) => {
+  const kpis=[
+    {label:"Pending Verification",value:"12",sub:"Challans awaiting QC",alert:true},
+    {label:"Ready for Payment",value:"8",sub:"Verified & approved",alert:true},
+    {label:"QR Pending",value:"3",sub:"Awaiting QR attachment",alert:true},
+    {label:"Completed Today",value:"4",sub:"Payments done",green:true},
+    {label:"Completed This Week",value:"18",sub:"Total payments",green:true},
+    {label:"Contractor Requests",value:"2",sub:"New payment requests",alert:true},
+    {label:"Outstanding Payments",value:"₹4,82,000",sub:"Across 24 challans",alert:true},
+    {label:"Avg Processing Time",value:"3.2d",sub:"From verification to payment"},
+    {label:"This Month Spend",value:"₹12,45,000",sub:"May 2026",green:true},
+  ];
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Payment Dashboard" sub="Manufacturing payment ops at a glance"/>
+    <Content>
+      <div style={{display:"flex",flexWrap:"wrap",gap:10,marginBottom:14}}>
+        {kpis.map((k,i)=><Metric key={i} label={k.label} value={k.value} sub={k.sub} alert={k.alert} green={k.green} onClick={()=>k.label==="Pending Verification"||k.label==="Ready for Payment"?onNavigate("G-32"):k.label==="Completed Today"||k.label==="Completed This Week"?onNavigate("G-36"):k.label==="Contractor Requests"?onNavigate("G-35"):k.label==="QR Pending"?onNavigate("G-37"):k.label==="Outstanding Payments"?onNavigate("G-34"):k.label==="Avg Processing Time"?onNavigate("G-39"):null}/>)}
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:14}}>
+        <Btn primary small onClick={()=>onNavigate("G-32")}>Verify Invoices</Btn>
+        <Btn primary small onClick={()=>onNavigate("G-35")}>Process Payments</Btn>
+        <Btn small onClick={()=>onNavigate("G-36")}>Payment History</Btn>
+        <Btn small onClick={()=>onNavigate("G-33")}>Contractor Ledger</Btn>
+        <Btn small onClick={()=>onNavigate("G-37")}>QR Management</Btn>
+      </div>
+      <Card>
+        <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Recent Payment Activity</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Date",w:0.6},{v:"Ref"},{v:"Contractor"},{v:"Amount",w:0.7},{v:"Status",w:0.7},{v:"Method",w:0.6}]}/>
+          {[
+            {d:"11 May",ref:"PAY-1052",c:"Ramesh Kadkiya",amt:"₹ 24,000",st:"Completed",m:"QR-UPI"},
+            {d:"10 May",ref:"PAY-1051",c:"Suresh Bhai",amt:"₹ 18,000",st:"Processing",m:"Bank Transfer"},
+            {d:"09 May",ref:"PAY-1050",c:"Hari Gems",amt:"₹ 30,000",st:"Verified",m:"QR-Cash"},
+            {d:"08 May",ref:"PAY-1049",c:"Priya Emb.",amt:"₹ 21,000",st:"Completed",m:"QR-UPI"},
+            {d:"07 May",ref:"PAY-1048",c:"Salim Works",amt:"₹ 12,000",st:"Pending QR",m:"-"},
+          ].map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5",cursor:"pointer"}} onClick={()=>onNavigate("G-35")}>
+              <div style={{flex:0.6,fontSize:9,color:C.textMuted}}>{r.d}</div>
+              <div style={{flex:1,fontWeight:600,fontFamily:"monospace"}}>{r.ref}</div>
+              <div style={{flex:1}}>{r.c}</div>
+              <div style={{flex:0.7,fontWeight:600}}>{r.amt}</div>
+              <div style={{flex:0.7}}><Tag label={r.st} color={r.st==="Completed"?"green":r.st==="Processing"?"amber":r.st==="Verified"?"green":r.st==="Pending QR"?"red":"black"} small/></div>
+              <div style={{flex:0.6,fontSize:9,color:C.textMuted}}>{r.m}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-32": ({ onNavigate }) => {
+  const [tab,setTab]=useState("pending");
+  const pending=[
+    {cn:"CH-3225",design:"D-735",cont:"Ramesh Kadkiya",stage:"Embroidery",pcs:600,gross:"₹ 36,000",ded:"₹ 0",net:"₹ 36,000",inv:"INV-1050",d:"12 May"},
+    {cn:"CH-3220",design:"D-728",cont:"Salim Works",stage:"Printing",pcs:450,gross:"₹ 22,500",ded:"₹ 1,200",net:"₹ 21,300",inv:"INV-1048",d:"11 May"},
+    {cn:"CH-3218",design:"D-720",cont:"Hari Gems",stage:"Diamond",pcs:200,gross:"₹ 48,000",ded:"₹ 2,500",net:"₹ 45,500",inv:"INV-1045",d:"10 May"},
+    {cn:"CH-3215",design:"D-715",cont:"Mohan Stitching",stage:"Stitching",pcs:500,gross:"₹ 25,000",ded:"₹ 800",net:"₹ 24,200",inv:"INV-1042",d:"09 May"},
+  ];
+  const verified=[
+    {cn:"CH-3210",design:"D-710",cont:"Raju Tailor",stage:"Stitching",pcs:500,gross:"₹ 25,000",ded:"₹ 0",net:"₹ 25,000",inv:"INV-1040",d:"08 May"},
+    {cn:"CH-3205",design:"D-705",cont:"Salim Works",stage:"Embroidery",pcs:300,gross:"₹ 72,000",ded:"₹ 1,000",net:"₹ 71,000",inv:"INV-1038",d:"07 May"},
+  ];
+  const data=tab==="pending"?pending:verified;
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Invoice Verification" sub="Single-screen QC verification and payment approval"/>
+    <Content>
+      <div style={{display:"flex",gap:6,marginBottom:12}}>
+        {[["pending","Pending Verification ("+pending.length+")"],["verified","Verified ("+verified.length+")"]].map(([v,l])=>(
+          <div key={v} onClick={()=>setTab(v)} style={{padding:"5px 14px",borderRadius:4,fontSize:11,fontWeight:600,cursor:"pointer",background:tab===v?CO.accent:"#f5f5f5",color:tab===v?C.white:C.textMuted,border:"0.5px solid "+(tab===v?CO.accent:C.border)}}>{l}</div>
+        ))}
+      </div>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Pending Verification" value={pending.length.toString()} sub="Awaiting QC" alert/>
+        <Metric label="Total Gross Amount" value={"₹ "+(data.reduce((s,r)=>s+parseInt(r.gross.replace(/[^0-9]/g,"")),0)/100).toLocaleString()} sub="All invoices"/>
+        <Metric label="Total Deductions" value={"₹ "+(data.reduce((s,r)=>s+parseInt(r.ded.replace(/[^0-9]/g,"")),0)/100).toLocaleString()} sub="Short/Damage"/>
+        <Metric label="Net Payable" value={"₹ "+(data.reduce((s,r)=>s+parseInt(r.net.replace(/[^0-9]/g,"")),0)/100).toLocaleString()} sub="Total to pay" green/>
+      </div>
+      <Card>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"CN",w:0.6},{v:"Design"},{v:"Contractor"},{v:"Stage",w:0.7},{v:"PCS",w:0.4},{v:"Gross",w:0.7},{v:"Deductions",w:0.7},{v:"Net Payable",w:0.7},{v:"Action",w:0.7}]}/>
+          {data.map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"6px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:0.6,fontWeight:600,color:CO.accent,fontFamily:"monospace"}}>{r.cn}</div>
+              <div style={{flex:1}}>{r.design}</div>
+              <div style={{flex:1}}>{r.cont}</div>
+              <div style={{flex:0.7}}><Tag label={r.stage} color="black" small/></div>
+              <div style={{flex:0.4}}>{r.pcs}</div>
+              <div style={{flex:0.7,fontWeight:600}}>{r.gross}</div>
+              <div style={{flex:0.7,color:C.red}}>{r.ded}</div>
+              <div style={{flex:0.7,fontWeight:700,color:C.green}}>{r.net}</div>
+              <div style={{flex:0.7}}>{tab==="pending"?<>
+                <Btn small primary onClick={()=>onNavigate("G-35")}>Verify</Btn>
+                <span style={{marginLeft:4}}><Btn small danger>Reject</Btn></span>
+              </>:<span style={{fontSize:10,color:C.green,fontWeight:600}}>{"✓"} Done</span>}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+      {tab==="pending"&&<Card red>
+        <div style={{fontSize:11,fontWeight:600,color:C.red,marginBottom:4}}>Verification Checklist</div>
+        <div style={{fontSize:10,color:C.textMuted}}>{"○"} Check pieces match challan  |  {"○"} Verify deductions  |  {"○"} Confirm contractor rate  |  {"○"} Attach proof</div>
+      </Card>}
+    </Content>
+  </WebLayout>
+  );
+},
+"G-33": ({ onNavigate }) => {
+  const [selCont,setSelCont]=useState("Ramesh Kadkiya");
+  const [expanded,setExpanded]=useState(null);
+  const contractors=["Ramesh Kadkiya","Salim Works","Hari Gems","Mohan Stitching","Raju Tailor","Priya Emb.","Suresh Bhai","New Designers"];
+  const ledgerData={
+    "Ramesh Kadkiya":{totalWork:"15,680 pcs",gross:"₹ 4,82,000",ded:"₹ 12,400",paid:"₹ 4,20,000",pending:"₹ 49,600",txns:[
+      {d:"10 May",cn:"CH-3225",design:"D-735",stage:"Embroidery",pcs:600,gross:"₹ 36,000",ded:"₹ 0",net:"₹ 36,000",paid:"₹ 36,000",bal:0,proof:"UPI Ref: UPI-22041",rm:"On time"},
+      {d:"05 May",cn:"CH-3210",design:"D-730",stage:"Embroidery",pcs:500,gross:"₹ 30,000",ded:"₹ 800",net:"₹ 29,200",paid:"₹ 29,200",bal:0,proof:"Bank: HDFC-8821",rm:"2 pcs damaged"},
+      {d:"28 Apr",cn:"CH-3195",design:"D-718",stage:"Embroidery",pcs:450,gross:"₹ 27,000",ded:"₹ 0",net:"₹ 27,000",paid:"₹ 27,000",bal:0,proof:"Cash Receipt #104",rm:""},
+    ]},
+    "Salim Works":{totalWork:"12,200 pcs",gross:"₹ 3,85,000",ded:"₹ 8,200",paid:"₹ 3,20,000",pending:"₹ 56,800",txns:[
+      {d:"11 May",cn:"CH-3220",design:"D-728",stage:"Printing",pcs:450,gross:"₹ 22,500",ded:"₹ 1,200",net:"₹ 21,300",paid:"₹ 0",bal:21300,proof:"",rm:"Pending QR"},
+      {d:"06 May",cn:"CH-3208",design:"D-720",stage:"Printing",pcs:300,gross:"₹ 18,000",ded:"₹ 0",net:"₹ 18,000",paid:"₹ 18,000",bal:0,proof:"UPI: UPI-22038",rm:""},
+    ]},
+  };
+  const data=ledgerData[selCont]||{totalWork:"0",gross:"₹ 0",ded:"₹ 0",paid:"₹ 0",pending:"₹ 0",txns:[]};
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Contractor Ledger" sub={selCont+" · Chronological payment statement"}/>
+    <Content>
+      <div style={{marginBottom:12,display:"flex",gap:10,alignItems:"center"}}>
+        <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Contractor</div>
+          <select value={selCont} onChange={e=>setSelCont(e.target.value)} style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:12}}>
+            {contractors.map(c=><option key={c}>{c}</option>)}
+          </select></div>
+        <Btn small onClick={()=>onNavigate("G-34")}>Full Statement</Btn>
+        <Btn small onClick={()=>onNavigate("G-05")}>Contractor Detail</Btn>
+      </div>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Work Completed" value={data.totalWork} sub="All time"/>
+        <Metric label="Gross Amount" value={data.gross} sub="Before deductions"/>
+        <Metric label="Total Deductions" value={data.ded} sub="Short/Damage/Claims" alert/>
+        <Metric label="Total Paid" value={data.paid} sub="Settled" green/>
+        <Metric label="Pending" value={data.pending} sub="Outstanding" alert/>
+      </div>
+      <Card>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Date",w:0.5},{v:"CN",w:0.5},{v:"Design"},{v:"Stage",w:0.6},{v:"PCS",w:0.3},{v:"Gross",w:0.6},{v:"Ded",w:0.5},{v:"Net",w:0.6},{v:"Paid",w:0.6},{v:"Bal",w:0.5}]}/>
+          {data.txns.map((t,i)=>(
+            <div key={i}>
+              <div onClick={()=>setExpanded(expanded===i?null:i)} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:expanded===i?CO.accentLight:(i%2===0?C.white:"#faf8f5"),cursor:"pointer"}}>
+                <div style={{flex:0.5,fontSize:9,color:C.textMuted}}>{t.d}</div>
+                <div style={{flex:0.5,fontWeight:600,fontFamily:"monospace"}}>{t.cn}</div>
+                <div style={{flex:1}}>{t.design}</div>
+                <div style={{flex:0.6}}><Tag label={t.stage} color="black" small/></div>
+                <div style={{flex:0.3}}>{t.pcs}</div>
+                <div style={{flex:0.6,fontWeight:600}}>{t.gross}</div>
+                <div style={{flex:0.5,color:C.red}}>{t.ded}</div>
+                <div style={{flex:0.6,fontWeight:600}}>{t.net}</div>
+                <div style={{flex:0.6,color:C.green}}>{t.paid}</div>
+                <div style={{flex:0.5,fontWeight:700,color:t.bal>0?C.red:C.green}}>{t.bal>0?"₹ "+t.bal:"✓"}</div>
+              </div>
+              {expanded===i&&(
+                <div style={{display:"flex",padding:"6px 8px",fontSize:9,color:C.textMuted,background:CO.accentLight,borderTop:"0.5px solid "+CO.accentBorder,gap:16}}>
+                  <div><strong>Payment Proof:</strong> {t.proof||"Not uploaded"}</div>
+                  <div><strong>Remarks:</strong> {t.rm||"-"}</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-34": ({ onNavigate }) => {
+  const [selCont,setSelCont]=useState("Ramesh Kadkiya");
+  const contractors=["Ramesh Kadkiya","Salim Works","Hari Gems","Mohan Stitching","Raju Tailor","Priya Emb.","Suresh Bhai","New Designers"];
+  const statement={
+    name:"Ramesh Kadkiya",code:"EMB-001",type:"Embroidery",mobile:"+91 98765 43210",broker:"Vinod Kumar",activeSince:"Jan 2024",
+    workSummary:{challans:24,pcs:15680,gross:"₹ 4,82,000",deductions:"₹ 12,400",net:"₹ 4,69,600",paid:"₹ 4,20,000",pending:"₹ 49,600"},
+    pendingChallans:[
+      {cn:"CH-3225",design:"D-735",stage:"Embroidery",pcs:600,rate:"₹ 60/pc",amount:"₹ 36,000",d:"12 May",status:"Pending"},
+      {cn:"CH-3210",design:"D-730",stage:"Embroidery",pcs:500,rate:"₹ 60/pc",amount:"₹ 30,000",d:"05 May",status:"Partial"},
+    ],
+    invoices:[
+      {inv:"INV-1050",cn:"CH-3225",amount:"₹ 36,000",d:"12 May",status:"Unpaid"},
+      {inv:"INV-1045",cn:"CH-3210",amount:"₹ 30,000",d:"05 May",status:"Partial Paid"},
+      {inv:"INV-1040",cn:"CH-3195",amount:"₹ 27,000",d:"28 Apr",status:"Paid"},
+      {inv:"INV-1035",cn:"CH-3180",amount:"₹ 24,000",d:"15 Apr",status:"Paid"},
+    ],
+  };
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Contractor Statement" sub={selCont+" · Printable work & payment summary"}/>
+    <Content>
+      <div style={{marginBottom:12,display:"flex",gap:10,alignItems:"center"}}>
+        <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Contractor</div>
+          <select value={selCont} onChange={e=>setSelCont(e.target.value)} style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:12}}>
+            {contractors.map(c=><option key={c}>{c}</option>)}
+          </select></div>
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          <Btn small>Print</Btn>
+          <Btn small primary>Export PDF</Btn>
+        </div>
+      </div>
+      <Card>
+        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:14,paddingBottom:12,borderBottom:"0.5px solid "+C.border}}>
+          <div style={{width:40,height:40,borderRadius:"50%",background:CO.accentLight,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:700,color:CO.accent,border:"0.5px solid "+CO.accentBorder}}>{selCont[0]}</div>
+          <div>
+            <div style={{fontSize:13,fontWeight:700}}>{statement.name}</div>
+            <div style={{fontSize:10,color:C.textMuted}}>{statement.code} · {statement.type} · {statement.mobile}</div>
+            <div style={{fontSize:10,color:C.textMuted}}>Broker: {statement.broker} · Active since {statement.activeSince}</div>
+          </div>
+          <div style={{marginLeft:"auto",fontSize:11,textAlign:"right"}}>
+            <div style={{fontWeight:600}}>Outstanding: <span style={{color:C.red}}>{statement.workSummary.pending}</span></div>
+            <div style={{fontSize:9,color:C.textMuted}}>As on 12 May 2026</div>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:10,marginBottom:14}}>
+          <Metric label="Total Challans" value={statement.workSummary.challans.toString()} sub="Completed"/>
+          <Metric label="Total Pieces" value={statement.workSummary.pcs.toString()} sub="Processed"/>
+          <Metric label="Gross Amount" value={statement.workSummary.gross} sub="Before deductions"/>
+          <Metric label="Deductions" value={statement.workSummary.deductions} sub="Short/Damage" alert/>
+          <Metric label="Net Payable" value={statement.workSummary.net} sub="After deductions"/>
+          <Metric label="Paid" value={statement.workSummary.paid} sub="Settled" green/>
+          <Metric label="Pending" value={statement.workSummary.pending} sub="Outstanding" alert/>
+        </div>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Pending / Completed Challans</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden",marginBottom:12}}>
+          <TH cols={[{v:"CN",w:0.6},{v:"Design"},{v:"Stage"},{v:"PCS",w:0.4},{v:"Rate",w:0.6},{v:"Amount",w:0.7},{v:"Date",w:0.6},{v:"Status",w:0.6}]}/>
+          {statement.pendingChallans.map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:0.6,fontWeight:600,fontFamily:"monospace"}}>{r.cn}</div><div style={{flex:1}}>{r.design}</div><div style={{flex:1}}><Tag label={r.stage} color="black" small/></div><div style={{flex:0.4}}>{r.pcs}</div><div style={{flex:0.6}}>{r.rate}</div><div style={{flex:0.7,fontWeight:600}}>{r.amount}</div><div style={{flex:0.6,fontSize:9,color:C.textMuted}}>{r.d}</div><div style={{flex:0.6}}><Tag label={r.status} color={r.status==="Paid"?"green":"red"} small/></div>
+            </div>
+          ))}
+        </div>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Invoice / Payment History</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Invoice",w:0.6},{v:"CN",w:0.5},{v:"Amount",w:0.7},{v:"Date",w:0.6},{v:"Status",w:0.7},{v:"Running Outstanding",w:0.8}]}/>
+          {statement.invoices.map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:0.6,fontWeight:600,fontFamily:"monospace"}}>{r.inv}</div><div style={{flex:0.5,fontFamily:"monospace"}}>{r.cn}</div><div style={{flex:0.7,fontWeight:600}}>{r.amount}</div><div style={{flex:0.6,fontSize:9,color:C.textMuted}}>{r.d}</div><div style={{flex:0.7}}><Tag label={r.status} color={r.status==="Paid"?"green":r.status==="Partial Paid"?"amber":"red"} small/></div><div style={{flex:0.8,fontWeight:700,color:r.status==="Paid"?C.green:C.red}}>{r.status==="Paid"?"✓ -":r.amount}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-35": ({ onNavigate }) => {
+  const [step,setStep]=useState("summary");
+  const [selCont,setSelCont]=useState("Ramesh Kadkiya");
+  const contractors=["Ramesh Kadkiya","Salim Works","Hari Gems","Mohan Stitching","Raju Tailor"];
+  const summaryData={
+    name:"Ramesh Kadkiya",code:"EMB-001",totalChallans:4,pcs:1850,gross:"₹ 1,16,000",deductions:"₹ 2,000",netPayable:"₹ 1,14,000",advance:"₹ 10,000",finalPayable:"₹ 1,04,000",
+    invoices:[
+      {inv:"INV-1050",cn:"CH-3225",pcs:600,amount:"₹ 36,000",ded:"₹ 0"},
+      {inv:"INV-1048",cn:"CH-3220",pcs:450,amount:"₹ 22,500",ded:"₹ 1,200"},
+      {inv:"INV-1045",cn:"CH-3215",pcs:500,amount:"₹ 25,000",ded:"₹ 800"},
+      {inv:"INV-1042",cn:"CH-3210",pcs:300,amount:"₹ 32,500",ded:"₹ 0"},
+    ],
+    qrOptions:[
+      {name:"UPI - Google Pay",max:"₹ 1,00,000",rec:true,status:"Active"},
+      {name:"UPI - PhonePe",max:"₹ 1,00,000",rec:false,status:"Active"},
+      {name:"Bank Transfer - HDFC",max:"₹ 5,00,000",rec:false,status:"Active"},
+    ],
+  };
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Payment Processing" sub={selCont+" · "+(step==="summary"?"Summary":step==="invoices"?"Invoices":step==="deductions"?"Deductions":step==="payment"?"Payment Breakdown":step==="qr"?"QR Selection":step==="proof"?"Proof":"Confirmation")}/>
+    <Content>
+      <div style={{display:"flex",gap:6,marginBottom:12}}>
+        <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Contractor</div>
+          <select value={selCont} onChange={e=>setSelCont(e.target.value)} style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11}}>
+            {contractors.map(c=><option key={c}>{c}</option>)}
+          </select></div>
+        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+          {["summary","invoices","deductions","payment","qr","proof","confirm"].map((s,i)=>(
+            <div key={s} onClick={()=>setStep(s)} style={{width:22,height:22,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,cursor:"pointer",background:step===s?CO.accent:"#f5f5f5",color:step===s?C.white:C.textMuted,border:"0.5px solid "+(step===s?CO.accent:C.border)}}>{i+1}</div>
+          ))}
+        </div>
+      </div>
+      <Card>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+          <div style={{width:36,height:36,borderRadius:"50%",background:CO.accentLight,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:CO.accent}}>{selCont[0]}</div>
+          <div><div style={{fontSize:13,fontWeight:700}}>{summaryData.name}</div><div style={{fontSize:10,color:C.textMuted}}>{summaryData.code} · {summaryData.totalChallans} challans · {summaryData.pcs} pcs</div></div>
+          <div style={{marginLeft:"auto",textAlign:"right"}}><div style={{fontSize:10,color:C.textMuted}}>Final Payable</div><div style={{fontSize:18,fontWeight:700,color:C.green}}>{summaryData.finalPayable}</div></div>
+        </div>
+        {step==="summary"&&<>
+          <div style={{display:"flex",gap:10,marginBottom:10}}>
+            <Metric label="Gross Amount" value={summaryData.gross} sub="All invoices"/>
+            <Metric label="Total Deductions" value={summaryData.deductions} sub="Short/Damage/Claims" alert/>
+            <Metric label="Net Payable" value={summaryData.netPayable} sub="After deductions"/>
+            <Metric label="Advance Adjusted" value={summaryData.advance} sub="Previous advance" alert/>
+            <Metric label="Final Payable" value={summaryData.finalPayable} sub="To be paid now" green/>
+          </div>
+          <Btn primary full onClick={()=>setStep("invoices")}>Start Payment Process {"→"}</Btn>
+        </>}
+        {step==="invoices"&&<>
+          <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Invoices to Pay</div>
+          <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden",marginBottom:10}}>
+            <TH cols={[{v:"Invoice",w:0.6},{v:"CN",w:0.5},{v:"PCS",w:0.3},{v:"Amount",w:0.7},{v:"Deductions",w:0.7}]}/>
+            {summaryData.invoices.map((r,i)=>(
+              <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+                <div style={{flex:0.6,fontWeight:600}}>{r.inv}</div><div style={{flex:0.5,fontFamily:"monospace"}}>{r.cn}</div><div style={{flex:0.3}}>{r.pcs}</div><div style={{flex:0.7,fontWeight:600}}>{r.amount}</div><div style={{flex:0.7,color:C.red}}>{r.ded}</div>
+              </div>
+            ))}
+          </div>
+          <Btn primary onClick={()=>setStep("deductions")}>Next: Deductions {"→"}</Btn>
+        </>}
+        {step==="deductions"&&<>
+          <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Deductions Summary</div>
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            {[{l:"Short Pieces",v:"0 pcs",a:"₹ 0"},{l:"Damage / Rejects",v:"5 pcs",a:"₹ 1,200"},{l:"Delay Penalty",v:"3 days",a:"₹ 800"}].map((d,i)=>(
+              <div key={i} style={{flex:1,padding:"8px 10px",border:"0.5px solid "+C.border,borderRadius:4,background:C.white}}>
+                <div style={{fontSize:9,color:C.textMuted}}>{d.l}</div><div style={{fontSize:11,fontWeight:700}}>{d.v}</div><div style={{fontSize:10,color:C.red}}>{d.a}</div>
+              </div>
+            ))}
+          </div>
+          <Btn primary onClick={()=>setStep("payment")}>Next: Payment Breakdown {"→"}</Btn>
+        </>}
+        {step==="payment"&&<>
+          <div style={{display:"flex",gap:10,marginBottom:10}}>
+            <div style={{flex:1,padding:"10px 14px",border:"0.5px solid "+CO.accentBorder,borderRadius:6,background:CO.accentLight}}>
+              <div style={{fontSize:9,color:C.textMuted}}>Payment Mode</div><div style={{fontSize:13,fontWeight:700,color:CO.accent}}>QR - UPI (Recommended)</div>
+            </div>
+            <div style={{flex:1,padding:"10px 14px",border:"0.5px solid "+C.border,borderRadius:6,background:C.white}}>
+              <div style={{fontSize:9,color:C.textMuted}}>Split Amount</div><div style={{fontSize:13,fontWeight:700}}>{"₹ 1,04,000"}</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            <Btn primary onClick={()=>setStep("qr")}>Next: Select QR {"→"}</Btn>
+            <Btn onClick={()=>setStep("confirm")}>Skip to Confirmation</Btn>
+          </div>
+        </>}
+        {step==="qr"&&<>
+          <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Select Payment QR</div>
+          <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:10}}>
+            {summaryData.qrOptions.map((q,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",border:"0.5px solid "+(q.rec?CO.accentBorder:C.border),borderRadius:4,background:q.rec?CO.accentLight:C.white,cursor:"pointer"}}>
+                <div style={{width:16,height:16,borderRadius:3,border:"0.5px solid "+(q.rec?CO.accent:C.border),display:"flex",alignItems:"center",justifyContent:"center",background:q.rec?CO.accent:"transparent",color:C.white,fontSize:9,fontWeight:700}}>{q.rec?"✓":""}</div>
+                <div style={{flex:1}}><div style={{fontSize:11,fontWeight:600}}>{q.name}</div><div style={{fontSize:9,color:C.textMuted}}>Max: {q.max}</div></div>
+                <div><Tag label={q.status} color={q.status==="Active"?"green":"red"} small/></div>
+                {q.rec&&<span style={{fontSize:8,color:CO.accent,fontWeight:700,background:CO.accentLight,padding:"2px 6px",borderRadius:3}}>Recommended</span>}
+              </div>
+            ))}
+          </div>
+          <Btn primary onClick={()=>setStep("proof")}>Next: Upload Proof {"→"}</Btn>
+        </>}
+        {step==="proof"&&<>
+          <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Upload Payment Proof</div>
+          <div style={{padding:"20px",border:"1px dashed "+C.border,borderRadius:6,textAlign:"center",marginBottom:10,background:C.bgSoft}}>
+            <div style={{fontSize:24,marginBottom:6}}>{"\u{1F4C4}"}</div>
+            <div style={{fontSize:11,color:C.textMuted}}>Drag & drop payment screenshot or UPI reference</div>
+            <div style={{fontSize:10,color:C.textLight,marginTop:4}}>JPG, PNG, PDF accepted</div>
+            <div style={{marginTop:8}}><Btn small>Choose File</Btn></div>
+          </div>
+          <Input label="UPI Reference / Transaction ID" placeholder="e.g. UPI-22041" note="Optional if uploading screenshot"/>
+          <Btn primary onClick={()=>setStep("confirm")}>Next: Confirm {"→"}</Btn>
+        </>}
+        {step==="confirm"&&<>
+          <div style={{display:"flex",gap:10,marginBottom:10}}>
+            {[{l:"Contractor",v:summaryData.name},{l:"Amount",v:summaryData.finalPayable},{l:"Mode",v:"QR - UPI"},{l:"Reference",v:"UPI-22041"}].map((d,i)=>(
+              <div key={i} style={{flex:1,padding:"8px 10px",border:"0.5px solid "+C.border,borderRadius:4,background:C.white}}>
+                <div style={{fontSize:9,color:C.textMuted}}>{d.l}</div><div style={{fontSize:11,fontWeight:700}}>{d.v}</div>
+              </div>
+            ))}
+          </div>
+          <Card green>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:16}}>{"\u{2705}"}</span>
+              <div><div style={{fontSize:11,fontWeight:600,color:C.green}}>Ready to disburse payment of {summaryData.finalPayable}</div><div style={{fontSize:10,color:C.textMuted}}>Payment will be processed immediately</div></div>
+              <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+                <Btn primary onClick={()=>{}}>Confirm & Pay</Btn>
+                <Btn danger onClick={()=>setStep("summary")}>Cancel</Btn>
+              </div>
+            </div>
+          </Card>
+        </>}
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-36": ({ onNavigate }) => {
+  const [dateRange,setDateRange]=useState("7d");
+  const [statusFilter,setStatusFilter]=useState("All");
+  const [search,setSearch]=useState("");
+  const allTxns=[
+    {ref:"PAY-1052",inv:"INV-1050",cont:"Ramesh Kadkiya",d:"11 May",amt:"₹ 24,000",qr:"GPay-UPI",proof:"Yes",rm:"On time",st:"Completed"},
+    {ref:"PAY-1051",inv:"INV-1048",cont:"Salim Works",d:"10 May",amt:"₹ 18,000",qr:"PhonePe",proof:"Yes",rm:"",st:"Processing"},
+    {ref:"PAY-1050",inv:"INV-1045",cont:"Hari Gems",d:"09 May",amt:"₹ 30,000",qr:"Cash",proof:"Yes",rm:"Receipt #105",st:"Completed"},
+    {ref:"PAY-1049",inv:"INV-1042",cont:"Mohan Stitching",d:"08 May",amt:"₹ 21,000",qr:"GPay-UPI",proof:"No",rm:"",st:"Completed"},
+    {ref:"PAY-1048",inv:"INV-1038",cont:"Priya Emb.",d:"07 May",amt:"₹ 12,000",qr:"",proof:"No",rm:"QR pending",st:"Pending QR"},
+    {ref:"PAY-1047",inv:"INV-1035",cont:"Suresh Bhai",d:"05 May",amt:"₹ 15,000",qr:"Bank Transfer",proof:"Yes",rm:"NEFT-8821",st:"Completed"},
+    {ref:"PAY-1046",inv:"INV-1032",cont:"New Designers",d:"03 May",amt:"₹ 8,000",qr:"GPay-UPI",proof:"Yes",rm:"",st:"Completed"},
+    {ref:"PAY-1045",inv:"INV-1028",cont:"Raju Tailor",d:"01 May",amt:"₹ 22,000",qr:"",proof:"No",rm:"",st:"Pending QR"},
+  ];
+  let filtered=allTxns;
+  if(statusFilter!=="All")filtered=filtered.filter(t=>t.st===statusFilter);
+  if(search)filtered=filtered.filter(t=>t.cont.toLowerCase().includes(search.toLowerCase())||t.ref.toLowerCase().includes(search.toLowerCase())||t.inv.toLowerCase().includes(search.toLowerCase()));
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Payment History" sub={filtered.length+" of "+allTxns.length+" payments"}/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        <div style={{display:"flex",gap:4}}>
+          {[["7d","7 Days"],["30d","30 Days"],["90d","90 Days"],["all","All"]].map(([v,l])=>(
+            <div key={v} onClick={()=>setDateRange(v)} style={{padding:"4px 10px",borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer",background:dateRange===v?CO.accent:"#f5f5f5",color:dateRange===v?C.white:C.textMuted,border:"0.5px solid "+(dateRange===v?CO.accent:C.border)}}>{l}</div>
+          ))}
+        </div>
+        <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} style={{padding:"5px 8px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:10}}>
+          {["All","Completed","Processing","Pending QR"].map(s=><option key={s}>{s}</option>)}
+        </select>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search contractor/ref..." style={{padding:"5px 8px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:10,width:160}}/>
+        <div style={{marginLeft:"auto"}}><Btn small primary onClick={()=>onNavigate("G-35")}>New Payment</Btn></div>
+      </div>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Total Payments" value={allTxns.length.toString()} sub="In period"/>
+        <Metric label="Total Amount" value={"₹ "+(allTxns.reduce((s,t)=>s+parseInt(t.amt.replace(/[^0-9]/g,"")),0)/100).toLocaleString()} sub="Sum of all payments" green/>
+        <Metric label="Completed" value={allTxns.filter(t=>t.st==="Completed").length.toString()} sub="Successfully processed" green/>
+        <Metric label="Pending QR" value={allTxns.filter(t=>t.st==="Pending QR").length.toString()} sub="Awaiting QR" alert/>
+      </div>
+      <Card>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Ref",w:0.6},{v:"Invoice"},{v:"Contractor"},{v:"Date",w:0.5},{v:"Amount",w:0.7},{v:"QR Method"},{v:"Proof",w:0.4},{v:"Remarks"},{v:"Status",w:0.7}]}/>
+          {filtered.map((t,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:0.6,fontWeight:600,fontFamily:"monospace"}}>{t.ref}</div>
+              <div style={{flex:0.7,fontFamily:"monospace",color:C.textMuted}}>{t.inv}</div>
+              <div style={{flex:1}}>{t.cont}</div>
+              <div style={{flex:0.5,fontSize:9,color:C.textMuted}}>{t.d}</div>
+              <div style={{flex:0.7,fontWeight:600}}>{t.amt}</div>
+              <div style={{flex:0.8,fontSize:9,color:C.textMuted}}>{t.qr||"-"}</div>
+              <div style={{flex:0.4,fontSize:9,color:t.proof==="Yes"?C.green:C.red}}>{t.proof==="Yes"?"✓":"✗"}</div>
+              <div style={{flex:0.6,fontSize:9,color:C.textMuted}}>{t.rm||"-"}</div>
+              <div style={{flex:0.7}}><Tag label={t.st} color={t.st==="Completed"?"green":t.st==="Processing"?"amber":t.st==="Pending QR"?"red":"black"} small/></div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-37": ({ onNavigate }) => {
+  const [selected,setSelected]=useState([]);
+  const qrs=[
+    {name:"GPay - Ramesh Kadkiya",preview:"UPI: ramesh@upi",max:"₹ 1,00,000",rec:true,split:false,st:"Active"},
+    {name:"PhonePe - Ramesh Kadkiya",preview:"UPI: ramesh.k@ybl",max:"₹ 1,00,000",rec:false,split:false,st:"Active"},
+    {name:"Bank Transfer - HDFC",preview:"Acct: 5020XXXX8821",max:"₹ 5,00,000",rec:false,split:false,st:"Active"},
+    {name:"Cash Payment",preview:"Receipt based",max:"₹ 50,000",rec:false,split:true,st:"Active"},
+    {name:"GPay - Salim Works",preview:"UPI: salim@upi",max:"₹ 1,00,000",rec:false,split:false,st:"Active"},
+    {name:"Split Payment - Multi",preview:"UPI + Cash + Bank",max:"₹ 2,00,000",rec:false,split:true,st:"Active"},
+  ];
+  const toggleQR=(idx)=>setSelected(prev=>prev.includes(idx)?prev.filter(i=>i!==idx):[...prev,idx]);
+  const distribution=selected.length>0?[
+    {method:qrs[selected[0]]?.name||"GPay - Ramesh Kadkiya",amount:"₹ 60,000"},
+    {method:"Bank Transfer - HDFC",amount:"₹ 44,000"},
+  ]:[];
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="QR Payment Management" sub="Configure and select payment QR codes"/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Active QR Codes" value="6" sub="Across all contractors"/>
+        <Metric label="Linked Contractors" value="4" sub="With active QR"/>
+        <Metric label="Today QR Payments" value="3" sub="Processed" green/>
+      </div>
+      <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Select QR Codes for Payment</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+        {qrs.map((q,i)=>(
+          <div key={i} onClick={()=>toggleQR(i)} style={{display:"flex",gap:10,padding:"10px 12px",border:"0.5px solid "+(selected.includes(i)?CO.accentBorder:C.border),borderRadius:4,background:selected.includes(i)?CO.accentLight:C.white,cursor:"pointer",boxShadow:selected.includes(i)?"0 0 0 1px "+CO.accent:"none"}}>
+            <div style={{width:20,height:20,borderRadius:4,border:"0.5px solid "+(selected.includes(i)?CO.accent:C.border),display:"flex",alignItems:"center",justifyContent:"center",background:selected.includes(i)?CO.accent:"transparent",color:C.white,fontSize:10,fontWeight:700,flexShrink:0,marginTop:2}}>{selected.includes(i)?"✓":""}</div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:11,fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
+                {q.name}{q.rec&&<span style={{fontSize:8,color:CO.accent,background:CO.accentLight,padding:"1px 5px",borderRadius:3}}>Recommended</span>}
+              </div>
+              <div style={{fontSize:9,color:C.textMuted,marginTop:2}}>{q.preview}</div>
+              <div style={{display:"flex",gap:8,marginTop:4,fontSize:9}}>
+                <span><strong>Max:</strong> {q.max}</span>
+                {q.split&&<span style={{color:CO.accent}}>Split allowed</span>}
+                <span style={{marginLeft:"auto"}}><Tag label={q.st} color={q.st==="Active"?"green":"red"} small/></span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {selected.length>0&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Payment Distribution (Selected: {selected.length})</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Payment Method"},{v:"Amount",w:0.6},{v:"Action",w:0.4}]}/>
+          {distribution.map((d,i)=>(
+            <div key={i} style={{display:"flex",padding:"6px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:1,fontWeight:600}}>{d.method}</div>
+              <div style={{flex:0.6,fontWeight:600}}>{d.amount}</div>
+              <div style={{flex:0.4}}><span style={{fontSize:9,color:CO.accent,cursor:"pointer"}}>Edit</span></div>
+            </div>
+          ))}
+          <div style={{display:"flex",padding:"6px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,fontWeight:700,background:C.bgSoft}}>
+            <div style={{flex:1}}>Total</div>
+            <div style={{flex:0.6}}>{"₹ 1,04,000"}</div>
+            <div style={{flex:0.4}}></div>
+          </div>
+        </div>
+      </Card>}
+      <Btn primary full>Make Payment with Selected QR</Btn>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-38": ({ onNavigate }) => {
+  const [sortBy,setSortBy]=useState("efficiency");
+  const contractors=[
+    {name:"Ramesh Kadkiya",type:"Embroidery",challans:24,pcs:15680,rf:124,short:18,claims:3,avgTime:"8.2d",avgRate:"₹ 30.70",totalPaid:"₹ 4,20,000",costPC:"₹ 26.80",score:92},
+    {name:"Salim Works",type:"Printing",challans:18,pcs:12200,rf:85,short:12,claims:1,avgTime:"6.5d",avgRate:"₹ 31.60",totalPaid:"₹ 3,20,000",costPC:"₹ 26.20",score:88},
+    {name:"Hari Gems",type:"Diamond",challans:12,pcs:5400,rf:42,short:8,claims:2,avgTime:"10.1d",avgRate:"₹ 182.40",totalPaid:"₹ 4,80,000",costPC:"₹ 177.80",score:95},
+    {name:"Mohan Stitching",type:"Stitching",challans:30,pcs:18500,rf:210,short:45,claims:5,avgTime:"7.2d",avgRate:"₹ 50.00",totalPaid:"₹ 9,25,000",costPC:"₹ 50.00",score:78},
+    {name:"Raju Tailor",type:"Stitching",challans:20,pcs:12800,rf:98,short:22,claims:2,avgTime:"6.8d",avgRate:"₹ 50.00",totalPaid:"₹ 6,40,000",costPC:"₹ 50.00",score:85},
+    {name:"Priya Emb.",type:"Embroidery",challans:15,pcs:9200,rf:56,short:10,claims:1,avgTime:"7.5d",avgRate:"₹ 32.60",totalPaid:"₹ 2,80,000",costPC:"₹ 30.40",score:90},
+  ];
+  const sorted=[...contractors].sort((a,b)=>sortBy==="efficiency"?b.score-a.score:sortBy==="cost"?parseFloat(a.costPC.replace(/[^0-9.]/g,""))-parseFloat(b.costPC.replace(/[^0-9.]/g,"")):b.challans-a.challans);
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Contractor Performance" sub="Combined production and payment metrics"/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Active Contractors" value={contractors.length.toString()} sub="With work in period"/>
+        <Metric label="Total Challans" value={contractors.reduce((s,c)=>s+c.challans,0).toString()} sub="All time"/>
+        <Metric label="Total Paid" value={"₹ "+(contractors.reduce((s,c)=>s+parseInt(c.totalPaid.replace(/[^0-9]/g,"")),0)/100).toLocaleString()} sub="This FY" green/>
+        <Metric label="Avg Efficiency" value={(contractors.reduce((s,c)=>s+c.score,0)/contractors.length).toFixed(0)+"%"} sub="Performance score"/>
+      </div>
+      <div style={{display:"flex",gap:4,marginBottom:10,alignItems:"center"}}>
+        <span style={{fontSize:10,color:C.textMuted}}>Sort by:</span>
+        {[["efficiency","Efficiency"],["cost","Cost/PCS"],["challans","Challans"]].map(([v,l])=>(
+          <div key={v} onClick={()=>setSortBy(v)} style={{padding:"3px 10px",borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer",background:sortBy===v?CO.accent:"#f5f5f5",color:sortBy===v?C.white:C.textMuted,border:"0.5px solid "+(sortBy===v?CO.accent:C.border)}}>{l}</div>
+        ))}
+      </div>
+      <Card>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Contractor"},{v:"Type",w:0.5},{v:"Challans",w:0.5},{v:"PCS",w:0.5},{v:"RF%",w:0.3},{v:"Short%",w:0.3},{v:"Claims",w:0.3},{v:"Avg Time",w:0.5},{v:"Avg Rate",w:0.6},{v:"Paid",w:0.7},{v:"Cost/PCS",w:0.7},{v:"Score",w:0.4}]}/>
+          {sorted.map((c,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5",cursor:"pointer"}} onClick={()=>onNavigate("G-05")}>
+              <div style={{flex:1,fontWeight:600}}>{c.name}</div>
+              <div style={{flex:0.5}}><Tag label={c.type} color="black" small/></div>
+              <div style={{flex:0.5}}>{c.challans}</div>
+              <div style={{flex:0.5}}>{c.pcs}</div>
+              <div style={{flex:0.3,color:(c.rf/c.pcs*100)>1?C.red:C.textMuted}}>{(c.rf/c.pcs*100).toFixed(1)+"%"}</div>
+              <div style={{flex:0.3,color:(c.short/c.pcs*100)>0.2?C.red:C.textMuted}}>{(c.short/c.pcs*100).toFixed(1)+"%"}</div>
+              <div style={{flex:0.3}}>{c.claims}</div>
+              <div style={{flex:0.5,fontSize:9,color:C.textMuted}}>{c.avgTime}</div>
+              <div style={{flex:0.6}}>{c.avgRate}</div>
+              <div style={{flex:0.7}}>{c.totalPaid}</div>
+              <div style={{flex:0.7,fontWeight:600}}>{c.costPC}</div>
+              <div style={{flex:0.4}}><span style={{padding:"2px 6px",borderRadius:3,fontSize:8,fontWeight:700,background:c.score>=90?"#e8f5e9":c.score>=80?"#fff3e0":"#ffebee",color:c.score>=90?"#2e7d32":c.score>=80?"#e65100":"#c62828"}}>{c.score}</span></div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-39": ({ onNavigate }) => {
+  const timeline=[
+    {step:"Invoice Submitted",d:"11 May 2026",desc:"Invoice INV-1050 for CH-3225 submitted by Contractor",icon:"\u{1F4C4}",st:"completed"},
+    {step:"QC Verified",d:"11 May 2026",desc:"QC check passed. All 600 pcs confirmed. Deductions: ₹ 0",icon:"\u{2705}",st:"completed"},
+    {step:"Approved for Payment",d:"11 May 2026",desc:"Approved by Mohammad Ali. Net payable: ₹ 36,000",icon:"\u{1F4CB}",st:"completed"},
+    {step:"Payment Processing",d:"12 May 2026",desc:"QR selected: GPay-UPI. Amount: ₹ 24,000",icon:"\u{23F3}",st:"active"},
+    {step:"Payment Completed",d:"-",desc:"Awaiting payment confirmation",icon:"\u{2705}",st:"pending"},
+    {step:"Proof Uploaded",d:"-",desc:"Awaiting UPI reference / screenshot upload",icon:"\u{1F4F7}",st:"pending"},
+    {step:"Closed",d:"-",desc:"Awaiting contractor acknowledgment",icon:"\u{1F512}",st:"pending"},
+  ];
+  return(
+  <WebLayout activeMenu="Payments" mode="mfg">
+    <GTopBar title="Payment Timeline" sub="Track payment lifecycle from invoice to closure"/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
+        <Metric label="Active Payments" value="4" sub="In progress"/>
+        <Metric label="Completed Today" value="2" sub="All processed" green/>
+        <Metric label="Avg Cycle Time" value="2.8d" sub="Invoice to payment"/>
+        <Metric label="Stuck Payments" value="1" sub="Pending QR > 3 days" alert/>
+      </div>
+      <Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:10}}>Payment #PAY-1052 · Ramesh Kadkiya · ₹ 24,000</div>
+        {timeline.map((t,i)=>(
+          <div key={i} style={{display:"flex",gap:14,paddingBottom:10,position:"relative",marginLeft:8}}>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",width:32,flexShrink:0}}>
+              <div style={{width:24,height:24,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,background:t.st==="completed"?C.green:t.st==="active"?CO.accent:C.bgSoft,color:t.st==="pending"?C.textLight:C.white,border:"0.5px solid "+(t.st==="pending"?C.border:"transparent")}}>
+                {t.st==="completed"?"✓":t.st==="active"?String.fromCharCode(8226):t.st==="pending"?i+1:""}
+              </div>
+              {i<timeline.length-1&&<div style={{width:1.5,flex:1,background:t.st==="completed"?C.green:t.st==="active"?CO.accent:C.border,marginTop:4}}/>}
+            </div>
+            <div style={{flex:1,paddingBottom:i<timeline.length-1?4:0}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div style={{fontSize:11,fontWeight:700,color:t.st==="completed"?C.green:t.st==="active"?CO.accent:C.text}}>{t.step}</div>
+                <span style={{fontSize:9,color:C.textMuted,fontFamily:"monospace"}}>{t.d}</span>
+              </div>
+              <div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{t.desc}</div>
+            </div>
+          </div>
+        ))}
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-40":({onNavigate})=>{
+  const [period,setPeriod]=useState("month");
+  const kpis=[
+    {label:"Avg Cost / Piece",value:"₹ 124.50",sub:"Across all stages",green:true},
+    {label:"Highest Challan",value:"₹ 2,84,500",sub:"#3202 - D-710 - Raju Tailor",alert:true,onClick:()=>onNavigate("G-42")},
+    {label:"Lowest Challan",value:"₹ 45,200",sub:"#3185 - D-712 - New Designers",onClick:()=>onNavigate("G-42")},
+    {label:"Highest Cost Process",value:"Embroidery",sub:"₹ 72,000 avg/challan",alert:true},
+    {label:"Total Production Spend",value:"₹ 18,64,200",sub:"May 2026",green:true},
+    {label:"Pending Costing",value:"2 challans",sub:"#3190, #3185",alert:true},
+    {label:"Most Expensive Contractor",value:"Hari Gems",sub:"₹ 492.50/pcs - Diamond"},
+    {label:"Highest RF Cost",value:"₹ 8,400",sub:"From Short/Damage deductions"},
+    {label:"Highest Claim Cost",value:"₹ 3,200",sub:"From contractor claims"},
+  ];
+  const recent=[
+    {cn:"3210",design:"D-730",contractor:"Raju Tailor",stage:"Stitching",pcs:500,total:62500,ppc:125,st:"final"},
+    {cn:"3208",design:"D-688",contractor:"Salim Works",stage:"Embroidery",pcs:300,total:72000,ppc:240,st:"draft"},
+    {cn:"3205",design:"D-695",contractor:"Hari Gems",stage:"Diamond",pcs:200,total:98500,ppc:492.50,st:"final"},
+    {cn:"3202",design:"D-710",contractor:"Raju Tailor",stage:"Stitching",pcs:150,total:18750,ppc:125,st:"final"},
+    {cn:"3198",design:"D-688",contractor:"Salim Works",stage:"Wash",pcs:400,total:32000,ppc:80,st:"draft"},
+  ];
+  return(
+  <WebLayout activeMenu="Costing" mode="mfg">
+    <GTopBar title="Costing Dashboard" sub="Per-piece cost analysis across all active challans">
+      <div style={{display:"flex",gap:6}}>
+        {[["month","This Month"],["quarter","This Quarter"],["year","This Year"]].map(([v,l])=>(
+          <div key={v} onClick={()=>setPeriod(v)} style={{padding:"4px 10px",background:period===v?CO.accent:"#f5f5f5",color:period===v?C.white:C.textMuted,border:"0.5px solid "+(period===v?CO.accent:C.border),borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer"}}>{l}</div>
+        ))}
+      </div>
+    </GTopBar>
+    <Content>
+      <div style={{display:"flex",flexWrap:"wrap",gap:10,marginBottom:14}}>
+        {kpis.map((k,i)=><Metric key={i} label={k.label} value={k.value} sub={k.sub} alert={k.alert} green={k.green} onClick={k.onClick}/>)}
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:14}}>
+        <Btn label="All Cost Entries" onClick={()=>onNavigate("G-41")}/>
+        <Btn label="Cost Analysis" theme="soft" onClick={()=>onNavigate("G-44")}/>
+        <Btn label="Compare Challans" theme="soft" onClick={()=>onNavigate("G-45")}/>
+        <Btn label="Payment Dashboard" theme="soft" onClick={()=>onNavigate("G-31")}/>
+      </div>
+      <Card>
+        <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Recent Cost Entries</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"CN",w:0.6},{v:"Design"},{v:"Contractor"},{v:"Stage"},{v:"PCS",w:0.5},{v:"Total",w:0.7},{v:"/PCS",w:0.6},{v:"Status",w:0.6}]}/>
+          {recent.map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5",cursor:"pointer"}} onClick={()=>onNavigate("G-42")}>
+              <div style={{flex:0.6,fontWeight:600}}>{r.cn}</div>
+              <div style={{flex:1}}>{r.design}</div>
+              <div style={{flex:1}}>{r.contractor}</div>
+              <div style={{flex:0.8}}>{r.stage}</div>
+              <div style={{flex:0.5}}>{r.pcs}</div>
+              <div style={{flex:0.7}}>{"₹ "+(r.total/100).toLocaleString()}</div>
+              <div style={{flex:0.6}}>{"₹ "+r.ppc.toFixed(r.ppc%1===0?0:1)}</div>
+              <div style={{flex:0.6}}><Tag label={r.st==="final"?"Final":"Draft"} color={r.st==="final"?"#2e7d32":"#e65100"} small/></div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-41":({onNavigate})=>{
+  const [filters,setFilters]=useState({stage:"All",status:"All",search:""});
+  const costList=[
+    {cn:"3210",design:"D-730",contractor:"Raju Tailor",stage:"Stitching",pcs:500,status:"costed",total:62500,ppc:125},
+    {cn:"3208",design:"D-688",contractor:"Salim Works",stage:"Embroidery",pcs:300,status:"draft",total:72000,ppc:240},
+    {cn:"3205",design:"D-695",contractor:"Hari Gems",stage:"Diamond",pcs:200,status:"costed",total:98500,ppc:492.5},
+    {cn:"3202",design:"D-710",contractor:"Raju Tailor",stage:"Stitching",pcs:150,status:"costed",total:18750,ppc:125},
+    {cn:"3198",design:"D-688",contractor:"Salim Works",stage:"Wash",pcs:400,status:"draft",total:32000,ppc:80},
+    {cn:"3195",design:"D-695",contractor:"Hari Gems",stage:"Diamond",pcs:180,status:"costed",total:90000,ppc:500},
+    {cn:"3190",design:"D-704",contractor:"Shah Fabrics",stage:"Printing",pcs:350,status:"pending",total:0,ppc:0},
+    {cn:"3185",design:"D-712",contractor:"New Designers",stage:"Cutting",pcs:120,status:"pending",total:0,ppc:0},
+  ];
+  let filtered=costList;
+  if(filters.stage!=="All")filtered=filtered.filter(r=>r.stage===filters.stage);
+  if(filters.status!=="All")filtered=filtered.filter(r=>r.status===filters.status);
+  if(filters.search)filtered=filtered.filter(r=>r.cn.includes(filters.search)||r.design.toLowerCase().includes(filters.search.toLowerCase())||r.contractor.toLowerCase().includes(filters.search.toLowerCase()));
+  const stages=[...new Set(costList.map(r=>r.stage))];
+  const statuses=["All","costed","draft","pending"];
+  return(
+  <WebLayout activeMenu="Costing" mode="mfg">
+    <GTopBar title="Challan Costing List" sub={filtered.length+" of "+costList.length+" entries — filter by stage or status"}/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Stage</div>
+          <select value={filters.stage} onChange={e=>setFilters(p=>({...p,stage:e.target.value}))} style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11}}>
+            <option>All</option>{stages.map(s=><option key={s}>{s}</option>)}
+          </select></div>
+        <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Status</div>
+          <select value={filters.status} onChange={e=>setFilters(p=>({...p,status:e.target.value}))} style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11}}>
+            {statuses.map(s=><option key={s}>{s}</option>)}
+          </select></div>
+        <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Search</div>
+          <input value={filters.search} onChange={e=>setFilters(p=>({...p,search:e.target.value}))} placeholder="CN / Design / Contractor" style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11,width:180}}/></div>
+        <div style={{marginLeft:"auto"}}><Btn label="+ New Cost Entry" onClick={()=>onNavigate("G-42")}/></div>
+      </div>
+      <Card>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"C.No",w:0.6},{v:"Design"},{v:"Contractor"},{v:"Stage"},{v:"PCS",w:0.5},{v:"Total Cost",w:0.7},{v:"Cost/PCS",w:0.6},{v:"Status",w:0.6}]}/>
+          {filtered.map((r,i)=>(
+            <div key={i} onClick={()=>onNavigate("G-42")} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5",cursor:"pointer"}}>
+              <div style={{flex:0.6,fontWeight:600}}>{r.cn}</div>
+              <div style={{flex:1}}>{r.design}</div>
+              <div style={{flex:1}}>{r.contractor}</div>
+              <div style={{flex:0.8}}>{r.stage}</div>
+              <div style={{flex:0.5}}>{r.pcs}</div>
+              <div style={{flex:0.7}}>{r.status==="pending"?"-":("₹ ")+(r.total/100).toLocaleString()}</div>
+              <div style={{flex:0.6}}>{r.status==="pending"?"-":("₹ ")+r.ppc.toFixed(r.ppc%1===0?0:1)}</div>
+              <div style={{flex:0.6}}><Tag label={r.status==="costed"?"Costed":r.status==="draft"?"Draft":"Pending"} color={r.status==="costed"?"#2e7d32":r.status==="draft"?"#e65100":"#95a5a6"} small/></div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-42":({onNavigate})=>{
+  const detail={cn:"3210",design:"D-730",contractor:"Raju Tailor",stage:"Stitching",pcs:500,materialCost:25000,jobWorkCost:37500,paid:50000,deductions:2000,finalCost:60500,ppc:125,status:"final",notes:"All pieces checked. Rs.2k deduction for delay.",fabricUsed:"Cotton Voile",fabricQty:120,fabricRate:180,fabricCost:21600};
+  const processFlow=["Fabric","Print","Emb","Stitch","Finish","Pack","Reprocess","Other"];
+  const processes=[
+    {proc:"Fabric Cutting",material:"Cotton Fabric",qty:120,unit:"mtr",rate:180,total:21600,pcs:500,ppc:43.2,paid:18000,notes:"12 mtr wastage"},
+    {proc:"Sewing / Stitching",material:"Thread + Labor",qty:500,unit:"pcs",rate:45,total:22500,pcs:500,ppc:45,paid:22500,notes:"Standard rate"},
+    {proc:"Checking & Finishing",material:"Label + Polybag",qty:500,unit:"pcs",rate:18,total:9000,pcs:500,ppc:18,paid:6000,notes:"50% advance paid"},
+    {proc:"Packing",material:"Carton + Tape",qty:25,unit:"box",rate:356,total:8900,pcs:500,ppc:17.8,paid:3500,notes:"Partial billing"},
+  ];
+  const totalCost=processes.reduce((s,p)=>s+p.total,0);
+  const actualPaid=processes.reduce((s,p)=>s+p.paid,0);
+  return(
+  <WebLayout activeMenu="Costing" mode="mfg">
+    <GTopBar title={"Challan Cost Detail · #"+detail.cn} sub={detail.design+" | "+detail.contractor+" | "+detail.stage}>
+      <div style={{display:"flex",gap:6}}>
+        <Btn label="Edit Costing" theme="soft" onClick={()=>onNavigate("G-43")}/>
+        <Btn label="View Challan" theme="soft" onClick={()=>onNavigate("G-03")}/>
+        <Btn label="View Contractor" theme="soft" onClick={()=>onNavigate("G-05")}/>
+        <Btn label="View Payment" theme="soft" onClick={()=>onNavigate("G-32")}/>
+      </div>
+    </GTopBar>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:14,flexWrap:"wrap"}}>
+        <Metric label="Ready PCS" value={detail.pcs.toString()} sub={detail.stage}/>
+        <Metric label="Fabric Cost" value={"₹ "+(detail.fabricCost/100).toLocaleString()} sub={detail.fabricUsed+" · "+detail.fabricQty+" mtr"}/>
+        <Metric label="Material Cost" value={"₹ "+(detail.materialCost/100).toLocaleString()} sub="Fabric + trims"/>
+        <Metric label="Job Work Cost" value={"₹ "+(detail.jobWorkCost/100).toLocaleString()} sub="Labor + processing"/>
+        <Metric label="Paid to Contractor" value={"₹ "+(detail.paid/100).toLocaleString()} sub={"To "+detail.contractor} green/>
+        <Metric label="Deductions" value={"₹ "+(detail.deductions/100).toLocaleString()} sub="Short / damage" alert/>
+        <Metric label="Final Cost" value={"₹ "+(detail.finalCost/100).toLocaleString()} sub="After deductions"/>
+        <Metric label="Cost / PCS" value={"₹ "+detail.ppc.toFixed(2)} sub="Per piece"/>
+      </div>
+      <Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Process Flow</div>
+        <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:10}}>
+          {processFlow.map((p,i)=>(
+            <div key={i} style={{padding:"3px 10px",borderRadius:12,fontSize:9,fontWeight:600,background:detail.stage.includes(p)||(p==="Stitch"&&detail.stage==="Stitching")?CO.accent:C.bgSoft,color:detail.stage.includes(p)||(p==="Stitch"&&detail.stage==="Stitching")?C.white:C.textMuted,border:"0.5px solid "+(detail.stage.includes(p)||(p==="Stitch"&&detail.stage==="Stitching")?CO.accent:C.border),whiteSpace:"nowrap"}}>
+              {i>0&&<span style={{marginRight:4,opacity:0.4}}>{"→"}</span>}{p}
+            </div>
+          ))}
+        </div>
+      </Card>
+      <Card>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+          <div style={{fontSize:12,fontWeight:600}}>Process Costs</div>
+          <span style={{fontSize:10,color:CO.accent,cursor:"pointer"}} onClick={()=>onNavigate("G-43")}>Full Breakdown →</span>
+        </div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Process"},{v:"Material"},{v:"Qty",w:0.4},{v:"Rate",w:0.5},{v:"Total",w:0.7},{v:"PCS",w:0.4},{v:"/PCS",w:0.5},{v:"Paid",w:0.6}]}/>
+          {processes.map((p,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:1,fontWeight:600}}>{p.proc}</div>
+              <div style={{flex:1}}>{p.material}</div>
+              <div style={{flex:0.4}}>{p.qty+" "+p.unit}</div>
+              <div style={{flex:0.5}}>{"₹ "+p.rate}</div>
+              <div style={{flex:0.7}}>{"₹ "+(p.total/100).toLocaleString()}</div>
+              <div style={{flex:0.4}}>{p.pcs}</div>
+              <div style={{flex:0.5}}>{"₹ "+p.ppc.toFixed(1)}</div>
+              <div style={{flex:0.6}}>{"₹ "+(p.paid/100).toLocaleString()}</div>
+            </div>
+          ))}
+          <div style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,fontWeight:700,background:C.bgSoft}}>
+            <div style={{flex:1}}>Total</div>
+            <div style={{flex:1}}></div>
+            <div style={{flex:0.4}}></div>
+            <div style={{flex:0.5}}></div>
+            <div style={{flex:0.7}}>{"₹ "+(totalCost/100).toLocaleString()}</div>
+            <div style={{flex:0.4}}>{detail.pcs}</div>
+            <div style={{flex:0.5}}>{"₹ "+(totalCost/detail.pcs/100).toLocaleString()}</div>
+            <div style={{flex:0.6}}>{"₹ "+(actualPaid/100).toLocaleString()}</div>
+          </div>
+        </div>
+      </Card>
+      <div style={{marginTop:12,display:"flex",gap:8}}>
+        <Btn label="View Payment" onClick={()=>onNavigate("G-32")}/>
+        <Btn label="Contractor Ledger" theme="soft" onClick={()=>onNavigate("G-33")}/>
+        <Btn label="Cost Breakdown" theme="soft" onClick={()=>onNavigate("G-43")}/>
+        <Btn label="Compare" theme="soft" onClick={()=>onNavigate("G-45")}/>
+        {detail.notes&&<span style={{marginLeft:"auto",fontSize:10,color:C.textMuted,fontStyle:"italic",alignSelf:"center"}}>{"ⓘ "+detail.notes}</span>}
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-43":({onNavigate})=>{
+  const [expanded,setExpanded]=useState(null);
+  const processes=[
+    {proc:"Fabric Cutting",material:"Cotton Fabric",qty:120,unit:"mtr",rate:180,total:21600,pcs:500,ppc:43.2,paid:18000,notes:"12 mtr wastage",bg:"#fef3e2"},
+    {proc:"Printing",material:"Ink + Screen",qty:10,unit:"pcs",rate:850,total:8500,pcs:500,ppc:17,paid:5000,notes:"Screen charges extra",bg:"#e8f5e9"},
+    {proc:"Embroidery",material:"Thread + Zari",qty:500,unit:"pcs",rate:35,total:17500,pcs:500,ppc:35,paid:17500,notes:"Machine embroidered",bg:"#f3e5f5"},
+    {proc:"Dyeing",material:"Chemical + Water",qty:200,unit:"kg",rate:65,total:13000,pcs:500,ppc:26,paid:8000,notes:"Batch dyeing",bg:"#e3f2fd"},
+    {proc:"Sewing / Stitching",material:"Thread + Labor",qty:500,unit:"pcs",rate:45,total:22500,pcs:500,ppc:45,paid:22500,notes:"Standard rate",bg:"#fff3e0"},
+    {proc:"Wash / Finish",material:"Enzyme + Softener",qty:500,unit:"pcs",rate:22,total:11000,pcs:500,ppc:22,paid:6000,notes:"Enzyme wash",bg:"#e0f7fa"},
+    {proc:"Checking & Finishing",material:"Label + Polybag",qty:500,unit:"pcs",rate:18,total:9000,pcs:500,ppc:18,paid:6000,notes:"50% advance paid",bg:"#fce4ec"},
+    {proc:"Packing",material:"Carton + Tape",qty:25,unit:"box",rate:356,total:8900,pcs:500,ppc:17.8,paid:3500,notes:"Partial billing",bg:"#f5f5f5"},
+  ];
+  const totals=processes.reduce((s,p)=>({total:s.total+p.total,paid:s.paid+p.paid,pcs:p.pcs}),{total:0,paid:0,pcs:500});
+  return(
+  <WebLayout activeMenu="Costing" mode="mfg">
+    <GTopBar title="Process Cost Breakdown" sub="Challan #3210 · D-730 · Stitching"/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <div style={{flex:1,background:C.bgSoft,padding:"10px 14px",borderRadius:6}}>
+          <div style={{fontSize:9,color:C.textMuted}}>Total Process Cost</div>
+          <div style={{fontSize:20,fontWeight:700,color:CO.accent}}>{"₹ "+(totals.total/100).toLocaleString()}</div>
+        </div>
+        <div style={{flex:1,background:C.bgSoft,padding:"10px 14px",borderRadius:6}}>
+          <div style={{fontSize:9,color:C.textMuted}}>Total Paid</div>
+          <div style={{fontSize:20,fontWeight:700,color:"#2e7d32"}}>{"₹ "+(totals.paid/100).toLocaleString()}</div>
+        </div>
+        <div style={{flex:1,background:C.bgSoft,padding:"10px 14px",borderRadius:6}}>
+          <div style={{fontSize:9,color:C.textMuted}}>Pending Payment</div>
+          <div style={{fontSize:20,fontWeight:700,color:"#c62828"}}>{"₹ "+((totals.total-totals.paid)/100).toLocaleString()}</div>
+        </div>
+        <div style={{flex:1,background:C.bgSoft,padding:"10px 14px",borderRadius:6}}>
+          <div style={{fontSize:9,color:C.textMuted}}>Avg Cost / PCS</div>
+          <div style={{fontSize:20,fontWeight:700}}>{"₹ "+(totals.total/totals.pcs).toFixed(2)}</div>
+        </div>
+      </div>
+      <Card>
+        <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Process-wise Breakdown</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Process"},{v:"Material"},{v:"Qty",w:0.4},{v:"Rate",w:0.5},{v:"Total",w:0.7},{v:"PCS",w:0.4},{v:"/PCS",w:0.5},{v:"Paid",w:0.6},{v:"",w:0.3}]}/>
+          {processes.map((p,i)=>(
+            <div key={i}>
+              <div onClick={()=>setExpanded(expanded===i?null:i)} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:expanded===i?p.bg:(i%2===0?C.white:"#faf8f5"),cursor:"pointer"}}>
+                <div style={{flex:1,fontWeight:600}}>{p.proc}</div>
+                <div style={{flex:1}}>{p.material}</div>
+                <div style={{flex:0.4}}>{p.qty+" "+p.unit}</div>
+                <div style={{flex:0.5}}>{"₹ "+p.rate}</div>
+                <div style={{flex:0.7}}>{"₹ "+(p.total/100).toLocaleString()}</div>
+                <div style={{flex:0.4}}>{p.pcs}</div>
+                <div style={{flex:0.5}}>{"₹ "+p.ppc.toFixed(1)}</div>
+                <div style={{flex:0.6}}>{"₹ "+(p.paid/100).toLocaleString()}</div>
+                <div style={{flex:0.3,fontSize:8,color:CO.accent}}>{expanded===i?"▲":"▼"}</div>
+              </div>
+              {expanded===i&&(
+                <div style={{display:"flex",padding:"6px 8px 8px 8px",fontSize:9,color:C.textMuted,background:p.bg,borderTop:"0.5px solid "+C.border,gap:12}}>
+                  <div><strong>Rate Basis:</strong> Per {p.unit}</div>
+                  <div><strong>Wastage:</strong> {p.qty>p.pcs?"Yes":"Standard"}</div>
+                  <div><strong>Notes:</strong> {p.notes}</div>
+                  <div style={{marginLeft:"auto"}}>
+                    <span style={{cursor:"pointer",color:CO.accent}} onClick={()=>onNavigate("G-32")}>Link Payment →</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+          <div style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,fontWeight:700,background:C.bgSoft}}>
+            <div style={{flex:1}}>Total</div>
+            <div style={{flex:1}}></div>
+            <div style={{flex:0.4}}></div>
+            <div style={{flex:0.5}}></div>
+            <div style={{flex:0.7}}>{"₹ "+(totals.total/100).toLocaleString()}</div>
+            <div style={{flex:0.4}}>{totals.pcs}</div>
+            <div style={{flex:0.5}}>{"₹ "+(totals.total/totals.pcs/100).toLocaleString()}</div>
+            <div style={{flex:0.6}}>{"₹ "+(totals.paid/100).toLocaleString()}</div>
+            <div style={{flex:0.3}}></div>
+          </div>
+        </div>
+      </Card>
+      <div style={{marginTop:12,display:"flex",gap:8,justifyContent:"flex-end"}}>
+        <Btn label="Create Payment" onClick={()=>onNavigate("G-32")}/>
+        <Btn label="Export Breakdown" theme="soft"/>
+        <Btn label="Compare Costs" theme="soft" onClick={()=>onNavigate("G-45")}/>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-44":({onNavigate})=>{
+  const [tab,setTab]=useState("distribution");
+  const chartData={distribution:[{l:"Fabric / Cutting",v:32},{l:"Embroidery",v:25},{l:"Printing",v:15},{l:"Stitching",v:18},{l:"Wash / Finish",v:6},{l:"Packing",v:4}],labor:[{l:"Direct Labor",v:45},{l:"Material",v:35},{l:"Overhead",v:12},{l:"Misc",v:8}],drivers:[{l:"Fabric",v:35},{l:"Thread / Zari",v:20},{l:"Labor",v:25},{l:"Chemicals",v:10},{l:"Packing",v:6},{l:"Other",v:4}],trend:[{m:"Jan",v:118},{m:"Feb",v:122},{m:"Mar",v:119},{m:"Apr",v:126},{m:"May",v:124}]};
+  const maxVal=Math.max(...chartData[tab].map(d=>d.v));
+  const extremes={highest:{design:"D-730",contractor:"Raju Tailor",cost:"₹ 125/pcs",total:"₹ 62,500"},lowest:{design:"D-688",contractor:"Salim Works",cost:"₹ 80/pcs",total:"₹ 32,000"}};
+  const contractorComp=[{name:"Raju Tailor",avgPP:123,challans:2,total:"₹ 81,250"},{name:"Salim Works",avgPP:160,challans:2,total:"₹ 1,04,000"},{name:"Hari Gems",avgPP:496.25,challans:2,total:"₹ 1,98,500"}];
+  const processComp=[{proc:"Stitching",avgPP:123,total:"₹ 81,250"},{proc:"Embroidery",avgPP:240,total:"₹ 72,000"},{proc:"Diamond",avgPP:496.25,total:"₹ 1,98,500"},{proc:"Wash",avgPP:80,total:"₹ 32,000"}];
+  const monthlySpend=[{m:"Jan",v:1180000},{m:"Feb",v:1240000},{m:"Mar",v:1190000},{m:"Apr",v:1320000},{m:"May",v:1420000}];
+  const maxSpend=Math.max(...monthlySpend.map(d=>d.v));
+  return(
+  <WebLayout activeMenu="Reports" mode="mfg">
+    <GTopBar title="Cost Analysis Report" sub="May 2026 · Multi-tab cost analysis">
+      <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+        {[["distribution","Process Distribution"],["extremes","Highest / Lowest"],["contractors","Contractor Comp."],["processes","Process Comp."],["trend","Cost Trend"],["spend","Monthly Spend"]].map(([v,l])=>(
+          <div key={v} onClick={()=>setTab(v)} style={{padding:"4px 10px",background:tab===v?CO.accent:"#f5f5f5",color:tab===v?C.white:C.textMuted,border:"0.5px solid "+(tab===v?CO.accent:C.border),borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer"}}>{l}</div>
+        ))}
+      </div>
+    </GTopBar>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Total Cost (All)" value={"₹ 18,64,200"} sub="May 2026"/>
+        <Metric label="Total Challans" value="8" sub="Active costing"/>
+        <Metric label="Avg Cost / Challan" value={"₹ 2,33,025"} sub="May 2026"/>
+        <Metric label="Avg Cost / Piece" value={"₹ 124.50"} sub="Across all stages"/>
+      </div>
+      {(tab==="distribution"||tab==="labor"||tab==="drivers")&&<Card>
+        <div style={{display:"flex",gap:20}}>
+          <div style={{flex:1}}>
+            <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>{tab==="distribution"?"Process Distribution (%)":tab==="labor"?"Labor vs Material Split (%)":"Cost Drivers (%)"}</div>
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {chartData[tab].map((d,i)=>(
+                <div key={i}>
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:10,marginBottom:2}}>
+                    <span>{d.l}</span>
+                    <span style={{fontWeight:600}}>{d.v}%</span>
+                  </div>
+                  <div style={{background:C.bgSoft,borderRadius:3,height:14,overflow:"hidden"}}>
+                    <div style={{width:(d.v/maxVal*100)+"%",background:[CO.accent,"#8e44ad","#2980b9","#27ae60","#e67e22","#e74c3c"][i%6],height:14,borderRadius:3,display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:4,fontSize:8,fontWeight:600,color:C.white}}>{Math.round(d.v/maxVal*100)}%</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Summary</div>
+            <div style={{fontSize:10,color:C.textMuted,lineHeight:1.6}}>
+              {tab==="distribution"&&<p>Fabric and cutting account for the largest share (32%) of total per-piece cost. Embroidery and stitching together make up 43%. Packing is minimal at 4%.</p>}
+              {tab==="labor"&&<p>Direct labor costs (45%) exceed material costs (35%), indicating labor-intensive operations. Overhead and miscellaneous make up the remaining 20%.</p>}
+              {tab==="drivers"&&<p>Fabric is the single largest cost driver at 35%, followed by labor at 25%. Together with thread/zari (20%), these three account for 80% of total costs.</p>}
+            </div>
+          </div>
+        </div>
+      </Card>}
+      {tab==="extremes"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Highest vs Lowest Cost Designs</div>
+        <div style={{display:"flex",gap:10}}>
+          <div style={{flex:1,padding:"10px 14px",border:"0.5px solid #ef9a9a",borderRadius:6,background:"#ffebee"}}>
+            <div style={{fontSize:9,color:"#c62828",fontWeight:700}}>{"▲"} Highest Cost</div>
+            <div style={{fontSize:13,fontWeight:700,marginTop:4}}>{extremes.highest.design}</div>
+            <div style={{fontSize:10,color:C.textMuted}}>{extremes.highest.contractor}</div>
+            <div style={{fontSize:11,fontWeight:600,marginTop:4}}>{extremes.highest.cost} <span style={{color:C.textMuted,fontWeight:400}}>(₹ {extremes.highest.total})</span></div>
+          </div>
+          <div style={{flex:1,padding:"10px 14px",border:"0.5px solid #a5d6a7",borderRadius:6,background:"#e8f5e9"}}>
+            <div style={{fontSize:9,color:"#2e7d32",fontWeight:700}}>{"▼"} Lowest Cost</div>
+            <div style={{fontSize:13,fontWeight:700,marginTop:4}}>{extremes.lowest.design}</div>
+            <div style={{fontSize:10,color:C.textMuted}}>{extremes.lowest.contractor}</div>
+            <div style={{fontSize:11,fontWeight:600,marginTop:4}}>{extremes.lowest.cost} <span style={{color:C.textMuted,fontWeight:400}}>(total {extremes.lowest.total})</span></div>
+          </div>
+        </div>
+      </Card>}
+      {tab==="contractors"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Contractor Cost Comparison</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Contractor"},{v:"Avg Cost/PCS"},{v:"Challans"},{v:"Total Cost"}]}/>
+          {contractorComp.map((c,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:1,fontWeight:600}}>{c.name}</div>
+              <div style={{flex:1,fontWeight:600,color:CO.accent}}>{"₹ "+c.avgPP.toFixed(2)}</div>
+              <div style={{flex:1}}>{c.challans}</div>
+              <div style={{flex:1}}>{c.total}</div>
+            </div>
+          ))}
+        </div>
+      </Card>}
+      {tab==="processes"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Process Cost Comparison</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Process"},{v:"Avg Cost/PCS"},{v:"Total Cost"}]}/>
+          {processComp.map((p,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:1,fontWeight:600}}>{p.proc}</div>
+              <div style={{flex:1,fontWeight:600,color:CO.accent}}>{"₹ "+p.avgPP.toFixed(2)}</div>
+              <div style={{flex:1}}>{p.total}</div>
+            </div>
+          ))}
+        </div>
+      </Card>}
+      {tab==="trend"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Cost Trend (₹/PCS)</div>
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          {chartData.trend.map((d,i)=>(
+            <div key={i}>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:10,marginBottom:2}}>
+                <span>{d.m}</span>
+                <span style={{fontWeight:600}}>{"₹ "+d.v}</span>
+              </div>
+              <div style={{background:C.bgSoft,borderRadius:3,height:14,overflow:"hidden"}}>
+                <div style={{width:((d.v-110)/20*100)+"%",background:CO.accent,height:14,borderRadius:3,display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:4,fontSize:8,fontWeight:600,color:C.white}}>{(d.v-110).toFixed(0)}%</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:8,fontSize:10,color:C.textMuted}}>
+          Per-piece cost has remained relatively stable over the past 5 months, ranging between ₹118 and ₹126 per piece. April saw a slight peak at ₹126.
+        </div>
+      </Card>}
+      {tab==="spend"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Monthly Production Spend</div>
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          {monthlySpend.map((d,i)=>(
+            <div key={i}>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:10,marginBottom:2}}>
+                <span>{d.m}</span>
+                <span style={{fontWeight:600}}>{"₹ "+(d.v/100).toLocaleString()}</span>
+              </div>
+              <div style={{background:C.bgSoft,borderRadius:3,height:14,overflow:"hidden"}}>
+                <div style={{width:(d.v/maxSpend*100)+"%",background:["#e74c3c","#e67e22","#f1c40f","#2ecc71","#2980b9"][i],height:14,borderRadius:3,display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:4,fontSize:8,fontWeight:600,color:C.white}}>{Math.round(d.v/maxSpend*100)}%</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>}
+      <div style={{marginTop:12,display:"flex",gap:8}}>
+        <Btn label="Export Report" theme="soft"/>
+        <Btn label="Print" theme="soft"/>
+        <Btn label="Payment Dashboard" theme="soft" onClick={()=>onNavigate("G-31")}/>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-45":({onNavigate})=>{
+  const allChallans=[
+    {cn:"3210",design:"D-730",contractor:"Raju Tailor",stage:"Stitching",pcs:500,total:60500,ppc:121,fabricCost:21600,labourCost:22500,variance:0},
+    {cn:"3208",design:"D-688",contractor:"Salim Works",stage:"Embroidery",pcs:300,total:72000,ppc:240,fabricCost:9000,labourCost:48000,variance:1200},
+    {cn:"3205",design:"D-695",contractor:"Hari Gems",stage:"Diamond",pcs:200,total:98500,ppc:492.5,fabricCost:40000,labourCost:45000,variance:-500},
+    {cn:"3202",design:"D-710",contractor:"Raju Tailor",stage:"Stitching",pcs:150,total:18750,ppc:125,fabricCost:6750,labourCost:9000,variance:0},
+    {cn:"3198",design:"D-688",contractor:"Salim Works",stage:"Wash",pcs:400,total:32000,ppc:80,fabricCost:5000,labourCost:18000,variance:300},
+  ];
+  const [selected,setSelected]=useState(["3210","3205"]);
+  const compData=allChallans.filter(c=>selected.includes(c.cn));
+  const compareKeys=[{k:"pcs",l:"Ready PCS",fmt:v=>v},{k:"total",l:"Total Cost",fmt:v=>"₹ "+(v/100).toLocaleString()},{k:"ppc",l:"Cost / PCS",fmt:v=>"₹ "+v.toFixed(v%1===0?0:1)},{k:"fabricCost",l:"Fabric Cost",fmt:v=>"₹ "+(v/100).toLocaleString()},{k:"labourCost",l:"Labour Cost",fmt:v=>"₹ "+(v/100).toLocaleString()},{k:"variance",l:"Payment Variance",fmt:v=>(v>0?"+":"")+"₹ "+(v/100).toLocaleString()}];
+  const toggleCN=cn=>{setSelected(prev=>prev.includes(cn)?prev.filter(c=>c!==cn):[...prev,cn])};
+  return(
+  <WebLayout activeMenu="Costing" mode="mfg">
+    <GTopBar title="Cost Comparison View" sub={"Comparing "+compData.length+" challans"}/>
+    <Content>
+      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+        {allChallans.map(c=>(
+          <div key={c.cn} onClick={()=>toggleCN(c.cn)} style={{padding:"4px 10px",borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer",background:selected.includes(c.cn)?CO.accent:"#f5f5f5",color:selected.includes(c.cn)?C.white:C.textMuted,border:"0.5px solid "+(selected.includes(c.cn)?CO.accent:C.border),display:"flex",alignItems:"center",gap:4}}>
+            {selected.includes(c.cn)?"✓ ":"○ "}{c.cn} {c.design}
+          </div>
+        ))}
+      </div>
+      {compData.length>0?(
+        <Card>
+          <div style={{fontSize:12,fontWeight:600,marginBottom:8}}>Side-by-Side Comparison</div>
+          <table style={{width:"100%",borderCollapse:"collapse",fontSize:10}}>
+            <thead><tr style={{background:C.bgSoft,fontWeight:700,color:C.textMuted}}>
+              <th style={{padding:"5px 8px",textAlign:"left",borderBottom:"0.5px solid "+C.border}}>Metric</th>
+              {compData.map(c=><th key={c.cn} style={{padding:"5px 8px",textAlign:"center",borderBottom:"0.5px solid "+C.border}}>{"#"+c.cn+" | "+c.design}<br/><span style={{fontSize:8,fontWeight:400}}>{c.contractor+" | "+c.stage}</span></th>)}
+            </tr></thead>
+            <tbody>
+              {compareKeys.map(({k,l,fmt})=>{
+                const vals=compData.map(c=>c[k]);
+                const min=Math.min(...vals);
+                const max=Math.max(...vals);
+                return(
+                  <tr key={k} style={{borderTop:"0.5px solid "+C.border}}>
+                    <td style={{padding:"5px 8px",fontWeight:600}}>{l}</td>
+                    {compData.map(c=>{
+                      const isMin=c[k]===min&&vals.some(v=>v!==min);
+                      const isMax=c[k]===max&&vals.some(v=>v!==max);
+                      return(
+                        <td key={c.cn} style={{padding:"5px 8px",textAlign:"center",background:isMin?"#e8f5e9":isMax?"#ffebee":"transparent",fontWeight:isMin||isMax?700:400}}>
+                          {fmt(c[k])}
+                          {isMin&&<span style={{fontSize:8,color:"#2e7d32",marginLeft:4}}>{"↓"}</span>}
+                          {isMax&&<span style={{fontSize:8,color:"#c62828",marginLeft:4}}>{"↑"}</span>}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </Card>
+      ):(
+        <div style={{textAlign:"center",padding:40,fontSize:11,color:C.textMuted}}>Select at least one challan above to compare</div>
+      )}
+      <div style={{marginTop:12,display:"flex",gap:8,justifyContent:"flex-end"}}>
+        <Btn label="Export Comparison" theme="soft"/>
+        <Btn label="Print" theme="soft"/>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-24":({onNavigate})=>{
+  const kpis={totalFabrics:24,lowStock:3,totalValue:4250000,recentPurchases:2};
+  const lowStockFabrics=[{name:"Cotton Voile",stock:45,min:100,unit:"mtr"},{name:"Silk Crepe",stock:22,min:50,unit:"mtr"},{name:"Lining Poly",stock:30,min:80,unit:"mtr"}];
+  return(
+  <WebLayout activeMenu="Fabric Management" mode="mfg">
+    <GTopBar title="Fabric Dashboard" sub="Stock overview and alerts"/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:14}}>
+        <Metric label="Total Fabrics" value={kpis.totalFabrics.toString()} sub="In inventory" onClick={()=>onNavigate("G-25")}/>
+        <Metric label="Low Stock Items" value={kpis.lowStock.toString()} sub="Below min. qty" alert/>
+        <Metric label="Total Stock Value" value={"₹ "+(kpis.totalValue/100).toLocaleString()} sub="All fabrics" green/>
+        <Metric label="Recent Purchases" value={kpis.recentPurchases.toString()} sub="This week" onClick={()=>onNavigate("G-28")}/>
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:14}}>
+        <Btn label="All Fabrics" onClick={()=>onNavigate("G-25")}/>
+        <Btn label="Add Fabric" theme="soft" onClick={()=>onNavigate("G-26")}/>
+        <Btn label="Purchase Ledger" theme="soft" onClick={()=>onNavigate("G-28")}/>
+      </div>
+      {lowStockFabrics.length>0&&<Card>
+        <div style={{fontSize:11,fontWeight:600,color:"#c62828",marginBottom:6}}>{"⚠ Low Stock Alerts"}</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Fabric"},{v:"Current Stock",w:0.5},{v:"Min Required",w:0.5},{v:"Shortage",w:0.5},{v:"Action",w:0.6}]}/>
+          {lowStockFabrics.map((f,i)=>(
+            <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:1,fontWeight:600}}>{f.name}</div>
+              <div style={{flex:0.5}}>{f.stock+" "+f.unit}</div>
+              <div style={{flex:0.5,fontWeight:600,color:"#c62828"}}>{f.min+" "+f.unit}</div>
+              <div style={{flex:0.5,fontWeight:600,color:"#c62828"}}>{f.min-f.stock+" "+f.unit}</div>
+              <div style={{flex:0.6}}><span style={{cursor:"pointer",color:CO.accent}} onClick={()=>onNavigate("G-28")}>Purchase →</span></div>
+            </div>
+          ))}
+        </div>
+      </Card>}
+    </Content>
+  </WebLayout>
+  );
+},
+"G-25":({onNavigate})=>{
+  const [search,setSearch]=useState("");
+  const allFabrics=[
+    {name:"Cotton Voile",type:"Cotton",color:"White",stock:245,unit:"mtr",rate:180,value:44100,status:"in"},
+    {name:"Silk Crepe",type:"Silk",color:"Red",stock:22,unit:"mtr",rate:850,value:18700,status:"low"},
+    {name:"Lining Poly",type:"Polyester",color:"Black",stock:30,unit:"mtr",rate:95,value:2850,status:"low"},
+    {name:"Cotton Poplin",type:"Cotton",color:"Blue",stock:180,unit:"mtr",rate:160,value:28800,status:"in"},
+    {name:"Georgette",type:"Polyester",color:"Green",stock:120,unit:"mtr",rate:280,value:33600,status:"in"},
+    {name:"Organza",type:"Silk",color:"Gold",stock:65,unit:"mtr",rate:620,value:40300,status:"in"},
+    {name:"Net Fabric",type:"Synthetic",color:"White",stock:200,unit:"mtr",rate:75,value:15000,status:"in"},
+    {name:"Satin",type:"Silk",color:"Pink",stock:90,unit:"mtr",rate:450,value:40500,status:"in"},
+    {name:"Chiffon",type:"Polyester",color:"Purple",stock:150,unit:"mtr",rate:320,value:48000,status:"in"},
+    {name:"Cotton Lawn",type:"Cotton",color:"Yellow",stock:80,unit:"mtr",rate:140,value:11200,status:"in"},
+    {name:"Velvet",type:"Synthetic",color:"Maroon",stock:45,unit:"mtr",rate:780,value:35100,status:"low"},
+    {name:"Linen",type:"Cotton",color:"Beige",stock:110,unit:"mtr",rate:520,value:57200,status:"in"},
+  ];
+  let filtered=search?allFabrics.filter(f=>f.name.toLowerCase().includes(search.toLowerCase())||f.type.toLowerCase().includes(search.toLowerCase())):allFabrics;
+  return(
+  <WebLayout activeMenu="Fabric Management" mode="mfg">
+    <GTopBar title="Fabric List" sub={filtered.length+" of "+allFabrics.length+" fabrics"}/>
+    <Content>
+      <div style={{display:"flex",gap:8,marginBottom:12,alignItems:"center"}}>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search fabric name or type..." style={{padding:"6px 10px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11,flex:1}}/>
+        <Btn label="+ Add Fabric" onClick={()=>onNavigate("G-26")}/>
+      </div>
+      <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+        <TH cols={[{v:"Fabric"},{v:"Type",w:0.6},{v:"Color",w:0.6},{v:"Stock",w:0.5},{v:"Rate",w:0.6},{v:"Value",w:0.7},{v:"Status",w:0.6}]}/>
+        {filtered.map((f,i)=>(
+          <div key={i} onClick={()=>onNavigate("G-27")} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5",cursor:"pointer"}}>
+            <div style={{flex:1,fontWeight:600}}>{f.name}</div>
+            <div style={{flex:0.6}}>{f.type}</div>
+            <div style={{flex:0.6}}>{f.color}</div>
+            <div style={{flex:0.5}}>{f.stock+" "+f.unit}</div>
+            <div style={{flex:0.6}}>{"₹ "+f.rate}</div>
+            <div style={{flex:0.7}}>{"₹ "+(f.value/100).toLocaleString()}</div>
+            <div style={{flex:0.6}}><Tag label={f.status==="low"?"Low Stock":"In Stock"} color={f.status==="low"?"#e65100":"#2e7d32"} small/></div>
+          </div>
+        ))}
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
+"G-26":()=>{
+  const [form,setForm]=useState({name:"",type:"Cotton",color:"",rate:"",minQty:"100",unit:"mtr"});
+  const [saved,setSaved]=useState(false);
+  return(
+  <WebLayout activeMenu="Fabric Management" mode="mfg">
+    <GTopBar title="Add Fabric" sub="Register new fabric in inventory"/>
+    <Content>
+      {saved?<Card><div style={{textAlign:"center",padding:20}}><div style={{fontSize:24,marginBottom:8}}>{"✅"}</div><div style={{fontSize:12,fontWeight:600,marginBottom:4}}>Fabric Added Successfully</div><div style={{fontSize:10,color:C.textMuted,marginBottom:12}}>{form.name} has been added to inventory.</div><Btn label="View Fabric List" onClick={()=>{}}/></div></Card>:
+      <Card>
+        <div style={{fontSize:12,fontWeight:600,marginBottom:10}}>Fabric Details</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {[{k:"name",l:"Fabric Name"},{k:"color",l:"Color"},{k:"rate",l:"Rate (per "+form.unit+")"},{k:"minQty",l:"Min Stock Qty"}].map(f=>(
+            <div key={f.k}><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>{f.l}</div>
+              <input value={form[f.k]} onChange={e=>setForm(p=>({...p,[f.k]:e.target.value}))} placeholder={"Enter "+f.l} style={{width:"100%",padding:"6px 8px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11,boxSizing:"border-box"}}/></div>
+          ))}
+          <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Type</div>
+            <select value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))} style={{width:"100%",padding:"6px 8px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11,boxSizing:"border-box"}}>
+              {["Cotton","Silk","Polyester","Synthetic","Linen","Wool"].map(t=><option key={t}>{t}</option>)}
+            </select></div>
+          <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Unit</div>
+            <select value={form.unit} onChange={e=>setForm(p=>({...p,unit:e.target.value}))} style={{width:"100%",padding:"6px 8px",border:"0.5px solid "+C.border,borderRadius:3,fontSize:11,boxSizing:"border-box"}}>
+              {["mtr","kg","pcs","roll"].map(u=><option key={u}>{u}</option>)}
+            </select></div>
+        </div>
+        <div style={{marginTop:12,display:"flex",gap:8}}>
+          <Btn label="Save Fabric" onClick={()=>setSaved(true)}/>
+          <Btn label="Cancel" theme="soft" onClick={()=>{}}/>
+        </div>
+      </Card>}
+    </Content>
+  </WebLayout>
+  );
+},
+"G-27":({onNavigate})=>{
+  const [tab,setTab]=useState("overview");
+  const fabric={name:"Cotton Voile",type:"Cotton",color:"White",stock:245,unit:"mtr",rate:180,value:44100,minQty:100,lastPurchase:"10-May-2026",supplier:"Ramesh Fabrics"};
+  return(
+  <WebLayout activeMenu="Fabric Management" mode="mfg">
+    <GTopBar title={fabric.name} sub={fabric.type+" | "+fabric.color}>
+      <div style={{display:"flex",gap:6}}><Btn label="Add Stock" theme="soft" onClick={()=>onNavigate("G-28")}/></div>
+    </GTopBar>
+    <Content>
+      <div style={{display:"flex",gap:6,marginBottom:12}}>
+        {[["overview","Overview"],["inventory","Inventory"],["purchases","Purchases"]].map(([v,l])=>(
+          <div key={v} onClick={()=>setTab(v)} style={{padding:"5px 12px",borderRadius:3,fontSize:10,fontWeight:600,cursor:"pointer",background:tab===v?CO.accent:"#f5f5f5",color:tab===v?C.white:C.textMuted,border:"0.5px solid "+(tab===v?CO.accent:C.border)}}>{l}</div>
+        ))}
+      </div>
+      {tab==="overview"&&<Card>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,fontSize:10}}>
+          <div><div style={{color:C.textMuted}}>Type</div><div style={{fontWeight:600}}>{fabric.type}</div></div>
+          <div><div style={{color:C.textMuted}}>Color</div><div style={{fontWeight:600}}>{fabric.color}</div></div>
+          <div><div style={{color:C.textMuted}}>Current Stock</div><div style={{fontWeight:600}}>{fabric.stock+" "+fabric.unit}</div></div>
+          <div><div style={{color:C.textMuted}}>Min Stock Qty</div><div style={{fontWeight:600}}>{fabric.minQty+" "+fabric.unit}</div></div>
+          <div><div style={{color:C.textMuted}}>Rate / {fabric.unit}</div><div style={{fontWeight:600}}>{"₹ "+fabric.rate}</div></div>
+          <div><div style={{color:C.textMuted}}>Stock Value</div><div style={{fontWeight:600}}>{"₹ "+(fabric.value/100).toLocaleString()}</div></div>
+          <div><div style={{color:C.textMuted}}>Last Purchase</div><div style={{fontWeight:600}}>{fabric.lastPurchase}</div></div>
+          <div><div style={{color:C.textMuted}}>Supplier</div><div style={{fontWeight:600}}>{fabric.supplier}</div></div>
+        </div>
+      </Card>}
+      {tab==="inventory"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Stock Movements</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Date",w:0.7},{v:"Type",w:0.5},{v:"Qty",w:0.4},{v:"Balance",w:0.5},{v:"Reference"}]}/>
+          {[{d:"10-May",t:"Purchase",q:"+500","bal":745,ref:"PO-2401"},{d:"09-May",t:"Issue",q:"-200","bal":245,ref:"CN-3202"},{d:"08-May",t:"Issue",q:"-120","bal":445,ref:"CN-3198"}].map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"4px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:0.7,fontSize:9,color:C.textMuted}}>{r.d}</div>
+              <div style={{flex:0.5}}><Tag label={r.t} color={r.t==="Purchase"?"#2e7d32":"#e65100"} small/></div>
+              <div style={{flex:0.4,fontWeight:600,color:r.q>0?"#2e7d32":"#c62828"}}>{r.q}</div>
+              <div style={{flex:0.5}}>{r.bal+" mtr"}</div>
+              <div style={{flex:1,fontSize:9,color:CO.accent,cursor:"pointer"}} onClick={()=>onNavigate("G-28")}>{r.ref}</div>
+            </div>
+          ))}
+        </div>
+      </Card>}
+      {tab==="purchases"&&<Card>
+        <div style={{fontSize:11,fontWeight:600,marginBottom:8}}>Purchase History</div>
+        <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+          <TH cols={[{v:"Date",w:0.7},{v:"PO #",w:0.6},{v:"Supplier"},{v:"Qty",w:0.5},{v:"Rate",w:0.6},{v:"Total",w:0.7}]}/>
+          {[{d:"10-May",po:"PO-2401",s:"Ramesh Fabrics",q:500,r:180,t:90000},{d:"25-Apr",po:"PO-2389",s:"Ramesh Fabrics",q:300,r:175,t:52500}].map((r,i)=>(
+            <div key={i} style={{display:"flex",padding:"4px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+              <div style={{flex:0.7}}>{r.d}</div>
+              <div style={{flex:0.6,fontWeight:600}}>{r.po}</div>
+              <div style={{flex:1}}>{r.s}</div>
+              <div style={{flex:0.5}}>{r.q}</div>
+              <div style={{flex:0.6}}>{"₹ "+r.r}</div>
+              <div style={{flex:0.7}}>{"₹ "+(r.t/100).toLocaleString()}</div>
+            </div>
+          ))}
+        </div>
+      </Card>}
+    </Content>
+  </WebLayout>
+  );
+},
+"G-28":({onNavigate})=>{
+  const purchases=[
+    {date:"10-May-2026",po:"PO-2401",fabric:"Cotton Voile",supplier:"Ramesh Fabrics",qty:500,unit:"mtr",rate:180,total:90000,paid:45000,status:"partial"},
+    {date:"08-May-2026",po:"PO-2398",fabric:"Silk Crepe",supplier:"Meena Silk Mills",qty:100,unit:"mtr",rate:850,total:85000,paid:85000,status:"paid"},
+    {date:"05-May-2026",po:"PO-2395",fabric:"Lining Poly",supplier:"Synth Fab",qty:200,unit:"mtr",rate:95,total:19000,paid:19000,status:"paid"},
+    {date:"25-Apr-2026",po:"PO-2389",fabric:"Cotton Poplin",supplier:"Ramesh Fabrics",qty:300,unit:"mtr",rate:160,total:48000,paid:24000,status:"partial"},
+    {date:"20-Apr-2026",po:"PO-2380",fabric:"Organza",supplier:"Meena Silk Mills",qty:80,unit:"mtr",rate:620,total:49600,paid:0,status:"unpaid"},
+    {date:"15-Apr-2026",po:"PO-2372",fabric:"Georgette",supplier:"Synth Fab",qty:150,unit:"mtr",rate:280,total:42000,paid:42000,status:"paid"},
+  ];
+  return(
+  <WebLayout activeMenu="Fabric Management" mode="mfg">
+    <GTopBar title="Purchase Ledger" sub={purchases.length+" records | All suppliers"}/>
+    <Content>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        <Metric label="Total Purchases" value={"₹ "+(purchases.reduce((s,p)=>s+p.total,0)/100).toLocaleString()} sub="All time"/>
+        <Metric label="Total Paid" value={"₹ "+(purchases.reduce((s,p)=>s+p.paid,0)/100).toLocaleString()} sub="Across all POs" green/>
+        <Metric label="Outstanding" value={"₹ "+((purchases.reduce((s,p)=>s+p.total,0)-purchases.reduce((s,p)=>s+p.paid,0))/100).toLocaleString()} sub="Due to suppliers" alert/>
+      </div>
+      <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
+        <TH cols={[{v:"Date",w:0.7},{v:"PO #",w:0.5},{v:"Fabric"},{v:"Supplier"},{v:"Qty",w:0.4},{v:"Rate",w:0.5},{v:"Total",w:0.7},{v:"Paid",w:0.7},{v:"Status",w:0.6}]}/>
+        {purchases.map((p,i)=>(
+          <div key={i} style={{display:"flex",padding:"5px 8px",borderTop:"0.5px solid "+C.border,fontSize:10,background:i%2===0?C.white:"#faf8f5"}}>
+            <div style={{flex:0.7,fontSize:9,color:C.textMuted}}>{p.date}</div>
+            <div style={{flex:0.5,fontWeight:600}}>{p.po}</div>
+            <div style={{flex:1}}>{p.fabric}</div>
+            <div style={{flex:1}}>{p.supplier}</div>
+            <div style={{flex:0.4}}>{p.qty+" "+p.unit}</div>
+            <div style={{flex:0.5}}>{"₹ "+p.rate}</div>
+            <div style={{flex:0.7}}>{"₹ "+(p.total/100).toLocaleString()}</div>
+            <div style={{flex:0.7}}>{"₹ "+(p.paid/100).toLocaleString()}</div>
+            <div style={{flex:0.6}}><Tag label={p.status==="paid"?"Paid":p.status==="partial"?"Partial":"Unpaid"} color={p.status==="paid"?"#2e7d32":p.status==="partial"?"#e65100":"#c62828"} small/></div>
+          </div>
+        ))}
+      </div>
+      <div style={{marginTop:8,display:"flex",gap:6,justifyContent:"flex-end"}}>
+        <Btn label="Record Purchase" onClick={()=>onNavigate("G-26")}/>
+        <Btn label="View Fabrics" theme="soft" onClick={()=>onNavigate("G-24")}/>
+      </div>
+    </Content>
+  </WebLayout>
+  );
+},
 };
-
-
 const screenGroups = [
   {platform:"Sales ERP",icon:"💻",erp:"sales",groups:[
     {label:"Auth",screens:["W-01","W-02"]},
@@ -6834,17 +8832,17 @@ const screenGroups = [
   {platform:"Manufacturing ERP - GMMS",icon:"🏭",erp:"mfg",groups:[
     {label:"Dashboard",screens:["G-12"]},
     {label:"Challans",screens:["G-01","G-02","G-23","G-03","G-13","G-13A"]},
+    {label:"Production",screens:["G-06","G-07","G-22","G-21"]},
     {label:"Contractors",screens:["G-04","G-05"]},
-    {label:"Production",screens:["G-06","G-07","G-21"]},
+    {label:"Fabric",screens:["G-09","G-24","G-25","G-26","G-27","G-28"]},
     {label:"RF / Returns",screens:["G-08","G-20"]},
-    {label:"Inventory",screens:["G-22"]},
-    {label:"Fabric / Mill",screens:["G-09"]},
-    {label:"Costing (Owner Only)",screens:["G-10"]},
+    {label:"Payments",screens:["G-31","G-32","G-33","G-34","G-35","G-36","G-37","G-38","G-39"]},
+    {label:"Costing",screens:["G-40","G-10","G-41","G-42","G-43","G-44","G-45"]},
+    {label:"Reports",screens:["G-19"]},
     {label:"Masters",screens:["G-11","G-14","G-15","G-16","G-17"]},
     {label:"Notifications",screens:["G-18"]},
-    {label:"Reports",screens:["G-19"]},
-    {label:"Contractor Mobile",screens:["M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]},
-    {label:"Admin",screens:["G-30","G-30A","W-32","W-33"]},
+    {label:"Admin",screens:["G-30","G-30A"]},
+    {label:"Contractor Mobile",screens:["M-G01","M-G02","M-G03","M-G04","M-G05","M-G06","M-G07","M-G08","M-G09","M-G10","M-G11","M-G12"]},
   ]},
   {platform:"Mobile App - Godown (CMS)",icon:"📱",erp:"sales",groups:[
     {label:"Auth & Home",screens:["M-01","M-02"]},
@@ -6862,12 +8860,11 @@ const screenGroups = [
     {label:"Customer LR View",screens:["P-01"]},
   ]},
 ];
-
 const screenLabels = {
   "W-01":"Login","W-02":"Forgot Password","W-03":"Main Dashboard",
   "W-04":"SKU List","W-05":"Create / Edit SKU + Rate Entry","W-06":"SKU Detail","W-07":"Label & Barcode Print",
   "W-09":"Live Inventory","W-13":"Stock Alert Center",
-  "W-10":"[MERGED] Add Stock \u2192 W-05","W-11":"[REMOVED] Stock Adjustment","W-12":"Credit Control Dashboard",
+  "W-10":"[MERGED] Add Stock → W-05","W-11":"[REMOVED] Stock Adjustment","W-12":"Credit Control Dashboard",
   "W-14":"Order List","W-15":"Order Detail + Payments",
   "W-16R":"Create Order  -  Retail","W-16W":"Create Order  -  Wholesale",
   "W-34":"Wholesale Approval Queue",
@@ -6896,39 +8893,37 @@ const screenLabels = {
   "G-17":"Contractor Registry","G-18":"Notifications Center","G-19":"GMMS Reports Hub",
   "G-20":"Create RF Entry","G-21":"SKU Outward","G-22":"Live Inventory","G-23":"Traditional Challan Entry",
   "M-G01":"Contractor Login","M-G02":"My Challans","M-G03":"Challan Detail",
-  "M-G04":"Confirm Pieces Sent","M-G05":"My Payment Ledger","M-G06":"My Profile",
+  "M-G04":"Confirm Pieces Sent","M-G05":"My Payment Ledger","M-G06":"My Profile","M-G07":"Payment Request","M-G08":"Payment Request Detail","M-G09":"QR Management","M-G10":"Add/Edit QR","M-G11":"Payment History","M-G12":"Mobile Notifications",
+  "G-24":"Fabric Dashboard","G-25":"Fabric List","G-26":"Add Fabric","G-27":"Fabric Detail","G-28":"Purchase Ledger",
   "G-30":"User Management (GMMS)","G-30A":"Role Permissions (GMMS)",
+  "G-31":"Payment Dashboard","G-32":"Invoice Verification","G-33":"Contractor Ledger",
+  "G-34":"Contractor Statement","G-35":"Payment Processing","G-36":"Payment History",
+  "G-37":"QR Payment Management","G-38":"Contractor Performance","G-39":"Payment Timeline",
+  "G-40":"Costing Dashboard","G-41":"Challan Costing List","G-42":"Challan Cost Detail","G-43":"Process Cost Breakdown","G-44":"Cost Analysis Report","G-45":"Cost Comparison",
 };
-
-const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-13A","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","G-23","G-30","G-30A","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06"]);
-
+const GMMS_IDS = new Set(["G-12","G-01","G-02","G-03","G-13","G-13A","G-04","G-05","G-06","G-07","G-08","G-09","G-10","G-14","G-15","G-16","G-17","G-18","G-19","G-20","G-21","G-22","G-23","G-24","G-25","G-26","G-27","G-28","G-30","G-30A","G-31","G-32","G-33","G-34","G-35","G-36","G-37","G-38","G-39","G-40","G-41","G-42","G-43","G-44","G-45","M-G01","M-G02","M-G03","M-G04","M-G05","M-G06","M-G07","M-G08","M-G09","M-G10","M-G11","M-G12"]);
 export default function App() {
   const [active, setActive] = useState("W-03");
   const [sidebarErp, setSidebarErp] = useState("both"); // "both" | "sales" | "mfg"
   const Screen = screens[active];
   const totalScreens = Object.keys(screens).length;
   const isMfgScreen = GMMS_IDS.has(active);
-
   const [flowMode, setFlowMode] = useState(false);
   const [activeFlowId, setActiveFlowId] = useState(null);
   const [activeFlowStep, setActiveFlowStep] = useState(0);
   const [showFlowsList, setShowFlowsList] = useState(false);
   const [showFlowDiagram, setShowFlowDiagram] = useState(false);
-
   const activeFlow = useMemo(() => activeFlowId ? getFlowById(activeFlowId) : null, [activeFlowId]);
   const nav = useMemo(() => activeFlow ? getFlowNavigation(activeFlowId, activeFlowStep) : { prev: null, next: null }, [activeFlowId, activeFlowStep]);
   const screenFlowsList = useMemo(() => getScreenFlows(active), [active]);
   const primaryRole = useMemo(() => { const r = getScreenRole(active); return r ? r[0] : null; }, [active]);
-
   function handleFlowNavigate(id) { setActive(id); const idx = getStepIndexByScreen(activeFlowId, id); if (idx >= 0) setActiveFlowStep(idx); }
   function handleFlowPrev() { if (nav.prev) handleFlowNavigate(nav.prev.screen); }
   function handleFlowNext() { if (nav.next) handleFlowNavigate(nav.next.screen); }
   function handleStartFlow(fid, sid) { setActiveFlowId(fid); const idx = getStepIndexByScreen(fid, sid); setActiveFlowStep(idx >= 0 ? idx : 0); setFlowMode(true); }
-
   const visibleGroups = screenGroups.filter(p =>
     sidebarErp === "both" || p.erp === sidebarErp
   );
-
   return (
     <div style={{fontFamily:"system-ui,-apple-system,sans-serif",display:"flex",height:"100vh",background:C.bgSoft,overflow:"hidden"}}>
       {/* Sidebar */}
@@ -6936,9 +8931,9 @@ export default function App() {
         {/* Header with ERP filter + Screens/Flows toggle */}
         <div style={{padding:"12px 14px 10px",borderBottom:`0.5px solid ${C.border}`,flexShrink:0}}>
           <div style={{fontSize:14,fontWeight:700,letterSpacing:0.5,marginBottom:6}}>
-            CMS <span style={{color:"#888",fontWeight:400,fontSize:11}}>{"\u00d7"}</span> <span style={{color:CO.accent,fontSize:13}}>GMMS</span>
+            CMS <span style={{color:"#888",fontWeight:400,fontSize:11}}>{"×"}</span> <span style={{color:CO.accent,fontSize:13}}>GMMS</span>
           </div>
-          <div style={{fontSize:9,color:C.textMuted,marginBottom:8}}>Wireframe Explorer {"\u00b7"} {totalScreens} screens</div>
+          <div style={{fontSize:9,color:C.textMuted,marginBottom:8}}>Wireframe Explorer {"·"} {totalScreens} screens</div>
           {/* Views Toggle: Screens | Flows */}
           <div style={{display:"flex",gap:0,marginBottom:6}}>
             {[["screens","Screens"],["flows","Flows"]].map(([v,l],i)=>(
@@ -7015,7 +9010,6 @@ export default function App() {
           </div>
         )}
       </div>
-
       {/* Content */}
       <div style={{flex:1,overflowY:"auto",padding:24}}>
         {flowMode && activeFlow && (
@@ -7032,7 +9026,7 @@ export default function App() {
             <span style={{fontSize:10,padding:"2px 8px",borderRadius:3,fontWeight:600,border:`0.5px solid ${isMfgScreen?CO.accentBorder:C.border}`,color:isMfgScreen?CO.accent:C.textMuted,background:isMfgScreen?CO.accentLight:C.bgSoft}}>
               {isMfgScreen?"Manufacturing ERP":active.startsWith("M")?"Mobile App":active.startsWith("P")?"Public":"Sales ERP"}
             </span>
-            <span style={{fontSize:10,color:C.textMuted}}>v4.0 {"\u00b7"} {totalScreens} screens</span>
+            <span style={{fontSize:10,color:C.textMuted}}>v4.0 {"·"} {totalScreens} screens</span>
           </div>
         </div>
         {Screen ? <Screen onNavigate={setActive}/> : <div style={{padding:40,textAlign:"center",color:C.textMuted}}>Screen not found</div>}

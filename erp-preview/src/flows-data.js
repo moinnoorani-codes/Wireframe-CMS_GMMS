@@ -195,6 +195,10 @@ export const FLOWS = [
     erp: "mfg",
     description: "Manage fabric inventory from mill to challan",
     steps: [
+      { screen: "G-24", label: "Fabric Dashboard", role: "Production Manager", desc: "Overview of fabric inventory" },
+      { screen: "G-25", label: "Fabric List", role: "Production Manager", desc: "View all fabrics and stock levels" },
+      { screen: "G-26", label: "Add Fabric", role: "Production Manager", desc: "Record new fabric purchase" },
+      { screen: "G-28", label: "Purchase Ledger", role: "Production Manager", desc: "View purchase history" },
       { screen: "G-09", label: "Mill / Fabric Management", role: "Production Manager", desc: "Track fabric stock and mill orders" },
       { screen: "G-23", label: "Traditional Challan Entry", role: "Production Manager", desc: "Issue fabric to contractor via challan" },
     ],
@@ -223,6 +227,37 @@ export const FLOWS = [
     ],
   },
 
+  {
+    id: "mfg-costing",
+    name: "Per Piece Costing Module",
+    erp: "mfg",
+    description: "Costing dashboard, challan costing, breakdown, analysis, and comparison",
+    steps: [
+      { screen: "G-40", label: "Costing Dashboard", role: "Owner/Accounts", desc: "Overview of all costing data" },
+      { screen: "G-41", label: "Challan Costing List", role: "Owner/Accounts", desc: "List all challans with cost data" },
+      { screen: "G-42", label: "Challan Cost Detail", role: "Owner/Accounts", desc: "View detailed cost breakdown per challan" },
+      { screen: "G-43", label: "Process Cost Breakdown", role: "Owner/Accounts", desc: "Expandable process-wise cost analysis" },
+      { screen: "G-44", label: "Cost Analysis Report", role: "Owner/Accounts", desc: "Charts and trends for cost analysis" },
+      { screen: "G-45", label: "Cost Comparison", role: "Owner/Accounts", desc: "Side-by-side multi-challan comparison" },
+    ],
+  },
+  {
+    id: "mfg-payments",
+    name: "Payments Module",
+    erp: "mfg",
+    description: "Production payment lifecycle: invoice verification, contractor payments, and settlement tracking",
+    steps: [
+      { screen: "G-31", label: "Payment Dashboard", role: "Accounts", desc: "Overview of all payment KPIs" },
+      { screen: "G-32", label: "Invoice Verification", role: "Accounts", desc: "Verify contractor challans and approve" },
+      { screen: "G-33", label: "Contractor Ledger", role: "Accounts", desc: "View contractor-wise payment ledger" },
+      { screen: "G-34", label: "Contractor Statement", role: "Accounts/Owner", desc: "Full period statement for contractor" },
+      { screen: "G-35", label: "Payment Processing", role: "Accounts", desc: "Create and process payments via wizard" },
+      { screen: "G-36", label: "Payment History", role: "Accounts", desc: "View completed and pending payments" },
+      { screen: "G-37", label: "QR Payment", role: "Accounts", desc: "Manage QR codes and UPI collections" },
+      { screen: "G-38", label: "Contractor Performance", role: "Owner", desc: "Score and rank contractor performance" },
+      { screen: "G-39", label: "Payment Timeline", role: "Admin", desc: "Audit trail of all payment activity" },
+    ],
+  },
   // ─── Mobile App ─────────────────────────────────────────────────
   {
     id: "mobile-picking",
