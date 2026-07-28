@@ -7,14 +7,14 @@ const C = {
   border: "#e0e0e0", red: "#c0392b", redLight: "#fdf0ef", redBorder: "#e8b4b0",
   black: "#111111", white: "#ffffff", green: "#1a7a4a", greenLight: "#edf7f1", greenBorder: "#a8d5bc", tealLight: "#CCFBF1", amber: "#d97706", amberLight: "#fef3c7",
 };
-const Tag = ({ children, color }) => (
+const Tag = ({ children, color, label }) => (
   <span style={{
     display:"inline-block",fontSize:10,fontWeight:600,letterSpacing:"0.05em",padding:"2px 7px",borderRadius:3,
     background:color==="red"?C.redLight:color==="black"?C.black:color==="green"?C.greenLight:C.bgSoft,
     color:color==="red"?C.red:color==="black"?C.white:color==="green"?C.green:C.textMuted,
     border:`0.5px solid ${color==="red"?C.redBorder:color==="green"?C.greenBorder:C.border}`,
     textTransform:"uppercase",whiteSpace:"nowrap",
-  }}>{children}</span>
+  }}>{children||label}</span>
 );
 const Divider = ({label}) => (
   <div style={{display:"flex",alignItems:"center",gap:8,margin:"12px 0"}}>
@@ -35,14 +35,14 @@ const Input = ({label,placeholder,required,wide,mono,note}) => (
     {note&&<div style={{fontSize:10,color:C.textMuted,marginTop:2}}>{note}</div>}
   </div>
 );
-const Btn = ({children,primary,danger,success,small,full,outline,onClick}) => (
+const Btn = ({children,label,primary,danger,success,small,full,outline,onClick}) => (
   <button onClick={onClick} style={{
     padding:small?"5px 12px":"8px 16px",borderRadius:4,fontSize:small?11:12,fontWeight:600,
     width:full?"100%":"auto",
     border:`0.5px solid ${danger?C.red:primary?C.black:success?C.green:C.border}`,
     background:primary?C.black:danger?C.red:success?C.green:C.white,
     color:primary||danger||success?C.white:C.text,cursor:"pointer",letterSpacing:"0.02em",
-  }}>{children}</button>
+  }}>{children||label}</button>
 );
 const Card = ({children,style,red}) => (
   <div style={{border:`0.5px solid ${red?C.redBorder:C.border}`,borderRadius:6,padding:"12px 14px",background:red?C.redLight:C.white,marginBottom:10,...style}}>{children}</div>
@@ -229,7 +229,7 @@ const CO = { accent:"#e67e22", accentLight:"#fef3e2", accentBorder:"#f5cba7" };
 const TopBar = ({title,actions,sub}) => (
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 16px",borderBottom:`0.5px solid ${C.border}`,background:C.white}}>
     <div><div style={{fontSize:14,fontWeight:600}}>{title}</div>{sub&&<div style={{fontSize:10,color:C.textMuted,marginTop:1}}>{sub}</div>}</div>
-    <div style={{display:"flex",gap:8}}>{actions && actions.map((a,i)=><Btn key={i} primary={a.primary} danger={a.danger} small>{a.label}</Btn>)}</div>
+    <div style={{display:"flex",gap:8}}>{actions && actions.map((a,i)=><Btn key={i} primary={a.primary} danger={a.danger} small onClick={a.onClick}>{a.label}</Btn>)}</div>
   </div>
 );
 // Manufacturing ERP TopBar  -  orange accent
@@ -243,7 +243,7 @@ const GTopBar = ({title,sub,actions,ownerOnly}) => (
       {sub&&<div style={{fontSize:10,color:CO.accent,marginTop:1,fontWeight:500}}>{sub}</div>}
     </div>
     <div style={{display:"flex",gap:8}}>{actions && actions.map((a,i)=>(
-      <button key={i} style={{padding:"5px 12px",borderRadius:4,fontSize:11,fontWeight:600,border:`0.5px solid ${a.primary?CO.accent:C.border}`,background:a.primary?CO.accent:C.white,color:a.primary?C.white:C.text,cursor:"pointer"}}>{a.label}</button>
+      <button key={i} style={{padding:"5px 12px",borderRadius:4,fontSize:11,fontWeight:600,border:`0.5px solid ${a.primary?CO.accent:C.border}`,background:a.primary?CO.accent:C.white,color:a.primary?C.white:C.text,cursor:"pointer",onClick:a.onClick}}>{a.label}</button>
     ))}</div>
   </div>
 );
@@ -3725,7 +3725,7 @@ const screens = {
   </WebLayout>
   );
 },
-"G-01": () => {
+"G-01": ({ onNavigate }) => {
   const [statusFilter,setStatusFilter]=useState("All");
   const [showDetails,setShowDetails]=useState(null);
   const [showAddChallan,setShowAddChallan]=useState(false);
@@ -3796,7 +3796,7 @@ const screens = {
               </div>
               <div style={{flex:1}}>{r.flow.map((s,j)=><span key={j} style={{marginRight:2,background:CO.accentLight,color:CO.accent,padding:"1px 5px",borderRadius:3,fontSize:9,fontWeight:600,border:`0.5px solid ${CO.accentBorder}`}}>{s}</span>)}</div>
               <div style={{flex:0.7}}><span style={{fontSize:10,padding:"2px 7px",borderRadius:3,fontWeight:600,background:r.status==="Active"?"#e8f5e9":r.status==="Completed"?"#e3f2fd":r.status==="Overdue"?"#ffebee":"#fff8e1",color:r.status==="Active"?"#2e7d32":r.status==="Completed"?"#1565c0":r.status==="Overdue"?"#c62828":"#f57f17"}}>{r.status}</span></div>
-              <div style={{flex:0.5}}><Btn small>View</Btn></div>
+              <div style={{flex:0.5}}><Btn small onClick={()=>onNavigate("G-03")}>View</Btn></div>
             </div>
             {showDetails===i&&(
               <div style={{padding:"10px 16px",background:C.bgSoft,borderBottom:`0.5px solid ${C.border}`,fontSize:11}}>
@@ -5167,7 +5167,7 @@ const screens = {
   </WebLayout>
   );
 },
-"G-04": () => {
+"G-04": ({ onNavigate }) => {
   const [showAdd, setShowAdd] = useState(false);
   return (
   <WebLayout activeMenu="Contractors" mode="mfg">
@@ -5243,8 +5243,8 @@ const screens = {
             <div style={{flex:1}}>{r.active}</div>
             <div style={{flex:1}}><span style={{fontSize:10,fontWeight:600,color:r.alert?C.red:r.green?C.green:r.warn?"#b45309":CO.accent,background:r.alert?C.redLight:r.green?C.greenLight:CO.accentLight,padding:"2px 6px",borderRadius:3}}>{r.status}</span></div>
             <div style={{flex:1.2,display:"flex",gap:4}}>
-              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>View</button>
-              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}}>Ledger</button>
+              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}} onClick={()=>onNavigate("G-05")}>View</button>
+              <button style={{padding:"3px 8px",fontSize:10,border:`0.5px solid ${C.border}`,borderRadius:3,background:C.white,cursor:"pointer"}} onClick={()=>onNavigate("G-33")}>Ledger</button>
             </div>
           </div>
         ))}
@@ -8000,7 +8000,7 @@ const screens = {
           </div>
         </div>
       </Card>}
-      <Btn primary full>Make Payment with Selected QR</Btn>
+      <Btn primary full onClick={()=>onNavigate("G-35")}>Make Payment with Selected QR</Btn>
     </Content>
   </WebLayout>
   );
@@ -8072,10 +8072,10 @@ const screens = {
     <GTopBar title="Payment Timeline" sub="Track payment lifecycle from invoice to closure"/>
     <Content>
       <div style={{display:"flex",gap:10,marginBottom:14}}>
-        <Metric label="Active Payments" value="4" sub="In progress"/>
-        <Metric label="Completed Today" value="2" sub="All processed" green/>
-        <Metric label="Avg Cycle Time" value="2.8d" sub="Invoice to payment"/>
-        <Metric label="Stuck Payments" value="1" sub="Pending QR > 3 days" alert/>
+        <Metric label="Active Payments" value="4" sub="In progress" onClick={()=>onNavigate("G-36")}/>
+        <Metric label="Completed Today" value="2" sub="All processed" green onClick={()=>onNavigate("G-36")}/>
+        <Metric label="Avg Cycle Time" value="2.8d" sub="Invoice to payment" onClick={()=>onNavigate("G-35")}/>
+        <Metric label="Stuck Payments" value="1" sub="Pending QR > 3 days" alert onClick={()=>onNavigate("G-37")}/>
       </div>
       <Card>
         <div style={{fontSize:11,fontWeight:600,marginBottom:10}}>Payment #PAY-1052 · Ramesh Kadkiya · ₹ 24,000</div>
@@ -8589,8 +8589,8 @@ const screens = {
         <div style={{textAlign:"center",padding:40,fontSize:11,color:C.textMuted}}>Select at least one challan above to compare</div>
       )}
       <div style={{marginTop:12,display:"flex",gap:8,justifyContent:"flex-end"}}>
-        <Btn label="Export Comparison" theme="soft"/>
-        <Btn label="Print" theme="soft"/>
+        <Btn label="Export Comparison" theme="soft" onClick={()=>onNavigate("G-44")}/>
+        <Btn label="Print" theme="soft" onClick={()=>onNavigate("G-44")}/>
       </div>
     </Content>
   </WebLayout>
@@ -8676,7 +8676,7 @@ const screens = {
   </WebLayout>
   );
 },
-"G-26":()=>{
+"G-26":({onNavigate})=>{
   const [form,setForm]=useState({name:"",type:"Cotton",color:"",rate:"",minQty:"100",unit:"mtr"});
   const [saved,setSaved]=useState(false);
   return(
@@ -8702,7 +8702,7 @@ const screens = {
         </div>
         <div style={{marginTop:12,display:"flex",gap:8}}>
           <Btn label="Save Fabric" onClick={()=>setSaved(true)}/>
-          <Btn label="Cancel" theme="soft" onClick={()=>{}}/>
+          <Btn label="Cancel" theme="soft" onClick={()=>setSaved(false)}/>
         </div>
       </Card>}
     </Content>
