@@ -7755,6 +7755,10 @@ const screens = {
 "G-35": ({ onNavigate }) => {
   const [step,setStep]=useState("summary");
   const [selCont,setSelCont]=useState("Ramesh Kadkiya");
+  const [deductions,setDeductions]=useState([
+    {type:"Damage/Reject",mode:"₹",val:"1200"},
+    {type:"Delay Penalty",mode:"₹",val:"800"},
+  ]);
   const contractors=["Ramesh Kadkiya","Salim Works","Hari Gems","Mohan Stitching","Raju Tailor"];
   const summaryData={
     name:"Ramesh Kadkiya",code:"EMB-001",totalChallans:4,pcs:1850,gross:"₹ 1,16,000",deductions:"₹ 2,000",netPayable:"₹ 1,14,000",advance:"₹ 10,000",finalPayable:"₹ 1,04,000",
@@ -7813,17 +7817,44 @@ const screens = {
           </div>
           <Btn primary onClick={()=>setStep("deductions")}>Next: Deductions {"→"}</Btn>
         </>}
-        {step==="deductions"&&<>
-          <div style={{fontSize:11,fontWeight:600,marginBottom:6}}>Deductions Summary</div>
-          <div style={{display:"flex",gap:8,marginBottom:10}}>
-            {[{l:"Short Pieces",v:"0 pcs",a:"₹ 0"},{l:"Damage / Rejects",v:"5 pcs",a:"₹ 1,200"},{l:"Delay Penalty",v:"3 days",a:"₹ 800"}].map((d,i)=>(
-              <div key={i} style={{flex:1,padding:"8px 10px",border:"0.5px solid "+C.border,borderRadius:4,background:C.white}}>
-                <div style={{fontSize:9,color:C.textMuted}}>{d.l}</div><div style={{fontSize:11,fontWeight:700}}>{d.v}</div><div style={{fontSize:10,color:C.red}}>{d.a}</div>
-              </div>
-            ))}
+        {step==="deductions"&&(()=>{
+          const grossNum = parseInt(summaryData.gross.replace(/[^0-9]/g,""));
+          const advNum = parseInt(summaryData.advance.replace(/[^0-9]/g,""));
+          const fmt = n => "₹ " + n.toLocaleString("en-IN");
+          const totalDed = deductions.reduce((s,d) => { const v = parseFloat(d.val) || 0; return s + (d.mode==="%" ? grossNum * v / 100 : v); }, 0);
+          const netNum = grossNum - totalDed;
+          const finalNum = netNum - advNum;
+          return <>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+            <div style={{fontSize:11,fontWeight:600}}>Reductions (Claim / Discount / RF / Short)</div>
+            <div style={{fontSize:10,color:C.textMuted}}>Gross: {summaryData.gross} · Net: {fmt(netNum)} · Final: {fmt(finalNum)}</div>
           </div>
-          <Btn primary onClick={()=>setStep("payment")}>Next: Payment Breakdown {"→"}</Btn>
-        </>}
+          <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden",marginBottom:8}}>
+            <TH cols={[{v:"Type"},{v:"Mode",w:0.5},{v:"Value",w:0.5},{v:"Ded Amount",w:0.7},{v:"",w:0.25}]}/>
+            {deductions.map((d,i)=>{
+              const amtVal = d.mode==="%" ? grossNum * (parseFloat(d.val)||0) / 100 : (parseFloat(d.val)||0);
+              return <div key={i} style={{display:"flex",padding:"5px 6px",borderTop:"0.5px solid "+C.border,fontSize:10,alignItems:"center",background:i%2===0?C.white:"#faf8f5"}}>
+                <select value={d.type} onChange={e=>{const v=[...deductions];v[i].type=e.target.value;setDeductions(v)}} style={{flex:1,padding:"3px 4px",border:"0.5px solid "+C.border,borderRadius:2,fontSize:9,background:C.white}}>
+                  {["Short","Damage/Reject","Delay Penalty","Claim","Discount","RF"].map(t=><option key={t}>{t}</option>)}
+                </select>
+                <div style={{flex:0.5,display:"flex",gap:2,justifyContent:"center"}}>
+                  {["%","₹"].map(m=><div key={m} onClick={()=>{const v=[...deductions];v[i].mode=m;setDeductions(v)}} style={{padding:"2px 5px",borderRadius:2,fontSize:9,fontWeight:600,cursor:"pointer",background:d.mode===m?CO.accent:"#f5f5f5",color:d.mode===m?C.white:C.textMuted,border:"0.5px solid "+(d.mode===m?CO.accent:C.border)}}>{m}</div>)}
+                </div>
+                <input value={d.val} onChange={e=>{const v=[...deductions];v[i].val=e.target.value;setDeductions(v)}} style={{flex:0.5,padding:"3px 4px",border:"0.5px solid "+C.border,borderRadius:2,fontSize:9,width:50,background:C.white}} placeholder="0"/>
+                <div style={{flex:0.7,fontWeight:600,color:C.red}}>{fmt(amtVal)}</div>
+                <div style={{flex:0.25,textAlign:"center",cursor:"pointer",color:"#999",fontSize:12}} onClick={()=>setDeductions(deductions.filter((_,j)=>j!==i))}>✕</div>
+              </div>;
+            })}
+          </div>
+          <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:10}}>
+            <Btn small secondary onClick={()=>setDeductions([...deductions,{type:"Short",mode:"₹",val:""}])}>+ Add Reduction</Btn>
+            <div style={{marginLeft:"auto",display:"flex",gap:10,fontSize:10}}>
+              <span>Total Deductions: <strong style={{color:C.red}}>{fmt(totalDed)}</strong></span>
+              <span>Net Payable: <strong style={{color:C.green}}>{fmt(netNum)}</strong></span>
+            </div>
+          </div>
+          <Btn primary onClick={()=>setStep("payment")}>Next: Payment Breakdown {"\u2192"}</Btn>
+        </>})()}
         {step==="payment"&&<>
           <div style={{display:"flex",gap:10,marginBottom:10}}>
             <div style={{flex:1,padding:"10px 14px",border:"0.5px solid "+CO.accentBorder,borderRadius:6,background:CO.accentLight}}>
