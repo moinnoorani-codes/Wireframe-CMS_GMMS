@@ -90,6 +90,14 @@ const MobileFrame = ({children,menuOpen}) => (
     {menuOpen&&<MSlideMenu/>}
   </div>
 );
+const EmptyState = ({icon,title,desc,action}) => (
+  <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 20px",gap:12}}>
+    <div style={{fontSize:32,color:C.textLight}}>{icon||"\u{1F4ED}"}</div>
+    <div style={{fontSize:13,fontWeight:600,color:C.textMuted}}>{title||"No data found"}</div>
+    {desc&&<div style={{fontSize:11,color:C.textLight,textAlign:"center",maxWidth:280}}>{desc}</div>}
+    {action&&<div style={{marginTop:4}}><Btn small primary onClick={action.onClick}>{action.label}</Btn></div>}
+  </div>
+);
 const MNav = ({label,action}) => (
   <div style={{background:C.black,color:C.white,padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
     <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:16}}>←</span><span style={{fontSize:13,fontWeight:600}}>{label}</span></div>
@@ -3839,7 +3847,8 @@ const screens = {
   return(
   <WebLayout activeMenu="Contractors" mode="mfg">
     <GTopBar title="Contractor Detail" sub="Ramesh Kadkiya · EMB-001 · Embroidery Specialist">
-      <div style={{display:"flex",gap:6}}>
+      <div style={{display:"flex",gap:6,alignItems:"center"}}>
+        <Btn label="\u2190 Back" small secondary onClick={()=>onNavigate("G-04")}/>
         <Btn label="Ledger G-33" small onClick={()=>onNavigate("G-33")}/>
         <Btn label="Performance G-38" small onClick={()=>onNavigate("G-38")}/>
         <Btn label="Statement G-34" small onClick={()=>onNavigate("G-34")}/>
@@ -7506,10 +7515,10 @@ const screens = {
   ];
   return(
   <WebLayout activeMenu="Payments" mode="mfg">
-    <GTopBar title="Payment Dashboard" sub="Manufacturing payment ops at a glance"/>
+    <GTopBar title="Payment Dashboard" sub="Manufacturing payment ops at a glance" actions={[{label:"Verify Invoices",primary:true},{label:"Process Payment"}]}/>
     <Content>
       <div style={{display:"flex",flexWrap:"wrap",gap:10,marginBottom:14}}>
-        {kpis.map((k,i)=><Metric key={i} label={k.label} value={k.value} sub={k.sub} alert={k.alert} green={k.green} onClick={()=>k.label==="Pending Verification"||k.label==="Ready for Payment"?onNavigate("G-32"):k.label==="Completed Today"||k.label==="Completed This Week"?onNavigate("G-36"):k.label==="Contractor Requests"?onNavigate("G-35"):k.label==="QR Pending"?onNavigate("G-37"):k.label==="Outstanding Payments"?onNavigate("G-34"):k.label==="Avg Processing Time"?onNavigate("G-39"):null}/>)}
+        {kpis.map((k,i)=><Metric key={i} label={k.label} value={k.value} sub={k.sub} alert={k.alert} green={k.green} onClick={()=>k.label==="Pending Verification"||k.label==="Ready for Payment"?onNavigate("G-32"):k.label==="Completed Today"||k.label==="Completed This Week"?onNavigate("G-36"):k.label==="Contractor Requests"?onNavigate("G-35"):k.label==="QR Pending"?onNavigate("G-37"):k.label==="Outstanding Payments"?onNavigate("G-34"):k.label==="Avg Processing Time"?onNavigate("G-39"):k.label==="This Month Spend"?onNavigate("G-36"):null}/>)}
       </div>
       <div style={{display:"flex",gap:8,marginBottom:14}}>
         <Btn primary small onClick={()=>onNavigate("G-32")}>Verify Invoices</Btn>
@@ -7636,7 +7645,7 @@ const screens = {
         <Metric label="Total Paid" value={data.paid} sub="Settled" green/>
         <Metric label="Pending" value={data.pending} sub="Outstanding" alert/>
       </div>
-      <Card>
+      {data.txns.length===0?<EmptyState icon="\u{1F4CB}" title="No transactions" desc={selCont+" has no payment records yet"}/>:<Card>
         <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
           <TH cols={[{v:"Date",w:0.5},{v:"CN",w:0.5},{v:"Design"},{v:"Stage",w:0.6},{v:"PCS",w:0.3},{v:"Gross",w:0.6},{v:"Ded",w:0.5},{v:"Net",w:0.6},{v:"Paid",w:0.6},{v:"Bal",w:0.5}]}/>
           {data.txns.map((t,i)=>(
@@ -7662,7 +7671,7 @@ const screens = {
             </div>
           ))}
         </div>
-      </Card>
+      </Card>}
     </Content>
   </WebLayout>
   );
@@ -7686,7 +7695,7 @@ const screens = {
   };
   return(
   <WebLayout activeMenu="Payments" mode="mfg">
-    <GTopBar title="Contractor Statement" sub={selCont+" · Printable work & payment summary"}/>
+    <GTopBar title="Contractor Statement" sub={selCont+" · Printable work & payment summary"} actions={[{label:"\u2190 Contractor Ledger",onClick:()=>onNavigate("G-33")},{label:"Print",primary:true},{label:"Export PDF"}]}/>
     <Content>
       <div style={{marginBottom:12,display:"flex",gap:10,alignItems:"center"}}>
         <div><div style={{fontSize:10,color:C.textMuted,marginBottom:2}}>Contractor</div>
@@ -7917,7 +7926,7 @@ const screens = {
         <Metric label="Completed" value={allTxns.filter(t=>t.st==="Completed").length.toString()} sub="Successfully processed" green/>
         <Metric label="Pending QR" value={allTxns.filter(t=>t.st==="Pending QR").length.toString()} sub="Awaiting QR" alert/>
       </div>
-      <Card>
+      {filtered.length===0?<EmptyState icon="\u{1F50D}" title="No payments found" desc={search||statusFilter!=="All"?"Try adjusting your search or filters":"No payment records yet"}/>:<Card>
         <div style={{border:"0.5px solid "+C.border,borderRadius:4,overflow:"hidden"}}>
           <TH cols={[{v:"Ref",w:0.6},{v:"Invoice"},{v:"Contractor"},{v:"Date",w:0.5},{v:"Amount",w:0.7},{v:"QR Method"},{v:"Proof",w:0.4},{v:"Remarks"},{v:"Status",w:0.7}]}/>
           {filtered.map((t,i)=>(
@@ -7928,13 +7937,13 @@ const screens = {
               <div style={{flex:0.5,fontSize:9,color:C.textMuted}}>{t.d}</div>
               <div style={{flex:0.7,fontWeight:600}}>{t.amt}</div>
               <div style={{flex:0.8,fontSize:9,color:C.textMuted}}>{t.qr||"-"}</div>
-              <div style={{flex:0.4,fontSize:9,color:t.proof==="Yes"?C.green:C.red}}>{t.proof==="Yes"?"✓":"✗"}</div>
+              <div style={{flex:0.4,fontSize:9,color:t.proof==="Yes"?C.green:C.red}}>{t.proof==="Yes"?"\u2713":"\u2717"}</div>
               <div style={{flex:0.6,fontSize:9,color:C.textMuted}}>{t.rm||"-"}</div>
               <div style={{flex:0.7}}><Tag label={t.st} color={t.st==="Completed"?"green":t.st==="Processing"?"amber":t.st==="Pending QR"?"red":"black"} small/></div>
             </div>
           ))}
         </div>
-      </Card>
+      </Card>}
     </Content>
   </WebLayout>
   );
@@ -8104,13 +8113,13 @@ const screens = {
 "G-40":({onNavigate})=>{
   const [period,setPeriod]=useState("month");
   const kpis=[
-    {label:"Avg Cost / Piece",value:"₹ 124.50",sub:"Across all stages",green:true},
+    {label:"Avg Cost / Piece",value:"₹ 124.50",sub:"Across all stages",green:true,onClick:()=>onNavigate("G-41")},
     {label:"Highest Challan",value:"₹ 2,84,500",sub:"#3202 - D-710 - Raju Tailor",alert:true,onClick:()=>onNavigate("G-42")},
     {label:"Lowest Challan",value:"₹ 45,200",sub:"#3185 - D-712 - New Designers",onClick:()=>onNavigate("G-42")},
-    {label:"Highest Cost Process",value:"Embroidery",sub:"₹ 72,000 avg/challan",alert:true},
-    {label:"Total Production Spend",value:"₹ 18,64,200",sub:"May 2026",green:true},
-    {label:"Pending Costing",value:"2 challans",sub:"#3190, #3185",alert:true},
-    {label:"Most Expensive Contractor",value:"Hari Gems",sub:"₹ 492.50/pcs - Diamond"},
+    {label:"Highest Cost Process",value:"Embroidery",sub:"₹ 72,000 avg/challan",alert:true,onClick:()=>onNavigate("G-43")},
+    {label:"Total Production Spend",value:"₹ 18,64,200",sub:"May 2026",green:true,onClick:()=>onNavigate("G-44")},
+    {label:"Pending Costing",value:"2 challans",sub:"#3190, #3185",alert:true,onClick:()=>onNavigate("G-41")},
+    {label:"Most Expensive Contractor",value:"Hari Gems",sub:"₹ 492.50/pcs - Diamond",onClick:()=>onNavigate("G-38")},
     {label:"Highest RF Cost",value:"₹ 8,400",sub:"From Short/Damage deductions"},
     {label:"Highest Claim Cost",value:"₹ 3,200",sub:"From contractor claims"},
   ];
@@ -8317,7 +8326,7 @@ const screens = {
   const totals=processes.reduce((s,p)=>({total:s.total+p.total,paid:s.paid+p.paid,pcs:p.pcs}),{total:0,paid:0,pcs:500});
   return(
   <WebLayout activeMenu="Costing" mode="mfg">
-    <GTopBar title="Process Cost Breakdown" sub="Challan #3210 · D-730 · Stitching"/>
+    <GTopBar title="Process Cost Breakdown" sub="Challan #3210 · D-730 · Stitching" actions={[{label:"\u2190 Costing List",onClick:()=>onNavigate("G-41")},{label:"Edit Costing",onClick:()=>onNavigate("G-43")}]}/>
     <Content>
       <div style={{display:"flex",gap:10,marginBottom:12}}>
         <div style={{flex:1,background:C.bgSoft,padding:"10px 14px",borderRadius:6}}>
@@ -8715,7 +8724,10 @@ const screens = {
   return(
   <WebLayout activeMenu="Fabric Management" mode="mfg">
     <GTopBar title={fabric.name} sub={fabric.type+" | "+fabric.color}>
-      <div style={{display:"flex",gap:6}}><Btn label="Add Stock" theme="soft" onClick={()=>onNavigate("G-28")}/></div>
+      <div style={{display:"flex",gap:6,alignItems:"center"}}>
+        <Btn label="\u2190 Back" small secondary onClick={()=>onNavigate("G-25")}/>
+        <Btn label="Add Stock" theme="soft" onClick={()=>onNavigate("G-28")}/>
+      </div>
     </GTopBar>
     <Content>
       <div style={{display:"flex",gap:6,marginBottom:12}}>
